@@ -376,7 +376,7 @@ export default function LandingPage() {
       </footer>
 
       {/* Mobile Sticky CTA */}
-      <div className="md:hidden fixed bottom-6 left-6 right-6 z-40">
+      <div className="md:hidden fixed bottom-6 left-6 right-6 z-40 hidden">
         <a className="w-full bg-secondary text-on-secondary font-bold py-4 rounded-full text-center block shadow-2xl" href="#cta">
           Inscribirme ahora
         </a>
