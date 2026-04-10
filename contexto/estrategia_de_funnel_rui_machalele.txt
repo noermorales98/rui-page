@@ -1,0 +1,51 @@
+# Funnel de Ventas: Rui Machalele – Programa de Expansión Mental
+
+## Estrategia de Contenidos y Conversión
+
+### FASE 1 – ATRACCIÓN (Lead Magnet)
+**Lead Magnet Elegido:** Test de diagnóstico "Descubre qué bloquea tu expansión: El Mapa de tus 4 Guardianes".
+**Justificación:** En el nicho de crecimiento personal, el autodescubrimiento es el gancho más potente. Un test genera curiosidad inmediata y permite segmentar al usuario según su pilar más débil (Niño interior, Ángeles caídos, etc.).
+
+---
+
+### FASE 2 – ACTIVACIÓN (E-mails & Tripwire)
+
+#### Secuencia de Emails de Nurturing (Indoctrinación)
+*   **Email 1 (Día 0):** Tu Mapa de Expansión está aquí. 
+    *   *Contenido:* Entrega del test + Introducción a la historia de Rui (vulnerabilidad y despertar).
+*   **Email 2 (Día 1):** El susurro del Niño Interior.
+    *   *Contenido:* Cómo el miedo del pasado bloquea el éxito presente.
+*   **Email 3 (Día 2):** Cuidado con lo que no ves (Ángeles Caídos).
+    *   *Contenido:* Identificando influencias tóxicas externas e internas.
+*   **Email 4 (Día 3):** Tus aliados invisibles.
+    *   *Contenido:* Diferencia entre la guía terrenal y el legado ancestral.
+*   **Email 5 (Día 5):** Lo que ellos ya expandieron.
+    *   *Contenido:* Prueba social y testimonios. Presentación oficial del programa.
+*   **Email 6 (Día 7):** El portal está abierto.
+    *   *Contenido:* Beneficios, garantía y CTA directo a la Sales Page.
+*   **Email 7 (Día 8):** ¿Te quedarás atrás? (Urgencia).
+    *   *Contenido:* Cierre de inscripciones y bonos.
+
+**Oferta Tripwire ($19):** "Masterclass: Los 4 Guardianes de tu Mente". Un video de 45 min + Workbook digital.
+
+---
+
+### FASE 3 – CONVERSIÓN (Estructura de Ventas)
+**Order Bump ($37):** "Kit de Integración Diaria": Audios de meditación específicos para cada pilar.
+**Upsell 1 (OTO - $197):** Pase VIP al evento presencial anual "Synergy" con acceso a networking exclusivo.
+**Downsell ($47):** Libro digital "La Conciencia del Ángel" + Guía de implementación rápida.
+
+---
+
+### MÉTRICAS Y BENCHMARKS
+*   **Squeeze Page CV:** 35% - 50%
+*   **Tripwire Sales CV:** 5% - 10% del tráfico de la Thank You Page.
+*   **Sales Page CV (Tráfico Tibio):** 2% - 5%
+*   **Upsell Take Rate:** 15% - 20%
+
+---
+
+### HERRAMIENTAS RECOMENDADAS
+1.  **Systeme.io:** La mejor relación calidad-precio. Todo en uno (Email + Páginas + Checkout). Ideal para lanzamientos rápidos.
+2.  **Kajabi:** Premium. Mejor experiencia de usuario para el área de miembros del programa.
+3.  **Karta:** Potente en automatizaciones complejas de comportamiento.

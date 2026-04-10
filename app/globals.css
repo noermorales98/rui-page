@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-outline: #797581;
+  --color-on-tertiary-container: #7bae92;
+  --color-surface-dim: #ded9d2;
+  --color-on-tertiary-fixed-variant: #1d5038;
+  --color-on-secondary-fixed-variant: #5f4100;
+  --color-primary-container: #3b2f6e;
+  --color-surface-bright: #fef9f1;
+  --color-inverse-primary: #cbbeff;
+  --color-secondary-fixed-dim: #f4be5d;
+  --color-outline-variant: #c9c4d1;
+  --color-error: #ba1a1a;
+  --color-surface: #fef9f1;
+  --color-inverse-on-surface: #f5f0e8;
+  --color-surface-container-low: #f8f3eb;
+  --color-on-primary: #ffffff;
+  --color-on-secondary-fixed: #271900;
+  --color-secondary: #7d5700;
+  --color-on-tertiary-fixed: #002113;
+  --color-tertiary-fixed-dim: #9dd2b4;
+  --color-on-surface-variant: #484550;
+  --color-surface-variant: #e7e2da;
+  --color-primary-fixed-dim: #cbbeff;
+  --color-on-error: #ffffff;
+  --color-on-primary-container: #a699e0;
+  --color-on-background: #1d1c17;
+  --color-surface-container-high: #ece8e0;
+  --color-error-container: #ffdad6;
+  --color-primary: #251857;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #0c422c;
+  --color-secondary-container: #fdc664;
+  --color-surface-container-highest: #e7e2da;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-secondary-container: #755100;
+  --color-on-error-container: #93000a;
+  --color-on-secondary: #ffffff;
+  --color-inverse-surface: #32302b;
+  --color-tertiary: #002a19;
+  --color-primary-fixed: #e6deff;
+  --color-tertiary-fixed: #b9efcf;
+  --color-on-primary-fixed-variant: #493d7d;
+  --color-background: #fef9f1;
+  --color-surface-container: #f2ede5;
+  --color-surface-tint: #615596;
+  --color-on-surface: #1d1c17;
+  --color-secondary-fixed: #ffdeab;
+  --color-on-primary-fixed: #1d0e4f;
+  
+  --font-sans: var(--font-inter), sans-serif;
+  --font-serif: var(--font-playfair-display), serif;
+  --font-headline: var(--font-newsreader), serif;
+  --font-playfair: var(--font-playfair-display), serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-label: var(--font-inter), sans-serif;
+  --font-noto-serif: var(--font-noto-serif), serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.bg-oracle-mesh {
+  background-color: var(--color-surface);
+  background-image: radial-gradient(at 0% 0%, var(--color-surface) 0, transparent 50%), radial-gradient(at 100% 0%, var(--color-surface-container-high) 0, transparent 50%);
+}
+
+.glass-header {
+  background: rgba(254, 249, 241, 0.7);
+  backdrop-filter: blur(12px);
+}
+
+.editorial-shadow {
+  box-shadow: 0 10px 40px -15px rgba(29, 28, 23, 0.06);
+}
+
+.warm-film-grain {
+    position: relative;
+}
+.warm-film-grain::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDhJpR30OhjYgxr7q9ca82XCl_7gT_oOm5KT5inn9gL91Mpu9Sr1Xa_TPRt5keC8RNRiZTgm84cAl7ONwZhu6-6zwA5_I0JwY3tUVbUyXx24MiaVG97Td-DG3RhUnNmQQiJ7hnMF8i9Kp1GYNGXqRQjLgy2inwqeMjk4v7ehraJtZtXHu2tuecsGk6CXGg2L6ztoocPvB_tyky-bwudH0wyBIySyBbgYG0UMYtMqci4WRO8Xvo7OeRRYtIR9rZVVxiH8v7HDPKNnmm2);
+    opacity: 0.05;
+    pointer-events: none;
+}
+.asymmetric-shape {
+    clip-path: polygon(0 0, 100% 10%, 100% 100%, 0 90%);
+}
+
+.glass-nav { 
+  backdrop-filter: blur(20px); 
+  -webkit-backdrop-filter: blur(20px); 
+}
+.wisdom-header { 
+  font-family: var(--font-playfair-display); 
 }

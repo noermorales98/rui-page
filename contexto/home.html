@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#797581",
+                        "on-tertiary-container": "#7bae92",
+                        "surface-dim": "#ded9d2",
+                        "on-tertiary-fixed-variant": "#1d5038",
+                        "on-secondary-fixed-variant": "#5f4100",
+                        "primary-container": "#3b2f6e",
+                        "surface-bright": "#fef9f1",
+                        "inverse-primary": "#cbbeff",
+                        "secondary-fixed-dim": "#f4be5d",
+                        "outline-variant": "#c9c4d1",
+                        "error": "#ba1a1a",
+                        "surface": "#fef9f1",
+                        "inverse-on-surface": "#f5f0e8",
+                        "surface-container-low": "#f8f3eb",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#271900",
+                        "secondary": "#7d5700",
+                        "on-tertiary-fixed": "#002113",
+                        "tertiary-fixed-dim": "#9dd2b4",
+                        "on-surface-variant": "#484550",
+                        "surface-variant": "#e7e2da",
+                        "primary-fixed-dim": "#cbbeff",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#a699e0",
+                        "on-background": "#1d1c17",
+                        "surface-container-high": "#ece8e0",
+                        "error-container": "#ffdad6",
+                        "primary": "#251857",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#0c422c",
+                        "secondary-container": "#fdc664",
+                        "surface-container-highest": "#e7e2da",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#755100",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#32302b",
+                        "tertiary": "#002a19",
+                        "primary-fixed": "#e6deff",
+                        "tertiary-fixed": "#b9efcf",
+                        "on-primary-fixed-variant": "#493d7d",
+                        "background": "#fef9f1",
+                        "surface-container": "#f2ede5",
+                        "surface-tint": "#615596",
+                        "on-surface": "#1d1c17",
+                        "secondary-fixed": "#ffdeab",
+                        "on-primary-fixed": "#1d0e4f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .font-serif {
+            font-family: 'Newsreader', serif;
+        }
+
+        .font-sans {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface font-sans selection:bg-secondary/20">
+    <!-- TopNavBar -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-[#fef9f1]/70 backdrop-blur-md flex justify-between items-center px-8 py-4 max-w-full">
+        <div class="text-2xl font-serif italic text-[#3b2f6e]">Rui Machalele</div>
+        <div class="hidden md:flex items-center space-x-8 font-serif font-medium tracking-tight">
+            <a class="text-[#7d5700] border-b-2 border-[#7d5700] pb-1 font-bold" href="#">Inicio</a>
+            <a class="text-[#3b2f6e] hover:text-[#7d5700] transition-colors" href="#">Sobre Rui</a>
+            <a class="text-[#3b2f6e] hover:text-[#7d5700] transition-colors" href="#">Metodología</a>
+            <a class="text-[#3b2f6e] hover:text-[#7d5700] transition-colors" href="#">Programa</a>
+            <a class="text-[#3b2f6e] hover:text-[#7d5700] transition-colors" href="#">Eventos</a>
+            <a class="text-[#3b2f6e] hover:text-[#7d5700] transition-colors" href="#">Recursos</a>
+            <a class="text-[#3b2f6e] hover:text-[#7d5700] transition-colors" href="#">Contacto</a>
+        </div>
+        <button
+            class="bg-primary-container text-on-primary px-6 py-2.5 rounded-full font-medium text-sm hover:opacity-80 transition-all duration-300">
+            Unirme al programa
+        </button>
+    </nav>
+    <main class="pt-18">
+        <!-- Hero Section -->
+        <section class="relative min-h-[921px] flex items-center px-8 md:px-16 overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center w-full max-w-7xl mx-auto">
+                <div class="md:col-span-7 z-10">
+                    <span class="inline-block text-secondary font-medium tracking-[0.2em] uppercase text-xs mb-6">El
+                        Oráculo Moderno</span>
+                    <h1 class="text-5xl md:text-7xl font-serif font-bold text-primary-container leading-[1.1] mb-8">
+                        La expansión de tu mente <br /> <span class="italic font-normal">comienza en el silencio.</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed">
+                        Trasciende los límites de la percepción convencional. Facilitamos el camino hacia una conciencia
+                        expandida a través de la integración de sabiduría ancestral y psicología profunda.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="bg-primary-container text-on-primary px-8 py-4 rounded-full font-semibold flex items-center gap-3 hover:scale-95 duration-200 shadow-xl shadow-primary/10">
+                            Quiero expandir mi mente
+                            <span class="material-symbols-outlined" data-icon="north_east">north_east</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="md:col-span-5 relative">
+                    <div class="aspect-[4/5] rounded-[2rem] overflow-hidden bg-surface-container-high relative group">
+                        <img alt="Abstract Transformation Image"
+                            class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-700"
+                            data-alt="abstract architectural geometry with light and shadow interplay on minimalist concrete surfaces creating a sense of transcendence and space"
+                            src="rui.webp" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+                        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl">
+                        </div>
+                    </div>
+                    <!-- Decorative element -->
+                    <div
+                        class="absolute -top-6 -left-6 border border-outline-variant/30 w-32 h-32 rounded-full flex items-center justify-center p-4">
+                        <div class="w-full h-full border border-secondary/40 rounded-full animate-spin-slow"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Mission Section -->
+        <section class="py-24 bg-surface-container-low px-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-secondary font-serif italic text-2xl mb-8">Mi misión</h2>
+                <p class="text-3xl md:text-4xl font-serif text-primary-container leading-snug">
+                    "Acompañar a las almas buscadoras a reclamar su <span class="italic">autoridad interna</span>,
+                    sanando los vínculos con lo invisible para manifestar una realidad plenamente consciente."
+                </p>
+                <div class="mt-12 w-24 h-[1px] bg-outline-variant/30 mx-auto"></div>
+            </div>
+        </section>
+        <!-- Methodology Preview -->
+        <section class="py-32 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-20 text-center md:text-left">
+                    <h2 class="text-4xl font-serif font-bold text-primary-container mb-4">Los 4 Pilares del Despertar
+                    </h2>
+                    <p class="text-on-surface-variant max-w-2xl">Un recorrido cartográfico por las dimensiones del ser.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Pillar 1 -->
+                    <div
+                        class="group p-8 bg-surface-container-lowest rounded-2xl hover:bg-primary-container transition-all duration-500 hover:-translate-y-2">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-6 group-hover:text-white"
+                            data-icon="child_care">child_care</span>
+                        <h3 class="text-xl font-serif font-bold text-primary-container mb-4 group-hover:text-white">Niño
+                            interior</h3>
+                        <p class="text-sm text-on-surface-variant group-hover:text-white/80 leading-relaxed">
+                            Sanando la raíz de nuestra percepción para liberar la creatividad pura y el asombro.
+                        </p>
+                    </div>
+                    <!-- Pillar 2 -->
+                    <div
+                        class="group p-8 bg-surface-container-low rounded-2xl hover:bg-primary-container transition-all duration-500 hover:-translate-y-2">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-6 group-hover:text-white"
+                            data-icon="auto_awesome">auto_awesome</span>
+                        <h3 class="text-xl font-serif font-bold text-primary-container mb-4 group-hover:text-white">
+                            Ángeles caídos</h3>
+                        <p class="text-sm text-on-surface-variant group-hover:text-white/80 leading-relaxed">
+                            Integrando nuestras sombras y los aspectos negados de nuestra propia divinidad.
+                        </p>
+                    </div>
+                    <!-- Pillar 3 -->
+                    <div
+                        class="group p-8 bg-surface-container-lowest rounded-2xl hover:bg-primary-container transition-all duration-500 hover:-translate-y-2">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-6 group-hover:text-white"
+                            data-icon="public">public</span>
+                        <h3 class="text-xl font-serif font-bold text-primary-container mb-4 group-hover:text-white">
+                            Ángeles terrenales</h3>
+                        <p class="text-sm text-on-surface-variant group-hover:text-white/80 leading-relaxed">
+                            Maestría en las relaciones humanas y la manifestación en el plano material.
+                        </p>
+                    </div>
+                    <!-- Pillar 4 -->
+                    <div
+                        class="group p-8 bg-surface-container-low rounded-2xl hover:bg-primary-container transition-all duration-500 hover:-translate-y-2">
+                        <span class="material-symbols-outlined text-4xl text-secondary mb-6 group-hover:text-white"
+                            data-icon="history_edu">history_edu</span>
+                        <h3 class="text-xl font-serif font-bold text-primary-container mb-4 group-hover:text-white">
+                            Ángeles ancestrales</h3>
+                        <p class="text-sm text-on-surface-variant group-hover:text-white/80 leading-relaxed">
+                            Honrando el linaje y liberando las memorias que ya no sirven a nuestra evolución.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Social Proof -->
+        <section class="py-16 bg-surface-container-high overflow-hidden">
+            <div class="max-w-7xl mx-auto px-8">
+                <p class="text-center text-xs uppercase tracking-widest text-on-surface-variant/60 mb-12">Presencia en
+                    Medios y Conferencias</p>
+                <div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-60 grayscale">
+                    <div
+                        class="h-8 w-32 bg-on-surface/20 rounded-full flex items-center justify-center font-bold italic font-serif">
+                        MINDSET+</div>
+                    <div
+                        class="h-8 w-32 bg-on-surface/20 rounded-full flex items-center justify-center font-bold tracking-tighter">
+                        GLOBAL SUMMIT</div>
+                    <div
+                        class="h-8 w-32 bg-on-surface/20 rounded-full flex items-center justify-center font-serif text-xl italic">
+                        Espacios</div>
+                    <div class="h-8 w-32 bg-on-surface/20 rounded-full flex items-center justify-center font-bold">
+                        INSIGHTS</div>
+                </div>
+            </div>
+        </section>
+        <!-- Content Preview (Bento-ish Grid) -->
+        <section class="py-32 px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-end mb-16">
+                    <div>
+                        <h2 class="text-4xl font-serif font-bold text-primary-container mb-4">Últimos contenidos</h2>
+                        <p class="text-on-surface-variant">Fragmentos de sabiduría para el día a día.</p>
+                    </div>
+                    <a class="text-secondary font-medium hover:underline underline-offset-8 transition-all" href="#">Ver
+                        todo el archivo</a>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Featured Article -->
+                    <div class="md:col-span-2 group relative h-96 rounded-3xl overflow-hidden bg-primary">
+                        <img alt="Blog background"
+                            class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+                            data-alt="misty forest at dawn with golden sunlight filtering through old trees creating a mystical and contemplative atmosphere"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqiSWBO51FHvE7Mtnd6RkMYyOkREV732EIdz98_Cip6qMFjFyFqcD8NMfSG_wpwFrUs-VcUTwtJrm4iDUUrvfzQQwdOcibIFMTJIvIds58lrgtLLQrCBUlVOAsgqJK4BKKcRIo8qMzs2teZywA6glMItHxkLNmMfpBdbebvt0F992z6EMQC9-rppAZRAOr0wDLZeHIya2I4YxDaInDsFprWT5FGlxFyDyLQOH3w1rJmsCy-lcXCOgM1VY1swQA-xVKNUK3ckRJF3zu" />
+                        <div
+                            class="absolute inset-0 bg-gradient-to-t from-primary via-primary/20 to-transparent p-12 flex flex-col justify-end">
+                            <span class="text-secondary-fixed text-xs font-bold uppercase tracking-widest mb-4">Ensayo
+                                Deep Dive</span>
+                            <h3 class="text-3xl font-serif font-bold text-white mb-4">El lenguaje de los sueños como
+                                brújula existencial</h3>
+                            <p class="text-white/80 max-w-md line-clamp-2">Exploramos cómo el subconsciente utiliza
+                                símbolos universales para comunicarnos la siguiente fase de nuestra evolución personal.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Small Card 1 -->
+                    <div
+                        class="bg-surface-container-high rounded-3xl p-8 flex flex-col justify-between hover:bg-surface-container-highest transition-colors group">
+                        <div>
+                            <span class="material-symbols-outlined text-secondary text-3xl mb-6"
+                                data-icon="mic">mic</span>
+                            <h3 class="text-xl font-serif font-bold text-primary-container mb-4">Podcast: El Silencio de
+                                la Mente</h3>
+                        </div>
+                        <div>
+                            <p class="text-on-surface-variant text-sm mb-6">Episodio 42: La paradoja de la voluntad y la
+                                entrega.</p>
+                            <button
+                                class="text-primary font-bold text-xs uppercase tracking-wider flex items-center gap-2 group-hover:gap-4 transition-all">
+                                Escuchar ahora <span class="material-symbols-outlined text-sm"
+                                    data-icon="play_circle">play_circle</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Testimonials -->
+        <section class="py-32 bg-primary text-white overflow-hidden relative">
+            <div class="absolute top-0 right-0 w-1/3 h-full bg-secondary/5 blur-[120px]"></div>
+            <div class="max-w-7xl mx-auto px-8 relative z-10">
+                <div class="flex flex-col md:flex-row gap-16 items-center">
+                    <div class="md:w-1/3">
+                        <h2 class="text-5xl font-serif font-bold mb-6">Voces de transformación</h2>
+                        <p class="text-white/60">Experiencias reales de quienes han cruzado el umbral hacia una nueva
+                            forma de ver y estar en el mundo.</p>
+                        <div class="mt-12 flex gap-4">
+                            <button
+                                class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined" data-icon="west">west</span>
+                            </button>
+                            <button
+                                class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined" data-icon="east">east</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:w-2/3">
+                        <div class="bg-white/5 backdrop-blur-xl p-12 rounded-[2.5rem] border border-white/10">
+                            <span class="material-symbols-outlined text-secondary text-5xl mb-8"
+                                data-icon="format_quote">format_quote</span>
+                            <p class="text-2xl font-serif italic mb-10 leading-relaxed">
+                                "Trabajar con Rui no fue solo una terapia o un curso; fue una reestructuración completa
+                                de cómo entendía mi propósito. Los 4 pilares me dieron un mapa donde antes solo había
+                                confusión."
+                            </p>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden">
+                                    <img alt="Elena" class="w-full h-full object-cover"
+                                        data-alt="portrait of a professional woman with a calm and confident expression in soft natural lighting"
+                                        src="avatar.png" />
+                                </div>
+                                <div>
+                                    <p class="font-bold">Elena Rivas</p>
+                                    <p class="text-xs text-white/40 uppercase tracking-widest">Fundadora de Gaia
+                                        Collective</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Final CTA -->
+        <section class="py-32 px-8">
+            <div
+                class="max-w-5xl mx-auto rounded-[3rem] bg-secondary-container p-12 md:p-24 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent"></div>
+                <div class="relative z-10">
+                    <h2 class="text-4xl md:text-6xl font-serif font-bold text-on-secondary-container mb-8">¿Estás listo
+                        para el <br /> siguiente plano?</h2>
+                    <p class="text-on-secondary-container/80 text-xl max-w-2xl mx-auto mb-12">
+                        Las inscripciones para la próxima cohorte del Programa de Expansión Mental están abiertas. Un
+                        viaje de 6 meses hacia tu verdadera esencia.
+                    </p>
+                    <button
+                        class="bg-primary-container text-on-primary px-10 py-5 rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-2xl">
+                        Comenzar mi viaje ahora
+                    </button>
+                    <p class="mt-8 text-on-secondary-container/60 text-sm font-medium">Plazas limitadas por ciclo para
+                        asegurar atención personalizada.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-[#ece8e0] text-[#3b2f6e] w-full rounded-t-none">
+        <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 max-w-7xl mx-auto font-sans leading-relaxed tracking-wide">
+            <div class="md:col-span-2">
+                <div class="text-3xl font-serif text-[#3b2f6e] mb-4">Rui Machalele</div>
+                <p class="max-w-sm text-[#3b2f6e]/80 mb-8">Facilitador de procesos de expansión de consciencia e
+                    integración humana. El puente entre lo ancestral y lo moderno.</p>
+                <div class="flex gap-4">
+                    <a class="w-10 h-10 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
+                        href="#"><span class="material-symbols-outlined text-sm" data-icon="share">share</span></a>
+                    <a class="w-10 h-10 rounded-full border border-primary/20 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
+                        href="#"><span class="material-symbols-outlined text-sm" data-icon="mail">mail</span></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-6">Navegación</h4>
+                <ul class="space-y-4">
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Metodología</a></li>
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Programas</a></li>
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Eventos Próximos</a>
+                    </li>
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Blog de Sabiduría</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-6">Legal</h4>
+                <ul class="space-y-4">
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Privacidad</a></li>
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Términos</a></li>
+                    <li><a class="text-[#3b2f6e]/80 hover:text-[#7d5700] transition-all" href="#">Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <div
+            class="max-w-7xl mx-auto px-12 py-8 border-t border-primary/10 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-sm text-[#3b2f6e]/60">© 2026 Rui Machalele.</p>
+            <p class="text-xs italic">Diseñado para la expansión.</p>
+        </div>
+    </footer>
+
+    ```
+</body>
+
+</html>

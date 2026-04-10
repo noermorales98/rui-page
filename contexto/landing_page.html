@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Rui Machalele – Programa de Expansión Mental</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Serif:wght@400;700&amp;family=Playfair+Display:wght@600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#b9efcf",
+            "on-tertiary": "#ffffff",
+            "surface-container-low": "#f8f3eb",
+            "on-primary-fixed-variant": "#493d7d",
+            "surface-variant": "#e7e2da",
+            "primary-fixed": "#e6deff",
+            "inverse-on-surface": "#f5f0e8",
+            "on-primary-fixed": "#1d0e4f",
+            "secondary-container": "#fdc664",
+            "surface-bright": "#fef9f1",
+            "on-error-container": "#93000a",
+            "error": "#ba1a1a",
+            "surface-tint": "#615596",
+            "primary-fixed-dim": "#cbbeff",
+            "on-tertiary-container": "#7bae92",
+            "tertiary": "#002a19",
+            "outline-variant": "#c9c4d1",
+            "primary": "#251857",
+            "inverse-surface": "#32302b",
+            "outline": "#797581",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#ffdeab",
+            "on-error": "#ffffff",
+            "surface-container-high": "#ece8e0",
+            "on-secondary-fixed": "#271900",
+            "surface-container-highest": "#e7e2da",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#1d1c17",
+            "tertiary-container": "#0c422c",
+            "on-primary-container": "#a699e0",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#755100",
+            "primary-container": "#3b2f6e",
+            "on-tertiary-fixed": "#002113",
+            "surface-container": "#f2ede5",
+            "surface-dim": "#ded9d2",
+            "on-tertiary-fixed-variant": "#1d5038",
+            "tertiary-fixed-dim": "#9dd2b4",
+            "secondary-fixed-dim": "#f4be5d",
+            "inverse-primary": "#cbbeff",
+            "on-surface": "#1d1c17",
+            "on-secondary": "#ffffff",
+            "background": "#fef9f1",
+            "surface": "#fef9f1",
+            "on-surface-variant": "#484550",
+            "secondary": "#7d5700",
+            "on-secondary-fixed-variant": "#5f4100"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Noto Serif"],
+            "body": ["Inter"],
+            "label": ["Inter"],
+            "playfair": ["Playfair Display"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .glass-nav {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .wisdom-header {
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+
+<body
+  class="bg-background text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+  <!-- TopNavBar -->
+  <nav class="fixed top-0 w-full z-50 bg-[#fef9f1]/70 backdrop-blur-md shadow-[0_20px_40px_rgba(59,47,110,0.08)]">
+    <div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+      <span class="font-playfair text-2xl font-bold text-[#251857]">Rui Machalele</span>
+      <div class="hidden md:flex items-center space-x-8 font-noto-serif text-sm tracking-wide uppercase">
+        <a class="text-[#251857] opacity-80 hover:text-[#7D5700] transition-colors duration-300"
+          href="#programa">Programa</a>
+        <a class="text-[#251857] opacity-80 hover:text-[#7D5700] transition-colors duration-300"
+          href="#metodologia">Metodología</a>
+        <a class="text-[#251857] opacity-80 hover:text-[#7D5700] transition-colors duration-300"
+          href="#testimonios">Testimonios</a>
+        <a class="text-[#251857] opacity-80 hover:text-[#7D5700] transition-colors duration-300" href="#faq">FAQ</a>
+      </div>
+      <a class="bg-primary text-on-primary px-6 py-3 rounded-xl font-medium text-sm hover:bg-primary-container transition-all duration-300 scale-95 hover:scale-100"
+        href="#cta">
+        Quiero expandir mi mente
+      </a>
+    </div>
+  </nav>
+  <!-- Hero Section -->
+  <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <div class="absolute inset-0 z-0 bg-gradient-to-br from-surface via-surface to-surface-container-low"></div>
+    <!-- Decorative Energy Field -->
+    <div
+      class="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-tertiary-fixed-dim opacity-5 rounded-full blur-[120px]">
+    </div>
+    <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-16 items-center relative z-10">
+      <div class="space-y-8">
+        <h1 class="font-playfair text-5xl md:text-7xl leading-[1.1] text-primary font-bold">
+          Despierta la <br /><span class="text-secondary italic">Consciencia</span> que habita en ti.
+        </h1>
+        <p class="text-body-lg text-on-surface-variant max-w-lg leading-relaxed text-lg">
+          Un viaje de 5 semanas para disolver los bloqueos invisibles y conectar con tu verdadera esencia a través de la
+          expansión mental y emocional.
+        </p>
+        <div class="pt-4 flex flex-col sm:flex-row gap-4">
+          <a class="bg-primary text-on-primary px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 group hover:shadow-[0_10px_30px_-10px_rgba(37,24,87,0.4)] transition-all"
+            href="#cta">
+            Quiero expandir mi mente
+            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative transform rotate-2">
+          <img alt="Abstract concept of light" class="w-full h-full object-cover"
+            data-alt="Abstract composition of soft golden light refractions through crystal glass with ethereal glowing atmosphere and warm film grain"
+            src="rui.jpg" />
+        </div>
+        <div
+          class="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse">
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- El Problema -->
+  <section class="py-32 bg-surface-container-low">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="text-center max-w-3xl mx-auto mb-20">
+        <span class="label-md text-secondary tracking-widest uppercase mb-4 block">Identificación</span>
+        <h2 class="wisdom-header text-4xl md:text-5xl text-primary font-semibold mb-6">¿Te identificas con esto?</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="p-10 bg-surface-container-lowest rounded-xl space-y-6">
+          <span class="material-symbols-outlined text-4xl text-on-error-container"
+            style="font-variation-settings: 'FILL' 1;">lock</span>
+          <h3 class="text-xl font-semibold text-primary">Sensación de Estancamiento</h3>
+          <p class="text-on-surface-variant leading-relaxed">Sientes que por más que te esfuerzas, siempre chocas con el
+            mismo muro invisible que te impide avanzar en tu propósito.</p>
+        </div>
+        <div class="p-10 bg-surface-container-lowest rounded-xl space-y-6">
+          <span class="material-symbols-outlined text-4xl text-on-error-container"
+            style="font-variation-settings: 'FILL' 1;">noise_control_off</span>
+          <h3 class="text-xl font-semibold text-primary">Ruido Mental Incesante</h3>
+          <p class="text-on-surface-variant leading-relaxed">Tu mente no descansa. Voces de duda, crítica y miedo —tus
+            Ángeles Caídos— sabotean cada intento de expansión.</p>
+        </div>
+        <div class="p-10 bg-surface-container-lowest rounded-xl space-y-6">
+          <span class="material-symbols-outlined text-4xl text-on-error-container"
+            style="font-variation-settings: 'FILL' 1;">distance</span>
+          <h3 class="text-xl font-semibold text-primary">Desconexión Esencial</h3>
+          <p class="text-on-surface-variant leading-relaxed">Vives en piloto automático, cumpliendo expectativas ajenas
+            pero sintiéndote profundamente vacío por dentro.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Sobre Rui -->
+  <section class="py-32 overflow-hidden" id="sobre-rui">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="flex flex-col md:flex-row items-center gap-16">
+        <div class="w-full md:w-1/2 relative">
+          <div class="bg-primary-container w-[80%] aspect-square rounded-full absolute -top-10 -left-10 opacity-10">
+          </div>
+          <img alt="Rui Machalele" class="rounded-xl w-full relative z-10 shadow-xl"
+            data-alt="Professional portrait of a mature man with a serene expression, warm cinematic lighting, and soft natural background"
+            src="ruisquare.webp" />
+        </div>
+        <div class="w-full md:w-1/2 space-y-8">
+          <span class="label-md text-secondary tracking-widest uppercase">El Guía</span>
+          <h2 class="wisdom-header text-4xl text-primary font-bold">Rui Machalele</h2>
+          <div class="space-y-6 text-lg leading-relaxed text-on-surface-variant">
+            <p>No siempre fui el guía que soy hoy. Mi propio camino hacia la expansión mental comenzó en la oscuridad de
+              una crisis personal que me obligó a mirar hacia adentro.</p>
+            <p>Entendí que la espiritualidad no es religión, sino la tecnología más avanzada del ser humano para
+              transformar su realidad. Hoy, acompaño a buscadores a encontrar su propio mapa de navegación interna.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- El Método -->
+  <section class="py-32 bg-surface-container-low" id="metodologia">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="text-center mb-20">
+        <h2 class="wisdom-header text-4xl md:text-5xl text-primary font-semibold">Los 4 Pilares de la Expansión</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Pilar 1 -->
+        <div class="bg-[#b9efcf] p-8 rounded-xl space-y-6 hover:shadow-lg transition-all border border-black/5">
+          <span class="material-symbols-outlined text-tertiary-container text-4xl"
+            data-icon="child_care">child_care</span>
+          <h3 class="text-xl font-bold text-tertiary">Niño Interior</h3>
+          <p class="text-tertiary-container/80 text-sm leading-relaxed">El permiso sagrado para volver a jugar, sentir y
+            crear sin el juicio del adulto condicionado.</p>
+        </div>
+        <!-- Pilar 2 -->
+        <div class="bg-[#ffdad6] p-8 rounded-xl space-y-6 hover:shadow-lg transition-all border border-black/5">
+          <span class="material-symbols-outlined text-on-error-container text-4xl"
+            data-icon="troubleshoot">troubleshoot</span>
+          <h3 class="text-xl font-bold text-on-error-container">Ángeles Caídos</h3>
+          <p class="text-on-error-container/80 text-sm leading-relaxed">Identificar las sombras y los bloqueos que
+            limitan tu crecimiento y transformarlos en poder.</p>
+        </div>
+        <!-- Pilar 3 -->
+        <div class="bg-primary-container p-8 rounded-xl space-y-6 hover:shadow-lg transition-all border border-black/5">
+          <span class="material-symbols-outlined text-on-primary-container text-4xl" data-icon="groups">groups</span>
+          <h3 class="text-xl font-bold text-on-primary-container">Ángeles Terrenales</h3>
+          <p class="text-on-primary-container/80 text-sm leading-relaxed">Las conexiones humanas y el entorno que te
+            sostiene en tu realidad física diaria.</p>
+        </div>
+        <!-- Pilar 4 -->
+        <div class="bg-[#a699e0] p-8 rounded-xl space-y-6 hover:shadow-lg transition-all border border-black/5">
+          <span class="material-symbols-outlined text-primary text-4xl" data-icon="auto_awesome">auto_awesome</span>
+          <h3 class="text-xl font-bold text-primary">Ángeles Ancestrales</h3>
+          <p class="text-primary/80 text-sm leading-relaxed">La sabiduría heredada de tu linaje que fluye por tu sangre
+            esperando ser reconocida.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Cronograma -->
+  <section class="py-32" id="programa">
+    <div class="max-w-7xl mx-auto px-8">
+      <h2 class="wisdom-header text-4xl text-center text-primary font-bold mb-20 italic">Tu Viaje de 5 Semanas</h2>
+      <div class="space-y-4 max-w-4xl mx-auto">
+        <!-- Semana 1 -->
+        <div class="group bg-surface-container-low p-8 rounded-xl hover:bg-surface-container-high transition-all">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-secondary font-bold text-sm tracking-widest uppercase">Semana 1</span>
+              <h3 class="text-2xl font-semibold text-primary mt-1">El Encuentro</h3>
+            </div>
+            <div class="bg-white/50 px-4 py-2 rounded-lg text-sm text-primary font-medium flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg" data-icon="menu_book">menu_book</span>
+              Entregable: Cuaderno de Intención
+            </div>
+          </div>
+        </div>
+        <!-- Semana 2 -->
+        <div class="group bg-surface-container-low p-8 rounded-xl hover:bg-surface-container-high transition-all">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-secondary font-bold text-sm tracking-widest uppercase">Semana 2</span>
+              <h3 class="text-2xl font-semibold text-primary mt-1">Niño Interior: El Permiso</h3>
+            </div>
+            <div class="bg-white/50 px-4 py-2 rounded-lg text-sm text-primary font-medium flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg" data-icon="edit_note">edit_note</span>
+              Entregable: Carta del adulto al niño
+            </div>
+          </div>
+        </div>
+        <!-- Semana 3 -->
+        <div class="group bg-surface-container-low p-8 rounded-xl hover:bg-surface-container-high transition-all">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-secondary font-bold text-sm tracking-widest uppercase">Semana 3</span>
+              <h3 class="text-2xl font-semibold text-primary mt-1">Ángeles Caídos: El Despertar Incomodo</h3>
+            </div>
+            <div class="bg-white/50 px-4 py-2 rounded-lg text-sm text-primary font-medium flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg" data-icon="list_alt">list_alt</span>
+              Entregable: Lista de influencias
+            </div>
+          </div>
+        </div>
+        <!-- Semana 4 -->
+        <div class="group bg-surface-container-low p-8 rounded-xl hover:bg-surface-container-high transition-all">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-secondary font-bold text-sm tracking-widest uppercase">Semana 4</span>
+              <h3 class="text-2xl font-semibold text-primary mt-1">Ángeles Terrenales: Orientación</h3>
+            </div>
+            <div class="bg-white/50 px-4 py-2 rounded-lg text-sm text-primary font-medium flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg" data-icon="list_alt">list_alt</span>
+              Entregable: Lista de influencias
+            </div>
+          </div>
+        </div>
+        <!-- Semana 5 -->
+        <div class="group bg-surface-container-low p-8 rounded-xl hover:bg-surface-container-high transition-all">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span class="text-secondary font-bold text-sm tracking-widest uppercase">Semana 5</span>
+              <h3 class="text-2xl font-semibold text-primary mt-1">Ángeles Ancestrales: El Legado</h3>
+            </div>
+            <div class="bg-white/50 px-4 py-2 rounded-lg text-sm text-primary font-medium flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg" data-icon="list_alt">list_alt</span>
+              Entregable: Lista de influencias
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Para quién es -->
+  <section class="py-32 bg-primary text-on-primary">
+    <div class="max-w-7xl mx-auto px-8">
+      <div class="grid md:grid-cols-2 gap-16">
+        <div class="space-y-8">
+          <h2 class="wisdom-header text-4xl">Este programa ES para ti si...</h2>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+              <span class="opacity-90">Buscas una transformación real que vaya más allá de la teoría.</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+              <span class="opacity-90">Sientes el llamado de algo más grande pero no sabes cómo escucharlo.</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-secondary" data-icon="check_circle">check_circle</span>
+              <span class="opacity-90">Estás dispuesto a mirar tus sombras para encontrar tu luz.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="space-y-8">
+          <h2 class="wisdom-header text-4xl">NO es para ti si...</h2>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-error" data-icon="cancel">cancel</span>
+              <span class="opacity-70">Buscas una solución mágica sin compromiso personal.</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-error" data-icon="cancel">cancel</span>
+              <span class="opacity-70">Confundes espiritualidad con dogmatismo religioso (esto es expansión
+                universal).</span>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="material-symbols-outlined text-error" data-icon="cancel">cancel</span>
+              <span class="opacity-70">Prefieres quedarte en tu zona de confort conocida.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Testimonios -->
+  <section class="py-32" id="testimonios">
+    <div class="max-w-7xl mx-auto px-8">
+      <h2 class="wisdom-header text-4xl text-center text-primary font-bold mb-20 italic">Historias de Expansión</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Testimonio 1 -->
+        <div class="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
+          <p class="italic text-on-surface-variant leading-relaxed">"Había hecho muchos cursos de 'mindfulness', pero
+            con Rui fue la primera vez que realmente sentí que las piezas del rompecabezas encajaban. Mi negocio y mi
+            vida personal cambiaron por completo."</p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full overflow-hidden">
+              <img alt="User 1"
+                data-alt="Portrait of a smiling professional woman with bright eyes and natural lighting"
+                src="avatar.png" />
+            </div>
+            <div>
+              <p class="font-bold text-primary">Elena G.</p>
+              <p class="text-xs text-on-surface-variant">Arquitecta</p>
+            </div>
+          </div>
+        </div>
+        <!-- Testimonio 2 -->
+        <div class="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
+          <p class="italic text-on-surface-variant leading-relaxed">"El módulo de los Ángeles Caídos fue confrontador
+            pero necesario. Entender mis bloqueos me dio la libertad que busqué por años. Gracias, Rui."</p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full overflow-hidden">
+              <img alt="User 2"
+                data-alt="Portrait of a middle-aged man with kind eyes and serene demeanor, outdoors in soft light"
+                src="avatar.png" />
+            </div>
+            <div>
+              <p class="font-bold text-primary">Marc V.</p>
+              <p class="text-xs text-on-surface-variant">Terapeuta</p>
+            </div>
+          </div>
+        </div>
+        <!-- Testimonio 3 -->
+        <div class="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
+          <p class="italic text-on-surface-variant leading-relaxed">"Lo que más valoro es que no es nada religioso. Es
+            un proceso mental y emocional muy sólido que te aterriza mientras te expande."</p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full overflow-hidden">
+              <img alt="User 3"
+                data-alt="Portrait of an empowered woman with a confident smile, clean office environment in background"
+                src="avatar.png" />
+            </div>
+            <div>
+              <p class="font-bold text-primary">Sandra L.</p>
+              <p class="text-xs text-on-surface-variant">Emprendedora</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Final CTA -->
+  <section class="py-32 bg-surface-container-low text-center relative overflow-hidden" id="cta">
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-secondary to-transparent"></div>
+    <div class="max-w-3xl mx-auto px-8 relative z-10">
+      <h2 class="wisdom-header text-5xl text-primary font-bold mb-8">El momento es <span
+          class="italic text-secondary">ahora</span></h2>
+      <p class="text-xl text-on-surface-variant mb-12">Inscríbete hoy y comienza tu proceso de expansión mental con Rui
+        Machalele. Cupos limitados para garantizar acompañamiento cercano.</p>
+      <div class="bg-white p-12 rounded-2xl shadow-xl space-y-8">
+        <div class="space-y-2">
+          <p class="text-secondary font-bold tracking-widest uppercase">Inversión en tu Ser</p>
+          <p class="text-6xl font-bold text-primary">$497 <span
+              class="text-lg text-on-surface-variant font-normal">USD</span></p>
+        </div>
+        <button
+          class="w-full bg-primary text-on-primary py-5 rounded-xl text-xl font-bold hover:bg-primary-container transition-all shadow-lg">
+          Quiero expandir mi mente
+        </button>
+        <p class="text-sm text-on-surface-variant">Pago 100% seguro. Acceso inmediato al Módulo 0.</p>
+      </div>
+    </div>
+  </section>
+  <!-- FAQ -->
+  <section class="py-32" id="faq">
+    <div class="max-w-4xl mx-auto px-8">
+      <h2 class="wisdom-header text-4xl text-center text-primary font-bold mb-16">Preguntas Frecuentes</h2>
+      <div class="space-y-4">
+        <details class="group bg-surface-container-low rounded-xl p-6 [&amp;_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer">
+            <h4 class="text-lg font-semibold text-primary">¿Es esto una formación religiosa?</h4>
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180"
+              data-icon="expand_more">expand_more</span>
+          </summary>
+          <p class="mt-4 text-on-surface-variant leading-relaxed">No. Es un programa de expansión mental y
+            autoconocimiento. Utilizamos conceptos universales y arquetipos, pero no estamos vinculados a ninguna
+            religión o dogma específico.</p>
+        </details>
+        <details class="group bg-surface-container-low rounded-xl p-6 [&amp;_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer">
+            <h4 class="text-lg font-semibold text-primary">¿Cuánto tiempo debo dedicar al día?</h4>
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180"
+              data-icon="expand_more">expand_more</span>
+          </summary>
+          <p class="mt-4 text-on-surface-variant leading-relaxed">Recomendamos entre 20 a 30 minutos diarios para las
+            prácticas y una hora a la semana para el contenido teórico y los entregables.</p>
+        </details>
+        <details class="group bg-surface-container-low rounded-xl p-6 [&amp;_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer">
+            <h4 class="text-lg font-semibold text-primary">¿Qué pasa si no puedo asistir en vivo?</h4>
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180"
+              data-icon="expand_more">expand_more</span>
+          </summary>
+          <p class="mt-4 text-on-surface-variant leading-relaxed">Todas las sesiones quedan grabadas en tu plataforma de
+            alumno para que las veas a tu propio ritmo cuantas veces necesites.</p>
+        </details>
+        <details class="group bg-surface-container-low rounded-xl p-6 [&amp;_summary::-webkit-details-marker]:hidden">
+          <summary class="flex items-center justify-between cursor-pointer">
+            <h4 class="text-lg font-semibold text-primary">¿Tengo acceso de por vida?</h4>
+            <span class="material-symbols-outlined transition-transform group-open:rotate-180"
+              data-icon="expand_more">expand_more</span>
+          </summary>
+          <p class="mt-4 text-on-surface-variant leading-relaxed">Sí, el acceso al material grabado y a las
+            actualizaciones futuras del programa es vitalicio.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer class="bg-surface-container-low py-12">
+    <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+      <div>
+        <span class="font-playfair text-xl font-semibold text-[#251857]">Rui Machalele</span>
+        <p class="mt-4 font-inter text-xs leading-relaxed opacity-70">Acompañando tu despertar a través de la sabiduría
+          ancestral y la conciencia moderna.</p>
+      </div>
+      <div class="flex flex-col space-y-2">
+        <a class="font-inter text-xs leading-relaxed opacity-70 hover:text-[#3B2F6E] transition-all"
+          href="#">Privacidad</a>
+        <a class="font-inter text-xs leading-relaxed opacity-70 hover:text-[#3B2F6E] transition-all"
+          href="#">Términos</a>
+        <a class="font-inter text-xs leading-relaxed opacity-70 hover:text-[#3B2F6E] transition-all"
+          href="#">Contacto</a>
+      </div>
+      <div class="font-inter text-xs leading-relaxed opacity-70">
+        © 2026 Rui Machalele – Programa de Expansión Mental. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+  <!-- Mobile Sticky CTA -->
+  <div class="md:hidden fixed bottom-6 left-6 right-6 z-40">
+    <a class="w-full bg-secondary text-on-secondary font-bold py-4 rounded-full text-center block shadow-2xl"
+      href="#cta">
+      Inscribirme ahora
+    </a>
+  </div>
+</body>
+
+</html>
