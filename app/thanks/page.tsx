@@ -9,8 +9,8 @@ export default function ThanksPage() {
         <div className="flex justify-between items-center w-full px-8 py-6 max-w-7xl mx-auto">
           <Link href="/" className="text-2xl font-bold font-serif italic text-[#251857]">Ángeles Terrenales</Link>
           <div className="hidden md:flex gap-8 items-center">
-            <Link className="font-serif text-lg font-semibold tracking-tight text-[#251857]/60 hover:text-[#251857] transition-colors duration-300 ease-in-out" href="#">Curriculum</Link>
-            <Link className="font-serif text-lg font-semibold tracking-tight text-[#251857]/60 hover:text-[#251857] transition-colors duration-300 ease-in-out" href="#">Methodology</Link>
+            <Link className="font-serif text-lg font-semibold tracking-tight text-[#251857]/60 hover:text-[#251857] transition-colors duration-300 ease-in-out" href="/sales_page#curriculum">Curriculum</Link>
+            <Link className="font-serif text-lg font-semibold tracking-tight text-[#251857]/60 hover:text-[#251857] transition-colors duration-300 ease-in-out" href="/sales_page#metodologia">Methodology</Link>
             <Link href="/sales_page" className="bg-primary text-on-primary px-8 py-2 rounded-xl font-medium active:scale-95 transition-all duration-200">Enroll</Link>
           </div>
         </div>

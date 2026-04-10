@@ -45,7 +45,7 @@ export default function LandingPage() {
 
             <div className="relative">
               <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative transform rotate-2">
-                <img alt="Abstract concept of light" className="w-full h-full object-cover" data-alt="Abstract composition of soft golden light refractions through crystal glass with ethereal glowing atmosphere and warm film grain" src="rui.jpg" />
+                <img alt="Abstract concept of light" className="w-full h-full object-cover" data-alt="Abstract composition of soft golden light refractions through crystal glass with ethereal glowing atmosphere and warm film grain" src="rui2.webp" />
               </div>
               <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
             </div>

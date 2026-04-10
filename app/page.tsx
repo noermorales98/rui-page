@@ -123,7 +123,7 @@ export default function Home() {
                 <h2 className="text-4xl font-serif font-bold text-primary-container mb-4">Últimos contenidos</h2>
                 <p className="text-on-surface-variant">Fragmentos de sabiduría para el día a día.</p>
               </div>
-              <a className="text-secondary font-medium hover:underline underline-offset-8 transition-all" href="#">Ver todo el archivo</a>
+              {/* <a className="text-secondary font-medium hover:underline underline-offset-8 transition-all" href="#">Ver todo el archivo</a> */}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Featured Article */}
