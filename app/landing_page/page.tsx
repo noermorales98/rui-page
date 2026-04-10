@@ -7,7 +7,7 @@ export default function LandingPage() {
       {/* TopNavBar */}
       <nav className="fixed top-0 w-full z-50 bg-[#fef9f1]/70 backdrop-blur-md shadow-[0_20px_40px_rgba(59,47,110,0.08)]">
         <div className="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
-          <Link href="/" className="font-playfair text-2xl font-bold text-[#251857]">Rui Machalele</Link>
+          <Link href="/" className="font-playfair text-2xl font-bold text-[#251857]">RM</Link>
           <div className="hidden md:flex items-center space-x-8 font-noto-serif text-sm tracking-wide uppercase">
             <a className="text-[#251857] opacity-80 hover:text-[#7D5700] transition-colors duration-300" href="#programa">Programa</a>
             <a className="text-[#251857] opacity-80 hover:text-[#7D5700] transition-colors duration-300" href="#metodologia">Metodología</a>
