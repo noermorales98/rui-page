@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     images: ['/redes.jpg'],
   },
+  icons: {
+    icon: '/black.webp',
+  },
 };
 
 export default function RootLayout({

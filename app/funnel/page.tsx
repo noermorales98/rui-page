@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { handleFunnelSubmission } from "./../actions";
 
 export default function Funnel() {
   return (
@@ -67,14 +68,14 @@ export default function Funnel() {
               <h3 className="text-2xl font-headline font-semibold text-primary mb-2 text-center">Acceso Inmediato</h3>
               <p className="text-sm text-on-surface-variant text-center mb-8">Únete a más de 5,000 buscadores en su camino de expansión.</p>
 
-              <form action="/thanks" className="space-y-6">
+              <form action={handleFunnelSubmission} className="space-y-6">
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-widest font-semibold font-label text-outline ml-1" htmlFor="name">Tu Nombre</label>
-                  <input className="w-full bg-transparent border-0 border-b border-outline-variant/40 focus:ring-0 focus:border-secondary text-primary py-3 px-1 transition-all duration-300 placeholder:text-outline/40 outline-none" id="name" name="name" placeholder="Escribe tu nombre..." type="text" />
+                  <input required className="w-full bg-transparent border-0 border-b border-outline-variant/40 focus:ring-0 focus:border-secondary text-primary py-3 px-1 transition-all duration-300 placeholder:text-outline/40 outline-none" id="name" name="name" placeholder="Escribe tu nombre..." type="text" />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[10px] uppercase tracking-widest font-semibold font-label text-outline ml-1" htmlFor="email">Tu Email Principal</label>
-                  <input className="w-full bg-transparent border-0 border-b border-outline-variant/40 focus:ring-0 focus:border-secondary text-primary py-3 px-1 transition-all duration-300 placeholder:text-outline/40 outline-none" id="email" name="email" placeholder="hola@tuuniverso.com" type="email" />
+                  <input required className="w-full bg-transparent border-0 border-b border-outline-variant/40 focus:ring-0 focus:border-secondary text-primary py-3 px-1 transition-all duration-300 placeholder:text-outline/40 outline-none" id="email" name="email" placeholder="hola@tuuniverso.com" type="email" />
                 </div>
                 <button className="w-full py-5 bg-secondary-container hover:bg-[#FDC664] text-on-secondary-container font-semibold rounded-xl text-lg transition-all duration-300 active:scale-95 shadow-sm hover:shadow-md flex items-center justify-center gap-3 mt-4" type="submit">
                   Obtener mi Mapa de Expansión
@@ -104,6 +105,34 @@ export default function Funnel() {
             <span className="font-headline italic text-xl">Aura Daily</span>
             <span className="font-headline italic text-xl">The Soul Collective</span>
           </div>
+        </div>
+      </section>
+
+      {/* WhatsApp Community Section */}
+      <section className="py-24 bg-[#E8DEF8]/30 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-secondary-container/20 rounded-full blur-[80px] -mr-32 -mt-32"></div>
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#25D366]/10 text-[#25D366] mb-8">
+            <span className="material-symbols-outlined text-4xl">chat</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-headline font-bold text-primary mb-6">
+            Únete a nuestra comunidad en WhatsApp
+          </h2>
+          <p className="text-lg text-on-surface-variant mb-10 max-w-2xl mx-auto leading-relaxed font-body">
+            Conecta con otros buscadores, recibe recordatorios diarios y contenido exclusivo que no compartimos en ningún otro lugar. La expansión es más rápida cuando caminamos juntos.
+          </p>
+          <a 
+            href="https://chat.whatsapp.com/IH3BP8xYCTx5tgEcikHasz?mode=gi_t" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold rounded-2xl text-lg transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl group"
+          >
+            <span>Unirme al Grupo de WhatsApp</span>
+            <span className="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+          </a>
+          <p className="mt-6 text-sm text-outline font-label uppercase tracking-widest">
+            Comunidad Privada & Segura
+          </p>
         </div>
       </section>
 

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import AutoDownload from "./AutoDownload";
 
 export default function ThanksPage() {
   return (
     <>
+      <AutoDownload />
       {/* TopNavBar */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#fef9f1]/70 backdrop-blur-xl transition-colors duration-300 ease-in-out">
         <div className="flex justify-between items-center w-full px-8 py-6 max-w-7xl mx-auto">
