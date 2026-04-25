@@ -1,85 +1,29 @@
 import Link from "next/link";
-import { handleWebinarSubmission } from "../actions";
+import Script from "next/script";
 
 function WebinarRegistrationForm() {
   return (
-    <div className="border border-[#dcd0c4] bg-[#faf6f1]/90 p-7 shadow-[0_20px_50px_rgba(42,35,28,0.08)] backdrop-blur-sm sm:p-9">
-      <div className="mb-7 space-y-3">
-        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-[#8a7560]">
-          Registro gratuito
-        </p>
-        <h2 className="font-serif text-2xl font-semibold leading-tight text-[#2a231c]">
-          Reserva tu lugar en el webinar
-        </h2>
-        <p className="text-sm leading-relaxed text-[#5c4f42]">
-          Te enviaremos el acceso y lo que necesites para prepararte sin prisa,
-          sin ruido.
-        </p>
+    <div className="w-full backdrop-blur-sm">
+      <div className="w-[480px]">
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/form/seFdzOnghjlC3grwksN7"
+          style={{ width: "100%", height: "100%", border: "none", borderRadius: "0px" }}
+          id="inline-seFdzOnghjlC3grwksN7"
+          data-layout="{'id':'INLINE'}"
+          data-trigger-type="alwaysShow"
+          data-trigger-value=""
+          data-activation-type="alwaysActivated"
+          data-activation-value=""
+          data-deactivation-type="neverDeactivate"
+          data-deactivation-value=""
+          data-form-name="Webinar Rui"
+          data-height="531"
+          data-layout-iframe-id="inline-seFdzOnghjlC3grwksN7"
+          data-form-id="seFdzOnghjlC3grwksN7"
+          title="Webinar Rui"
+        />
       </div>
-
-      <form action={handleWebinarSubmission} className="space-y-6">
-        <div>
-          <label
-            htmlFor="webinar-name"
-            className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
-          >
-            Nombre
-          </label>
-          <input
-            id="webinar-name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            required
-            placeholder="Cómo te gusta que te llamen"
-            className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="webinar-email"
-            className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
-          >
-            Email
-          </label>
-          <input
-            id="webinar-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="tu@email.com"
-            className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="webinar-phone"
-            className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
-          >
-            Teléfono
-          </label>
-          <input
-            id="webinar-phone"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            required
-            placeholder="123 456 7890"
-            className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-[#9a7b45] py-4 text-center text-[13px] font-semibold uppercase tracking-[0.2em] text-[#faf6f1] transition hover:bg-[#8a6b3a] active:scale-[0.99]"
-        >
-          Reserva tu lugar gratis
-        </button>
-        <p className="text-center text-xs leading-relaxed text-[#8a7560]">
-          Al registrarte aceptas recibir comunicación sobre este evento. Puedes
-          darte de baja cuando quieras.
-        </p>
-      </form>
+      <Script src="https://link.msgsndr.com/js/form_embed.js" />
     </div>
   );
 }
