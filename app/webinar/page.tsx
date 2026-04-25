@@ -1,43 +1,86 @@
 import Link from "next/link";
 import { handleWebinarSubmission } from "../actions";
 
-function SilhouetteArt() {
+function WebinarRegistrationForm() {
   return (
-    <svg
-      viewBox="0 0 420 380"
-      className="w-full h-auto max-w-[min(100%,420px)] mx-auto drop-shadow-[0_24px_48px_rgba(42,35,28,0.12)]"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id="sil-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#d4b896" stopOpacity="0.9" />
-          <stop offset="55%" stopColor="#9a7b45" stopOpacity="0.75" />
-          <stop offset="100%" stopColor="#5c4f42" stopOpacity="0.85" />
-        </linearGradient>
-        <linearGradient id="sil-mist" x1="50%" y1="0%" x2="50%" y2="100%">
-          <stop offset="0%" stopColor="#ebe2d6" stopOpacity="0" />
-          <stop offset="100%" stopColor="#ebe2d6" stopOpacity="0.65" />
-        </linearGradient>
-      </defs>
-      <ellipse cx="210" cy="340" rx="175" ry="28" fill="url(#sil-mist)" />
-      <g fill="url(#sil-gold)" opacity="0.92">
-        <path d="M28 310c0-42 15-82 24-108 9-26 21-39 36-39s27 13 36 39c9 26 24 66 24 108H28z" />
-        <circle cx="88" cy="134" r="31" />
-        <path d="M112 310c0-48 18-92 28-120 10-28 22-42 38-42s28 14 38 42c10 28 28 72 28 120H112z" />
-        <circle cx="178" cy="118" r="36" />
-        <path d="M202 310c0-52 20-98 32-128 12-30 26-46 44-46s32 16 44 46c12 30 32 76 32 128H202z" />
-        <circle cx="278" cy="108" r="40" />
-        <path d="M304 310c0-44 16-86 26-114 10-28 24-44 40-44s30 16 40 44c10 28 26 70 26 114H304z" />
-        <circle cx="370" cy="124" r="34" />
-      </g>
-      <path
-        d="M210 48c-18 0-32 14-32 32s14 32 32 32 32-14 32-32-14-32-32-32zm0 8c13 0 24 11 24 24s-11 24-24 24-24-11-24-24 11-24 24-24z"
-        fill="none"
-        stroke="#c4a574"
-        strokeWidth="1.2"
-        opacity="0.45"
-      />
-    </svg>
+    <div className="border border-[#dcd0c4] bg-[#faf6f1]/90 p-7 shadow-[0_20px_50px_rgba(42,35,28,0.08)] backdrop-blur-sm sm:p-9">
+      <div className="mb-7 space-y-3">
+        <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-[#8a7560]">
+          Registro gratuito
+        </p>
+        <h2 className="font-serif text-2xl font-semibold leading-tight text-[#2a231c]">
+          Reserva tu lugar en el webinar
+        </h2>
+        <p className="text-sm leading-relaxed text-[#5c4f42]">
+          Te enviaremos el acceso y lo que necesites para prepararte sin prisa,
+          sin ruido.
+        </p>
+      </div>
+
+      <form action={handleWebinarSubmission} className="space-y-6">
+        <div>
+          <label
+            htmlFor="webinar-name"
+            className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
+          >
+            Nombre
+          </label>
+          <input
+            id="webinar-name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+            placeholder="Cómo te gusta que te llamen"
+            className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="webinar-email"
+            className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
+          >
+            Email
+          </label>
+          <input
+            id="webinar-email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            placeholder="tu@email.com"
+            className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="webinar-phone"
+            className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
+          >
+            Teléfono
+          </label>
+          <input
+            id="webinar-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            required
+            placeholder="123 456 7890"
+            className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-[#9a7b45] py-4 text-center text-[13px] font-semibold uppercase tracking-[0.2em] text-[#faf6f1] transition hover:bg-[#8a6b3a] active:scale-[0.99]"
+        >
+          Reserva tu lugar gratis
+        </button>
+        <p className="text-center text-xs leading-relaxed text-[#8a7560]">
+          Al registrarte aceptas recibir comunicación sobre este evento. Puedes
+          darte de baja cuando quieras.
+        </p>
+      </form>
+    </div>
   );
 }
 
@@ -45,7 +88,7 @@ export default function WebinarLandingPage() {
   return (
     <>
       <header className="fixed top-0 inset-x-0 z-50 border-b border-[#dcd0c4]/60 bg-[#f4ede4]/85 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8 hidden">
           <Link
             href="/"
             className="font-serif text-lg tracking-tight text-[#2a231c] sm:text-xl"
@@ -61,7 +104,7 @@ export default function WebinarLandingPage() {
         </div>
       </header>
 
-      <main className="bg-[#f4ede4] text-[#2a231c] pt-16 pb-24 sm:pb-0">
+      <main className="bg-[#f4ede4] text-[#2a231c] pb-24 sm:pb-0">
         <section className="relative overflow-hidden">
           <div
             className="pointer-events-none absolute -right-24 top-24 h-80 w-80 rounded-full bg-[#dcc9a8]/35 blur-3xl"
@@ -72,7 +115,7 @@ export default function WebinarLandingPage() {
             aria-hidden
           />
 
-          <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2 lg:items-center lg:py-28">
+          <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(380px,440px)] lg:items-center lg:py-24">
             <div className="space-y-8 lg:pr-4">
               <p className="text-[11px] font-medium uppercase tracking-[0.35em] text-[#8a7560]">
                 Webinar en vivo · Método de los 4 Ángeles
@@ -88,7 +131,7 @@ export default function WebinarLandingPage() {
               <div className="flex flex-wrap items-center gap-6 pt-2">
                 <a
                   href="#registro"
-                  className="inline-flex items-center justify-center bg-[#2a231c] px-8 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.18em] text-[#f4ede4] shadow-[0_12px_32px_rgba(42,35,28,0.2)] transition hover:bg-[#3d3229] active:scale-[0.98]"
+                  className="inline-flex sm:hidden items-center justify-center bg-[#2a231c] px-8 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.18em] text-[#f4ede4] shadow-[0_12px_32px_rgba(42,35,28,0.2)] transition hover:bg-[#3d3229] active:scale-[0.98]"
                 >
                   Reserva tu lugar gratis
                 </a>
@@ -98,13 +141,11 @@ export default function WebinarLandingPage() {
               </div>
             </div>
 
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-md">
-                <SilhouetteArt />
-                <p className="mt-6 text-center font-serif text-sm italic text-[#7a6a5a] lg:text-left">
-                  De la desconexión → a la alineación con propósito
-                </p>
-              </div>
+            <div
+              id="registro"
+              className="relative scroll-mt-24 lg:justify-self-end"
+            >
+              <WebinarRegistrationForm />
             </div>
           </div>
         </section>
@@ -207,93 +248,26 @@ export default function WebinarLandingPage() {
           </div>
         </section>
 
-        <section
-          id="registro"
-          className="scroll-mt-24 border-t border-[#dcd0c4]/60 bg-[#f0e8de] px-5 py-24 sm:px-8"
-        >
-          <div className="mx-auto grid max-w-5xl gap-14 lg:grid-cols-2 lg:items-start">
-            <div className="space-y-6">
-              <h2 className="font-serif text-3xl font-semibold leading-tight text-[#2a231c]">
-                Un espacio de 60 minutos para mirar hacia adentro con rigor
-              </h2>
-              <p className="text-lg leading-relaxed text-[#5c4f42]">
-                Déjanos tu nombre y tu mejor correo. Te enviaremos el acceso al
-                webinar y lo que necesites para prepararte sin prisa, sin
-                ruido.
-              </p>
-              <p className="text-sm leading-relaxed text-[#8a7560]">
-                Contenido universal de autoconocimiento. No es formación
-                religiosa ni dogmática.
-              </p>
-            </div>
-
-            <div className="border border-[#dcd0c4] bg-[#faf6f1]/90 p-8 shadow-[0_20px_50px_rgba(42,35,28,0.08)] sm:p-10">
-              <form action={handleWebinarSubmission} className="space-y-7">
-                <div>
-                  <label
-                    htmlFor="webinar-name"
-                    className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
-                  >
-                    Nombre
-                  </label>
-                  <input
-                    id="webinar-name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    required
-                    placeholder="Cómo te gusta que te llamen"
-                    className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="webinar-email"
-                    className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="webinar-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    placeholder="tu@email.com"
-                    className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="webinar-phone"
-                    className="block text-[11px] font-medium uppercase tracking-[0.2em] text-[#8a7560]"
-                  >
-                    Teléfono
-                  </label>
-                  <input
-                    id="webinar-phone"
-                    name="phone"
-                    type="tel"
-                    autoComplete="tel"
-                    required
-                    placeholder="123 456 7890"
-                    className="mt-2 w-full border-0 border-b border-[#c4b8a8] bg-transparent py-2.5 text-[#2a231c] outline-none ring-0 placeholder:text-[#a89888] focus:border-[#9a7b45]"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-[#9a7b45] py-4 text-center text-[13px] font-semibold uppercase tracking-[0.2em] text-[#faf6f1] transition hover:bg-[#8a6b3a] active:scale-[0.99]"
-                >
-                  Reserva tu lugar gratis
-                </button>
-                <p className="text-center text-xs leading-relaxed text-[#8a7560]">
-                  Al registrarte aceptas recibir comunicación sobre este evento.
-                  Puedes darte de baja cuando quieras.
-                </p>
-              </form>
-            </div>
+        <section className="border-t border-[#dcd0c4]/60 bg-[#f0e8de] px-5 py-16 sm:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-[11px] font-medium uppercase tracking-[0.35em] text-[#8a7560]">
+              Aparta tu lugar
+            </p>
+            <h2 className="mt-3 font-serif text-2xl font-semibold leading-tight text-[#2a231c] sm:text-3xl">
+              Da el primer paso hacia una decisión más alineada
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#5c4f42]">
+              El registro es gratuito y toma menos de un minuto.
+            </p>
+            <a
+              href="#registro"
+              className="mt-8 inline-flex items-center justify-center bg-[#2a231c] px-8 py-3.5 text-center text-[13px] font-semibold uppercase tracking-[0.18em] text-[#f4ede4] shadow-[0_12px_32px_rgba(42,35,28,0.16)] transition hover:bg-[#3d3229] active:scale-[0.98]"
+            >
+              Registrarme gratis
+            </a>
           </div>
         </section>
+
       </main>
 
       <footer className="border-t border-[#dcd0c4]/80 bg-[#ebe2d6]/40 px-5 py-10 sm:px-8">
@@ -303,7 +277,7 @@ export default function WebinarLandingPage() {
         </div>
       </footer>
 
-      <div className="fixed bottom-0 inset-x-0 z-40 border-t border-[#dcd0c4]/80 bg-[#f4ede4]/95 p-4 backdrop-blur-md sm:hidden">
+      <div className="fixed bottom-0 inset-x-0 z-40 border-t border-[#dcd0c4]/80 bg-[#f4ede4]/95 p-4 backdrop-blur-md hidden">
         <a
           href="#registro"
           className="flex w-full items-center justify-center bg-[#2a231c] py-3.5 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#f4ede4]"
