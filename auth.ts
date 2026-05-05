@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 const credentialsSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().min(1).max(255),
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -48,6 +48,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async session({ session, token }) {
       session.user.id = token.id as string
+      const validRoles = ['ADMIN', 'EDITOR'] as const
+      if (!validRoles.includes(token.role as 'ADMIN' | 'EDITOR')) {
+        throw new Error('Invalid role in session token')
+      }
       session.user.role = token.role as 'ADMIN' | 'EDITOR'
       return session
     },
