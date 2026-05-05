@@ -8,7 +8,7 @@ export default auth((req) => {
 
   if (isCrmRoute && !isLoggedIn) {
     const loginUrl = new URL('/crm-login', req.nextUrl.origin)
-    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname)
+    loginUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search)
     return NextResponse.redirect(loginUrl)
   }
 
