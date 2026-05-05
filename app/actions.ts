@@ -58,12 +58,16 @@ export async function handleFunnelSubmission(formData: FormData) {
   redirect('/thanks?download=true');
 }
 
-export async function handleWebinarSubmission(formData: FormData) {
+export async function handleWebinarSubmission(
+  _prevState: { error: string } | null,
+  formData: FormData
+): Promise<{ error: string } | null> {
   const name = (formData.get('name') as string)?.trim();
+  const phone = (formData.get('phone') as string)?.trim();
   const email = (formData.get('email') as string)?.trim();
 
   if (!email) {
-    throw new Error('Email is required');
+    return { error: 'El correo electrónico es obligatorio.' };
   }
 
   try {
@@ -75,6 +79,7 @@ export async function handleWebinarSubmission(formData: FormData) {
         <div style="font-family: Georgia, serif; line-height: 1.65; color: #3d3229; max-width: 560px;">
           <h2 style="color: #2a231c; font-weight: normal;">Hola ${name || 'allí'},</h2>
           <p>Gracias por reservar tu lugar. En breve recibirás los detalles de conexión al webinar del <strong>Método de los 4 Ángeles</strong>.</p>
+          ${phone ? `<p>Te contactaremos también al <strong>${phone}</strong> si es necesario.</p>` : ''}
           <p>Si no ves el correo, revisa promociones o spam.</p>
           <p style="margin-top: 28px;">Con intención,<br /><strong>Rui Machalele</strong></p>
         </div>
