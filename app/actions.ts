@@ -70,6 +70,12 @@ export async function handleWebinarSubmission(
     return { error: 'El correo electrónico es obligatorio.' };
   }
 
+  const esc = (s: string) =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  const safeName = name ? esc(name) : 'allí';
+  const safePhone = phone ? esc(phone) : '';
+
   try {
     await transporter.sendMail({
       from: process.env.SMTP_FROM || '"Rui Machalele" <no-reply@example.com>',
@@ -77,9 +83,9 @@ export async function handleWebinarSubmission(
       subject: 'Tu lugar en el webinar está reservado',
       html: `
         <div style="font-family: Georgia, serif; line-height: 1.65; color: #3d3229; max-width: 560px;">
-          <h2 style="color: #2a231c; font-weight: normal;">Hola ${name || 'allí'},</h2>
+          <h2 style="color: #2a231c; font-weight: normal;">Hola ${safeName},</h2>
           <p>Gracias por reservar tu lugar. En breve recibirás los detalles de conexión al webinar del <strong>Método de los 4 Ángeles</strong>.</p>
-          ${phone ? `<p>Te contactaremos también al <strong>${phone}</strong> si es necesario.</p>` : ''}
+          ${safePhone ? `<p>Te contactaremos también al <strong>${safePhone}</strong> si es necesario.</p>` : ''}
           <p>Si no ves el correo, revisa promociones o spam.</p>
           <p style="margin-top: 28px;">Con intención,<br /><strong>Rui Machalele</strong></p>
         </div>

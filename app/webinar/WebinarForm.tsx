@@ -67,7 +67,7 @@ export default function WebinarForm() {
         </div>
 
         {state?.error && (
-          <p className="text-sm text-red-700">{state.error}</p>
+          <p role="alert" className="text-sm text-red-700">{state.error}</p>
         )}
 
         <button
