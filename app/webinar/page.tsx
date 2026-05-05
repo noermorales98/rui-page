@@ -1,32 +1,5 @@
 import Link from "next/link";
-import Script from "next/script";
-
-function WebinarRegistrationForm() {
-  return (
-    <div className="w-full backdrop-blur-sm">
-      <div className="w-[480px]">
-        <iframe
-          src="https://api.leadconnectorhq.com/widget/form/seFdzOnghjlC3grwksN7"
-          style={{ width: "100%", height: "100%", border: "none", borderRadius: "0px" }}
-          id="inline-seFdzOnghjlC3grwksN7"
-          data-layout="{'id':'INLINE'}"
-          data-trigger-type="alwaysShow"
-          data-trigger-value=""
-          data-activation-type="alwaysActivated"
-          data-activation-value=""
-          data-deactivation-type="neverDeactivate"
-          data-deactivation-value=""
-          data-form-name="Webinar Rui"
-          data-height="531"
-          data-layout-iframe-id="inline-seFdzOnghjlC3grwksN7"
-          data-form-id="seFdzOnghjlC3grwksN7"
-          title="Webinar Rui"
-        />
-      </div>
-      <Script src="https://link.msgsndr.com/js/form_embed.js" />
-    </div>
-  );
-}
+import WebinarForm from "./WebinarForm";
 
 export default function WebinarLandingPage() {
   return (
@@ -59,7 +32,7 @@ export default function WebinarLandingPage() {
             aria-hidden
           />
 
-          <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(380px,440px)] lg:items-center lg:py-24">
+          <div className="mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(380px,480px)] lg:items-center lg:py-24">
             <div className="space-y-8 lg:pr-4">
               <p className="text-[11px] font-medium uppercase tracking-[0.35em] text-[#8a7560]">
                 Webinar en vivo · Método de los 4 Ángeles
@@ -89,7 +62,7 @@ export default function WebinarLandingPage() {
               id="registro"
               className="relative scroll-mt-24 lg:justify-self-end"
             >
-              <WebinarRegistrationForm />
+              <WebinarForm />
             </div>
           </div>
         </section>
@@ -211,7 +184,6 @@ export default function WebinarLandingPage() {
             </a>
           </div>
         </section>
-
       </main>
 
       <footer className="border-t border-[#dcd0c4]/80 bg-[#ebe2d6]/40 px-5 py-10 sm:px-8">
