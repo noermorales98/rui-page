@@ -9,8 +9,8 @@ export async function proxy(request: NextRequest) {
   })
 
   const isLoggedIn = !!token
-  const isCrmRoute = request.nextUrl.pathname.startsWith('/crm')
   const isLoginPage = request.nextUrl.pathname === '/crm-login'
+  const isCrmRoute = !isLoginPage && request.nextUrl.pathname.startsWith('/crm')
 
   if (isCrmRoute && !isLoggedIn) {
     const loginUrl = new URL('/crm-login', request.nextUrl.origin)
