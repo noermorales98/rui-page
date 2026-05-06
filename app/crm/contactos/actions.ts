@@ -145,7 +145,16 @@ export async function deleteContact(id: number, _formData?: FormData): Promise<v
   const session = await auth()
   if (!session?.user) return
 
-  await prisma.contact.delete({ where: { id } })
+  try {
+    await prisma.contact.delete({ where: { id } })
+  } catch (err: unknown) {
+    if (
+      !(err !== null && typeof err === 'object' && 'code' in err &&
+        (err as { code: string }).code === 'P2025')
+    ) {
+      throw err
+    }
+  }
   revalidatePath('/crm/contactos')
   redirect('/crm/contactos')
 }
@@ -193,8 +202,15 @@ export async function importContacts(
       })
       imported++
     } catch (err: unknown) {
-      errors.push(email)
-      skipped++
+      if (
+        err !== null && typeof err === 'object' && 'code' in err &&
+        (err as { code: string }).code === 'P2002'
+      ) {
+        // duplicate email — count as skipped
+        skipped++
+      } else {
+        throw err
+      }
     }
   }
 
