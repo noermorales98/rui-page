@@ -4,6 +4,7 @@ import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { auth } from '@/auth'
 
 const createUserSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
@@ -16,6 +17,11 @@ export async function createUser(
   prevState: { error: string } | null,
   formData: FormData,
 ): Promise<{ error: string } | null> {
+  const session = await auth()
+  if (session?.user?.role !== 'ADMIN') {
+    return { error: 'No autorizado' }
+  }
+
   const raw = {
     name: formData.get('name') as string,
     email: formData.get('email') as string,
@@ -53,9 +59,22 @@ export async function createUser(
 }
 
 export async function deactivateUser(userId: number) {
-  await prisma.user.update({
-    where: { id: userId },
-    data: { active: false },
-  })
-  revalidatePath('/crm/configuracion/usuarios')
+  const session = await auth()
+  if (session?.user?.role !== 'ADMIN') {
+    throw new Error('No autorizado')
+  }
+
+  if (String(userId) === String(session.user.id)) {
+    throw new Error('No puedes desactivar tu propia cuenta')
+  }
+
+  try {
+    await prisma.user.update({ where: { id: userId }, data: { active: false } })
+    revalidatePath('/crm/configuracion/usuarios')
+  } catch (e: unknown) {
+    if ((e as { code?: string }).code === 'P2025') {
+      throw new Error('Usuario no encontrado')
+    }
+    throw e
+  }
 }

@@ -7,14 +7,6 @@ export function CreateUserModal() {
   const [open, setOpen] = useState(false)
   const [state, formAction, isPending] = useActionState(createUser, null)
 
-  // Close modal on success (state is null after a successful action call)
-  useEffect(() => {
-    if (state === null && !isPending) {
-      // Only close if we've actually submitted (isPending transitioned)
-      // We track this with a submitted flag via the effect dependency
-    }
-  }, [state, isPending])
-
   // Track whether form was submitted at least once
   const [submitted, setSubmitted] = useState(false)
 
@@ -83,6 +75,7 @@ export function CreateUserModal() {
             )}
 
             <form
+              key={open ? 'open' : 'closed'}
               action={(formData) => {
                 setSubmitted(true)
                 formAction(formData)
