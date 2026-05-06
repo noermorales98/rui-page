@@ -47,11 +47,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token
     },
     async session({ session, token }) {
-      session.user.id = token.id as string
       const validRoles = ['ADMIN', 'EDITOR'] as const
-      if (!validRoles.includes(token.role as 'ADMIN' | 'EDITOR')) {
-        throw new Error('Invalid role in session token')
+      if (!token.id || !validRoles.includes(token.role as 'ADMIN' | 'EDITOR')) {
+        return session
       }
+      session.user.id = token.id as string
       session.user.role = token.role as 'ADMIN' | 'EDITOR'
       return session
     },
