@@ -96,7 +96,7 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50" onClick={handleClose} aria-hidden="true" />
-          <div className="relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+          <div role="dialog" aria-modal="true" className="relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">
                 {contact ? 'Editar contacto' : 'Nuevo contacto'}
