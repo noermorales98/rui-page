@@ -8,17 +8,79 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(EDITOR)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int               @id @default(autoincrement())
+  name       String
+  email      String            @unique
+  password   String
+  role       Role              @default(EDITOR)
+  active     Boolean           @default(true)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  activities ContactActivity[]
+}
+
+model Contact {
+  id         Int               @id @default(autoincrement())
+  name       String
+  email      String            @unique
+  phone      String?
+  source     ContactSource     @default(MANUAL)
+  status     ContactStatus     @default(NEW)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  tags       ContactTag[]
+  activities ContactActivity[]
+}
+
+model Tag {
+  id       Int          @id @default(autoincrement())
+  name     String       @unique
+  color    String       @default("#6366f1")
+  contacts ContactTag[]
+}
+
+model ContactTag {
+  contactId Int
+  tagId     Int
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+}
+
+model ContactActivity {
+  id          Int          @id @default(autoincrement())
+  contactId   Int
+  type        ActivityType @default(NOTE)
+  body        String?      @db.Text
+  createdAt   DateTime     @default(now())
+  createdById Int?
+  contact     Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdBy   User?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
 }
 
 enum Role {
   ADMIN
   EDITOR
+}
+
+enum ContactSource {
+  WEBINAR
+  FORM
+  MANUAL
+  IMPORT
+}
+
+enum ContactStatus {
+  NEW
+  QUALIFIED
+  CLIENT
+}
+
+enum ActivityType {
+  NOTE
+  EMAIL_SENT
+  WEBINAR_REGISTERED
+  WEBINAR_ATTENDED
+  COURSE_PURCHASED
 }
