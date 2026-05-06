@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState, useEffect, useRef } from 'react'
+import { useState, useActionState, useRef } from 'react'
 import { importContacts } from '../actions'
 
 type Row = { name: string; email: string; phone?: string; source?: string }
@@ -23,7 +23,7 @@ function parseCsv(text: string): Row[] {
     return {
       name: cols[nameIdx]?.trim() ?? '',
       email: cols[emailIdx]?.trim() ?? '',
-      phone: phoneIdx >= 0 ? cols[phoneIdx]?.trim() : undefined,
+      phone: phoneIdx >= 0 ? (cols[phoneIdx]?.trim() || undefined) : undefined,
       source: sourceIdx >= 0 ? cols[sourceIdx]?.trim().toUpperCase() : undefined,
     }
   })
@@ -44,7 +44,12 @@ function splitCsvLine(line: string): string[] {
     }
   }
   result.push(current)
-  return result
+  return result.map((field) => {
+    if (field.startsWith('"') && field.endsWith('"')) {
+      return field.slice(1, -1).replace(/""/g, '"')
+    }
+    return field
+  })
 }
 
 export function ImportCsvModal() {
