@@ -57,6 +57,3 @@ ALTER TABLE `ContactActivity` ADD CONSTRAINT `ContactActivity_createdById_fkey` 
 
 -- CreateIndex
 CREATE INDEX `ContactActivity_contactId_idx` ON `ContactActivity`(`contactId`);
-
--- AlterTable to add activities relation to User (already exists, adding the field)
-ALTER TABLE `User` ADD COLUMN `activities` INT;
