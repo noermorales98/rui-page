@@ -83,15 +83,16 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
   }, [searchQuery, isContactLocked])
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div
+        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deal-modal-title"
+      >
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">
+          <h2 id="deal-modal-title" className="text-lg font-semibold text-gray-900">
             {deal ? 'Editar oportunidad' : 'Nueva oportunidad'}
           </h2>
           <button
