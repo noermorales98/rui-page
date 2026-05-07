@@ -9,7 +9,7 @@ import { auth } from '@/auth'
 const contactSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   email: z.string().email('Correo electrónico inválido'),
-  phone: z.string().optional(),
+  phone: z.string().nullish(),
   source: z.enum(['WEBINAR', 'FORM', 'MANUAL', 'IMPORT']),
   status: z.enum(['NEW', 'QUALIFIED', 'CLIENT']),
 })
@@ -26,7 +26,7 @@ export async function createContact(
   const raw = {
     name: formData.get('name') as string,
     email: formData.get('email') as string,
-    phone: (formData.get('phone') as string) || undefined,
+    phone: (formData.get('phone') as string) || null,
     source: formData.get('source') as string,
     status: formData.get('status') as string,
   }
@@ -87,7 +87,7 @@ export async function updateContact(
   const raw = {
     name: formData.get('name') as string,
     email: formData.get('email') as string,
-    phone: (formData.get('phone') as string) || undefined,
+    phone: (formData.get('phone') as string) || null,
     source: formData.get('source') as string,
     status: formData.get('status') as string,
   }
@@ -207,6 +207,7 @@ export async function importContacts(
         (err as { code: string }).code === 'P2002'
       ) {
         // duplicate email — count as skipped
+        errors.push(email)
         skipped++
       } else {
         throw err
