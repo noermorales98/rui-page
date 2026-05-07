@@ -30,6 +30,7 @@ model Contact {
   updatedAt  DateTime          @updatedAt
   tags       ContactTag[]
   activities ContactActivity[]
+  deals      Deal[]
 }
 
 model Tag {
@@ -83,4 +84,22 @@ enum ActivityType {
   WEBINAR_REGISTERED
   WEBINAR_ATTENDED
   COURSE_PURCHASED
+}
+
+enum DealStage {
+  LEAD
+  DEMO
+  NEGOTIATION
+  ENROLLED
+}
+
+model Deal {
+  id         Int       @id @default(autoincrement())
+  contact    Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId  Int
+  courseName String?
+  stage      DealStage @default(LEAD)
+  notes      String?   @db.Text
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
