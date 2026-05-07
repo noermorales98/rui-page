@@ -13,6 +13,12 @@ const dealSchema = z.object({
   notes: z.string().optional(),
 })
 
+const updateDealSchema = z.object({
+  courseName: z.string().optional(),
+  stage: z.enum(['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED']).default('LEAD'),
+  notes: z.string().optional(),
+})
+
 type DealState = { error: string } | null
 
 export async function createDeal(
@@ -57,16 +63,21 @@ export async function updateDeal(
   if (!session?.user) return { error: 'No autorizado' }
 
   const raw = {
-    contactId: formData.get('contactId'),
     courseName: (formData.get('courseName') as string) || undefined,
     stage: (formData.get('stage') as string) || 'LEAD',
     notes: (formData.get('notes') as string) || undefined,
   }
 
-  const parsed = dealSchema.safeParse(raw)
+  const parsed = updateDealSchema.safeParse(raw)
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
   }
+
+  const existing = await prisma.deal.findUnique({
+    where: { id: dealId },
+    select: { contactId: true },
+  })
+  if (!existing) return { error: 'Oportunidad no encontrada' }
 
   await prisma.deal.update({
     where: { id: dealId },
@@ -78,7 +89,7 @@ export async function updateDeal(
   })
 
   revalidatePath('/crm/pipeline')
-  revalidatePath(`/crm/contactos/${parsed.data.contactId}`)
+  revalidatePath(`/crm/contactos/${existing.contactId}`)
   return null
 }
 
