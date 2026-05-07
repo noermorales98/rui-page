@@ -4,20 +4,18 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
-import type { DealStage } from '@prisma/client'
+import { DealStage } from '@prisma/client'
+
+const stageValues = Object.values(DealStage) as [DealStage, ...DealStage[]]
 
 const dealSchema = z.object({
   contactId: z.coerce.number().positive('Selecciona un contacto'),
   courseName: z.string().optional(),
-  stage: z.enum(['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED']).default('LEAD'),
+  stage: z.enum(stageValues).default('LEAD'),
   notes: z.string().optional(),
 })
 
-const updateDealSchema = z.object({
-  courseName: z.string().optional(),
-  stage: z.enum(['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED']).default('LEAD'),
-  notes: z.string().optional(),
-})
+const updateDealSchema = dealSchema.omit({ contactId: true })
 
 type DealState = { error: string } | null
 
@@ -40,14 +38,18 @@ export async function createDeal(
     return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
   }
 
-  await prisma.deal.create({
-    data: {
-      contactId: parsed.data.contactId,
-      courseName: parsed.data.courseName ?? null,
-      stage: parsed.data.stage,
-      notes: parsed.data.notes ?? null,
-    },
-  })
+  try {
+    await prisma.deal.create({
+      data: {
+        contactId: parsed.data.contactId,
+        courseName: parsed.data.courseName ?? null,
+        stage: parsed.data.stage,
+        notes: parsed.data.notes ?? null,
+      },
+    })
+  } catch {
+    return { error: 'Error al guardar la oportunidad' }
+  }
 
   revalidatePath('/crm/pipeline')
   revalidatePath(`/crm/contactos/${parsed.data.contactId}`)
@@ -79,14 +81,26 @@ export async function updateDeal(
   })
   if (!existing) return { error: 'Oportunidad no encontrada' }
 
-  await prisma.deal.update({
-    where: { id: dealId },
-    data: {
-      courseName: parsed.data.courseName ?? null,
-      stage: parsed.data.stage,
-      notes: parsed.data.notes ?? null,
-    },
-  })
+  try {
+    await prisma.deal.update({
+      where: { id: dealId },
+      data: {
+        courseName: parsed.data.courseName ?? null,
+        stage: parsed.data.stage,
+        notes: parsed.data.notes ?? null,
+      },
+    })
+  } catch (err: unknown) {
+    if (
+      err !== null &&
+      typeof err === 'object' &&
+      'code' in err &&
+      (err as { code: string }).code === 'P2025'
+    ) {
+      return { error: 'Oportunidad no encontrada' }
+    }
+    return { error: 'Error al actualizar la oportunidad' }
+  }
 
   revalidatePath('/crm/pipeline')
   revalidatePath(`/crm/contactos/${existing.contactId}`)
@@ -95,14 +109,17 @@ export async function updateDeal(
 
 export async function deleteDeal(dealId: number): Promise<void> {
   const session = await auth()
-  if (!session?.user) return
+  if (!session?.user) throw new Error('No autorizado')
 
-  const deal = await prisma.deal.findUnique({
-    where: { id: dealId },
-    select: { contactId: true },
-  })
+  let contactId: number | null = null
 
   try {
+    const deal = await prisma.deal.findUnique({
+      where: { id: dealId },
+      select: { contactId: true },
+    })
+    contactId = deal?.contactId ?? null
+
     await prisma.deal.delete({ where: { id: dealId } })
   } catch (err: unknown) {
     if (
@@ -118,12 +135,12 @@ export async function deleteDeal(dealId: number): Promise<void> {
   }
 
   revalidatePath('/crm/pipeline')
-  if (deal) revalidatePath(`/crm/contactos/${deal.contactId}`)
+  if (contactId !== null) revalidatePath(`/crm/contactos/${contactId}`)
 }
 
 export async function moveDeal(dealId: number, stage: DealStage): Promise<void> {
   const session = await auth()
-  if (!session?.user) return
+  if (!session?.user) throw new Error('No autorizado')
 
   await prisma.deal.update({
     where: { id: dealId },
