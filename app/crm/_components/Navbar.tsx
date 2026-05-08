@@ -13,7 +13,7 @@ export default async function Navbar() {
     .toUpperCase()
 
   return (
-    <header className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] h-[68px] px-6 flex items-center justify-between">
+    <header className="h-[68px] flex items-center justify-between">
       <NavbarTitle />
 
       <div className="flex items-center gap-2">

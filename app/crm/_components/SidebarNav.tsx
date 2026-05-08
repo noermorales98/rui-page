@@ -54,7 +54,7 @@ export function SidebarNav({ isAdmin }: SidebarNavProps) {
             href={href}
             className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-full text-[13.5px] font-medium transition-colors ${
               active
-                ? 'bg-white text-[#080808] font-semibold shadow-sm'
+                ? 'bg-white text-[#080808] font-semibold shadow-md shadow-black/1'
                 : 'text-[#8a8a8a] hover:bg-white hover:text-[#080808]'
             }`}
           >
