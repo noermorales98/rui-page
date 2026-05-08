@@ -31,6 +31,7 @@ model Contact {
   tags       ContactTag[]
   activities ContactActivity[]
   deals      Deal[]
+  registrations WebinarRegistration[]
 }
 
 model Tag {
@@ -91,6 +92,37 @@ enum DealStage {
   DEMO
   NEGOTIATION
   ENROLLED
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  ATTENDED
+  PURCHASED
+}
+
+model Webinar {
+  id            Int                   @id @default(autoincrement())
+  title         String
+  date          DateTime
+  platform      String?
+  link          String?
+  description   String?               @db.Text
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  registrations WebinarRegistration[]
+}
+
+model WebinarRegistration {
+  id         Int                @id @default(autoincrement())
+  webinar    Webinar            @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+  webinarId  Int
+  contact    Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId  Int
+  status     RegistrationStatus @default(REGISTERED)
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+
+  @@unique([webinarId, contactId])
 }
 
 model Deal {
