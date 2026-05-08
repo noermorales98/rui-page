@@ -41,13 +41,16 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
   const [state, formAction, isPending] = useActionState(action, null)
 
   useEffect(() => {
-    if (state === null && submitted) {
-      setOpen(false)
-      setSubmitted(false)
-      setNewTagNames([])
-      setNewTagInput('')
+    if (state === null && submitted && !isPending) {
+      const id = window.setTimeout(() => {
+        setOpen(false)
+        setSubmitted(false)
+        setNewTagNames([])
+        setNewTagInput('')
+      }, 0)
+      return () => window.clearTimeout(id)
     }
-  }, [state, submitted])
+  }, [isPending, state, submitted])
 
   function handleOpen() {
     setSelectedTagIds(contact ? contact.tags.map((ct) => ct.tagId) : [])

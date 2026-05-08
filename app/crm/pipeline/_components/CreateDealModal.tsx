@@ -57,8 +57,6 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
     if (searchTimer.current) clearTimeout(searchTimer.current)
 
     if (!searchQuery.trim()) {
-      setSearchResults([])
-      setShowDropdown(false)
       return
     }
 
@@ -129,6 +127,10 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value)
+                    if (!e.target.value.trim()) {
+                      setSearchResults([])
+                      setShowDropdown(false)
+                    }
                     if (selectedContact && e.target.value !== selectedContact.name) {
                       setSelectedContact(null)
                     }

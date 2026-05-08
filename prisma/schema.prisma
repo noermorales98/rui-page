@@ -17,6 +17,7 @@ model User {
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
   activities ContactActivity[]
+  forms      CrmForm[]
 }
 
 model Contact {
@@ -32,6 +33,7 @@ model Contact {
   activities ContactActivity[]
   deals      Deal[]
   registrations WebinarRegistration[]
+  formSubmissions CrmFormSubmission[]
 }
 
 model Tag {
@@ -85,6 +87,7 @@ enum ActivityType {
   WEBINAR_REGISTERED
   WEBINAR_ATTENDED
   COURSE_PURCHASED
+  FORM_SUBMITTED
 }
 
 enum DealStage {
@@ -134,4 +137,96 @@ model Deal {
   notes      String?   @db.Text
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+}
+
+enum CrmFormStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CrmFormFieldType {
+  SHORT_TEXT
+  FULL_NAME
+  PHONE
+  PHONE_WITH_COUNTRY
+  EMAIL
+  CUSTOM_DATE
+  CUSTOM_TIME
+  CUSTOM_DATETIME
+}
+
+enum CrmFormContactTarget {
+  NONE
+  NAME
+  EMAIL
+  PHONE
+}
+
+model CrmForm {
+  id             Int                 @id @default(autoincrement())
+  name           String
+  slug           String              @unique @db.VarChar(191)
+  status         CrmFormStatus       @default(DRAFT)
+  description    String?             @db.Text
+  submitLabel    String              @default("Enviar")
+  successMessage String              @default("Gracias, recibimos tus datos.")
+  createdById    Int?
+  createdBy      User?               @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  fields         CrmFormField[]
+  submissions    CrmFormSubmission[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([createdById])
+  @@index([status, updatedAt])
+}
+
+model CrmFormField {
+  id            Int                  @id @default(autoincrement())
+  formId        Int
+  form          CrmForm              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  type          CrmFormFieldType
+  contactTarget CrmFormContactTarget @default(NONE)
+  label         String
+  fieldKey      String               @db.VarChar(191)
+  placeholder   String?
+  helpText      String?              @db.Text
+  isRequired    Boolean              @default(false)
+  position      Int                  @default(0)
+  config        Json?
+  values        CrmFormSubmissionValue[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@unique([formId, fieldKey])
+  @@index([formId, position])
+}
+
+model CrmFormSubmission {
+  id          Int                      @id @default(autoincrement())
+  formId      Int
+  form        CrmForm                  @relation(fields: [formId], references: [id], onDelete: Cascade)
+  contactId   Int?
+  contact     Contact?                 @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  submittedAt DateTime                 @default(now())
+  ipHash      String?
+  userAgent   String?                  @db.Text
+  values      CrmFormSubmissionValue[]
+
+  @@index([formId, submittedAt])
+  @@index([contactId])
+}
+
+model CrmFormSubmissionValue {
+  id              Int               @id @default(autoincrement())
+  submissionId    Int
+  submission      CrmFormSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  fieldId         Int
+  field           CrmFormField      @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  rawValue        String?           @db.Text
+  normalizedValue String?           @db.VarChar(191)
+
+  @@unique([submissionId, fieldId])
+  @@index([fieldId, normalizedValue])
 }

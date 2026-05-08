@@ -8,6 +8,7 @@ const ACTIVITY_ICONS: Record<string, string> = {
   WEBINAR_REGISTERED: '📅',
   WEBINAR_ATTENDED: '📅',
   COURSE_PURCHASED: '🎓',
+  FORM_SUBMITTED: '🧾',
 }
 
 const ACTIVITY_LABELS: Record<string, string> = {
@@ -16,6 +17,7 @@ const ACTIVITY_LABELS: Record<string, string> = {
   WEBINAR_REGISTERED: 'Registrado al webinar',
   WEBINAR_ATTENDED: 'Asistió al webinar',
   COURSE_PURCHASED: 'Compró curso',
+  FORM_SUBMITTED: 'Envió formulario',
 }
 
 function relativeTime(date: Date): string {

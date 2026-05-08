@@ -260,7 +260,7 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-3 gap-8">
               {/* Testimonio 1 */}
               <div className="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
-                <p className="italic text-on-surface-variant leading-relaxed">&quot;Había hecho muchos cursos de 'mindfulness', pero con Rui fue la primera vez que realmente sentí que las piezas del rompecabezas encajaban. Mi negocio y mi vida personal cambiaron por completo.&quot;</p>
+                <p className="italic text-on-surface-variant leading-relaxed">&quot;Había hecho muchos cursos de &apos;mindfulness&apos;, pero con Rui fue la primera vez que realmente sentí que las piezas del rompecabezas encajaban. Mi negocio y mi vida personal cambiaron por completo.&quot;</p>
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden">
                     <img alt="User 1" data-alt="Portrait of a smiling professional woman with bright eyes and natural lighting" src="avatar.png" />

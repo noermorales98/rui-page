@@ -11,11 +11,14 @@ export function CreateUserModal() {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    if (state === null && submitted) {
-      setOpen(false)
-      setSubmitted(false)
+    if (state === null && submitted && !isPending) {
+      const id = window.setTimeout(() => {
+        setOpen(false)
+        setSubmitted(false)
+      }, 0)
+      return () => window.clearTimeout(id)
     }
-  }, [state, submitted])
+  }, [isPending, state, submitted])
 
   function handleClose() {
     setOpen(false)
