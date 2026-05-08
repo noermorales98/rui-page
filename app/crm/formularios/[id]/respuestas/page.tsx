@@ -63,20 +63,20 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
     <div>
       <Link
         href={`/crm/formularios/${form.id}`}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-[#8a8a8a] hover:text-[#080808]"
       >
         <ArrowLeft size={16} />
         {form.name}
       </Link>
 
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Respuestas</h1>
+        <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Respuestas</h1>
         <p className="mt-1 text-sm text-gray-500">
           {total} {total === 1 ? 'respuesta' : 'respuestas'}
         </p>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+      <div className="overflow-x-auto bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

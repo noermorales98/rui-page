@@ -21,16 +21,16 @@ export default async function FormulariosPage() {
   })
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
+    <div className="flex flex-col gap-6">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Formularios</h1>
-          <p className="mt-1 text-sm text-gray-500">Crea formularios y captura leads al CRM.</p>
+          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Formularios</h1>
+          <p className="mt-1.5 text-sm text-[#8a8a8a]">Crea formularios y captura leads al CRM.</p>
         </div>
         <CreateFormModal />
       </div>
 
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
         <FormulariosTable forms={forms} />
       </div>
     </div>

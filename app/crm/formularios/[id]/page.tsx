@@ -27,7 +27,7 @@ export default async function FormularioBuilderPage({ params }: Props) {
     <div>
       <Link
         href="/crm/formularios"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        className="mb-4 inline-flex items-center gap-1 text-sm text-[#8a8a8a] hover:text-[#080808]"
       >
         <ArrowLeft size={16} />
         Formularios
