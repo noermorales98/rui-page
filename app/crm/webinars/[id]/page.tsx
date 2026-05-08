@@ -5,6 +5,7 @@ import { WebinarHeader } from './_components/WebinarHeader'
 import { WebinarStats } from './_components/WebinarStats'
 import { ParticipantsTable } from './_components/ParticipantsTable'
 import { AddParticipantButton } from './_components/AddParticipantButton'
+import { ImportCsvButton } from './_components/ImportCsvButton'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -52,10 +53,13 @@ export default async function WebinarDetailPage({ params }: Props) {
               <h3 className="text-sm font-semibold text-gray-700">
                 Participantes ({webinar.registrations.length})
               </h3>
-              <AddParticipantButton
-                webinarId={webinarId}
-                registeredContactIds={registeredContactIds}
-              />
+              <div className="flex gap-2">
+                <ImportCsvButton webinarId={webinarId} />
+                <AddParticipantButton
+                  webinarId={webinarId}
+                  registeredContactIds={registeredContactIds}
+                />
+              </div>
             </div>
             <ParticipantsTable registrations={webinar.registrations} />
           </div>
