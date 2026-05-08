@@ -76,69 +76,65 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
         </p>
       </div>
 
-      <div className="overflow-x-auto bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-                Fecha
-              </th>
-              <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-                Contacto
-              </th>
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
+        {submissions.length === 0 ? (
+          <div className="px-4 py-12 text-center text-sm text-gray-500">
+            No hay respuestas registradas.
+          </div>
+        ) : (
+          <>
+            <div
+              className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+              style={{
+                gridTemplateColumns: `1fr 1.5fr ${form.fields.map(() => '1fr').join(' ')}`,
+              }}
+            >
+              <div>Fecha</div>
+              <div>Contacto</div>
               {form.fields.map((field) => (
-                <th
-                  key={field.id}
-                  className="whitespace-nowrap px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500"
-                >
-                  {field.label}
-                </th>
+                <div key={field.id}>{field.label}</div>
               ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
-            {submissions.map((submission) => {
-              const values = new Map(submission.values.map((value) => [value.fieldId, value.rawValue]))
-              return (
-                <tr key={submission.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                    {formatDate(submission.submittedAt)}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm">
-                    {submission.contact ? (
-                      <Link
-                        href={`/crm/contactos/${submission.contact.id}`}
-                        className="font-medium text-indigo-600 hover:text-indigo-800"
-                      >
-                        {submission.contact.name}
-                        <span className="block text-xs font-normal text-gray-400">
-                          {submission.contact.email}
-                        </span>
-                      </Link>
-                    ) : (
-                      <span className="text-gray-400">Sin contacto</span>
-                    )}
-                  </td>
-                  {form.fields.map((field) => (
-                    <td key={field.id} className="max-w-[260px] px-6 py-4 text-sm text-gray-700">
-                      <span className="line-clamp-2">{values.get(field.id) || '-'}</span>
-                    </td>
-                  ))}
-                </tr>
-              )
-            })}
-            {submissions.length === 0 && (
-              <tr>
-                <td
-                  colSpan={form.fields.length + 2}
-                  className="px-6 py-12 text-center text-sm text-gray-500"
-                >
-                  No hay respuestas registradas.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </div>
+            <div className="space-y-1.5">
+              {submissions.map((submission) => {
+                const values = new Map(submission.values.map((value) => [value.fieldId, value.rawValue]))
+                return (
+                  <div
+                    key={submission.id}
+                    className="grid items-center bg-white rounded-2xl px-4 py-3"
+                    style={{
+                      gridTemplateColumns: `1fr 1.5fr ${form.fields.map(() => '1fr').join(' ')}`,
+                    }}
+                  >
+                    <div className="text-sm text-gray-500">
+                      {formatDate(submission.submittedAt)}
+                    </div>
+                    <div className="text-sm">
+                      {submission.contact ? (
+                        <Link
+                          href={`/crm/contactos/${submission.contact.id}`}
+                          className="font-medium text-indigo-600 hover:text-indigo-800"
+                        >
+                          {submission.contact.name}
+                          <span className="block text-xs font-normal text-gray-400">
+                            {submission.contact.email}
+                          </span>
+                        </Link>
+                      ) : (
+                        <span className="text-gray-400">Sin contacto</span>
+                      )}
+                    </div>
+                    {form.fields.map((field) => (
+                      <div key={field.id} className="max-w-[260px] text-sm text-gray-700">
+                        <span className="line-clamp-2">{values.get(field.id) || '-'}</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {total > PAGE_SIZE && (
