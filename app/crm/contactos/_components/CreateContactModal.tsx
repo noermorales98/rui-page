@@ -97,22 +97,24 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50" onClick={handleClose} aria-hidden="true" />
-          <div role="dialog" aria-modal="true" className="relative z-10 w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div role="dialog" aria-modal="true" className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">
                 {contact ? 'Editar contacto' : 'Nuevo contacto'}
               </h2>
-              <button onClick={handleClose} className="rounded-md p-1 text-gray-400 hover:text-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
+              <button
+                onClick={handleClose}
+                className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                   <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
                 </svg>
               </button>
             </div>
 
             {state?.error && (
-              <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
                 {state.error}
               </div>
             )}
@@ -130,47 +132,47 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
             >
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Nombre *</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Nombre *</label>
                   <input
                     name="name"
                     type="text"
                     required
                     minLength={2}
                     defaultValue={contact?.name}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                     placeholder="Nombre completo"
                   />
                 </div>
 
                 <div className="col-span-2">
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Email *</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Email *</label>
                   <input
                     name="email"
                     type="email"
                     required
                     defaultValue={contact?.email}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                     placeholder="email@ejemplo.com"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Teléfono</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Teléfono</label>
                   <input
                     name="phone"
                     type="tel"
                     defaultValue={contact?.phone ?? ''}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                     placeholder="+52 55 1234 5678"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Fuente</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Fuente</label>
                   <select
                     name="source"
                     defaultValue={contact?.source ?? 'MANUAL'}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
                   >
                     {SOURCE_OPTIONS.map((o) => (
                       <option key={o.value} value={o.value}>{o.label}</option>
@@ -179,11 +181,11 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Estado</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Estado</label>
                   <select
                     name="status"
                     defaultValue={contact?.status ?? 'NEW'}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
                   >
                     {STATUS_OPTIONS.map((o) => (
                       <option key={o.value} value={o.value}>{o.label}</option>
@@ -194,7 +196,7 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
 
               {/* Tags */}
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">Tags</label>
+                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Tags</label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {tags.map((tag) => (
                     <button
@@ -220,13 +222,13 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                     value={newTagInput}
                     onChange={(e) => setNewTagInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addNewTag())}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="flex-1 bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                     placeholder="Nuevo tag..."
                   />
                   <button
                     type="button"
                     onClick={addNewTag}
-                    className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50"
+                    className="bg-[#f0f1f3] text-[#080808] rounded-full px-4 py-2 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer"
                   >
                     Agregar
                   </button>
@@ -237,14 +239,14 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+                  className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
                 >
                   {isPending ? 'Guardando...' : contact ? 'Guardar cambios' : 'Crear contacto'}
                 </button>

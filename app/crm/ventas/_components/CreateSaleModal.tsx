@@ -139,9 +139,9 @@ export function CreateSaleModal({ deals }: Props) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div
-            className="w-full max-w-2xl rounded-xl bg-white p-6 shadow-xl"
+            className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-labelledby="sale-modal-title"
@@ -151,31 +151,31 @@ export function CreateSaleModal({ deals }: Props) {
                 <span className="rounded-lg bg-indigo-50 p-2 text-indigo-600">
                   <DollarSign size={18} />
                 </span>
-                <h2 id="sale-modal-title" className="text-lg font-semibold text-gray-900">
+                <h2 id="sale-modal-title" className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">
                   Registrar venta
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={close}
-                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100"
+                className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
                 aria-label="Cerrar"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
             {state?.error && (
-              <p className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
                 {state.error}
-              </p>
+              </div>
             )}
 
             <form action={formAction} onSubmit={() => { submittedRef.current = true }} className="space-y-4">
               <input type="hidden" name="contactId" value={selectedContact?.id ?? ''} />
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
                   Contacto <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
@@ -195,7 +195,7 @@ export function CreateSaleModal({ deals }: Props) {
                     }}
                     onBlur={() => window.setTimeout(() => setShowDropdown(false), 150)}
                     placeholder="Buscar por nombre o email..."
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                   />
                   {showDropdown && (
                     <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
@@ -217,7 +217,7 @@ export function CreateSaleModal({ deals }: Props) {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
                   Oportunidad del pipeline
                 </label>
                 <select
@@ -225,7 +225,7 @@ export function CreateSaleModal({ deals }: Props) {
                   value={selectedDealId}
                   onChange={(event) => chooseDeal(event.target.value)}
                   disabled={!selectedContact || contactDeals.length === 0}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:bg-gray-50 disabled:text-gray-400"
+                  className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00] disabled:opacity-50"
                 >
                   <option value="">Sin oportunidad vinculada</option>
                   {contactDeals.map((deal) => (
@@ -238,7 +238,7 @@ export function CreateSaleModal({ deals }: Props) {
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
                     Producto / curso <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -248,11 +248,11 @@ export function CreateSaleModal({ deals }: Props) {
                     required
                     minLength={2}
                     placeholder="Metodo de los 4 Angeles"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
                     Monto <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -260,27 +260,27 @@ export function CreateSaleModal({ deals }: Props) {
                     required
                     inputMode="decimal"
                     placeholder="1250.00"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                   />
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Moneda</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Moneda</label>
                   <input
                     name="currency"
                     defaultValue="MXN"
                     maxLength={3}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm uppercase focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm uppercase border-2 border-transparent focus:border-[#dfff00] outline-none transition"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Estado</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Estado</label>
                   <select
                     name="status"
                     defaultValue="PAID"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
                   >
                     {STATUS_OPTIONS.map((status) => (
                       <option key={status.value} value={status.value}>
@@ -290,11 +290,11 @@ export function CreateSaleModal({ deals }: Props) {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Metodo</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Metodo</label>
                   <select
                     name="paymentMethod"
                     defaultValue="TRANSFER"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
                   >
                     {METHOD_OPTIONS.map((method) => (
                       <option key={method.value} value={method.value}>
@@ -304,38 +304,38 @@ export function CreateSaleModal({ deals }: Props) {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Fecha</label>
+                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Fecha</label>
                   <input
                     name="soldAt"
                     type="date"
                     defaultValue={todayForInput()}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Notas</label>
+                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Notas</label>
                 <textarea
                   name="notes"
                   rows={3}
                   placeholder="Detalles de pago, referencia o acuerdo..."
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={close}
-                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isPending || !selectedContact}
-                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+                  className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
                 >
                   {isPending ? 'Guardando...' : 'Registrar venta'}
                 </button>

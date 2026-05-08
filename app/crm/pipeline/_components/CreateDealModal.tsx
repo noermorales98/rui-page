@@ -81,28 +81,28 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
   }, [searchQuery, isContactLocked])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="deal-modal-title"
       >
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">
-          <h2 id="deal-modal-title" className="text-lg font-semibold text-gray-900">
+          <h2 id="deal-modal-title" className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">
             {deal ? 'Editar oportunidad' : 'Nueva oportunidad'}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-gray-400 hover:bg-gray-100"
+            className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="h-5 w-5"
+              className="h-4 w-4"
             >
               <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
             </svg>
@@ -112,12 +112,12 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
         <form action={formAction} onSubmit={() => { submittedRef.current = true }}>
           {/* Contact */}
           <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
               Contacto <span className="text-red-500">*</span>
             </label>
             <input type="hidden" name="contactId" value={selectedContact?.id ?? ''} />
             {isContactLocked ? (
-              <p className="rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-900">
+              <p className="bg-[#f7f8fa] rounded-full px-5 py-3 text-sm text-[#080808]">
                 {searchQuery}
               </p>
             ) : (
@@ -137,7 +137,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                   }}
                   onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                   placeholder="Buscar por nombre o email..."
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+                  className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
                 />
                 {showDropdown && (
                   <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
@@ -165,7 +165,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
 
           {/* Course name */}
           <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
               Curso{' '}
               <span className="font-normal text-gray-400">(opcional)</span>
             </label>
@@ -174,17 +174,17 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
               name="courseName"
               defaultValue={deal?.courseName ?? ''}
               placeholder="ej. Presencia Escénica"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
             />
           </div>
 
           {/* Stage */}
           <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium text-gray-700">Etapa</label>
+            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Etapa</label>
             <select
               name="stage"
               defaultValue={deal?.stage ?? initialStage ?? 'LEAD'}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+              className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
             >
               {STAGE_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -196,7 +196,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
 
           {/* Notes */}
           <div className="mb-5">
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
               Notas{' '}
               <span className="font-normal text-gray-400">(opcional)</span>
             </label>
@@ -205,26 +205,28 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
               defaultValue={deal?.notes ?? ''}
               rows={3}
               placeholder="Observaciones sobre esta oportunidad..."
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+              className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] resize-none"
             />
           </div>
 
           {state?.error && (
-            <p className="mb-3 text-sm text-red-600">{state.error}</p>
+            <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
+              {state.error}
+            </div>
           )}
 
-          <div className="flex justify-end gap-2">
+          <div className="flex gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isPending || (!isContactLocked && !selectedContact)}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+              className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
             >
               {isPending ? 'Guardando...' : deal ? 'Guardar' : 'Crear'}
             </button>
