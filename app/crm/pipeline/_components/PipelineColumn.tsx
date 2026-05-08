@@ -7,23 +7,11 @@ import { DealCard } from './DealCard'
 import { CreateDealModal } from './CreateDealModal'
 import type { DealWithContact } from './PipelineBoard'
 
-const STAGE_CONFIG: Record<DealStage, { label: string; badgeClass: string }> = {
-  LEAD: {
-    label: 'Lead',
-    badgeClass: 'bg-indigo-100 text-indigo-800 ring-1 ring-indigo-200',
-  },
-  DEMO: {
-    label: 'Demo / Llamada',
-    badgeClass: 'bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200',
-  },
-  NEGOTIATION: {
-    label: 'Negociación',
-    badgeClass: 'bg-orange-100 text-orange-800 ring-1 ring-orange-200',
-  },
-  ENROLLED: {
-    label: 'Inscrito',
-    badgeClass: 'bg-green-100 text-green-800 ring-1 ring-green-200',
-  },
+const STAGE_CONFIG: Record<DealStage, { label: string; labelColor: string; accentBg: boolean }> = {
+  LEAD:        { label: 'Lead',           labelColor: 'text-[#8a8a8a]', accentBg: false },
+  DEMO:        { label: 'Demo / Llamada', labelColor: 'text-[#5a85cc]', accentBg: false },
+  NEGOTIATION: { label: 'Negociación',    labelColor: 'text-[#c07a00]', accentBg: false },
+  ENROLLED:    { label: 'Inscrito ✓',    labelColor: 'text-[#5a6a00]', accentBg: true  },
 }
 
 interface Props {
@@ -38,27 +26,41 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
   const { setNodeRef, isOver } = useDroppable({ id: stage })
   const config = STAGE_CONFIG[stage]
 
+  const containerClass = [
+    'flex flex-col flex-shrink-0 w-64 rounded-[22px] p-3.5 transition-colors',
+    isOver
+      ? 'bg-[#9bbdf7]/15 ring-2 ring-[#9bbdf7]'
+      : config.accentBg
+        ? 'bg-[#dfff00]/10'
+        : 'bg-[#f0f1f3]',
+  ].join(' ')
+
+  const countBadgeClass = [
+    'rounded-full px-2.5 py-0.5 text-[11px] font-bold',
+    config.accentBg ? 'bg-[#dfff00] text-[#080808]' : 'bg-white text-[#080808]',
+  ].join(' ')
+
+  const addButtonClass = [
+    'flex w-full items-center justify-center gap-1 rounded-xl border-2 border-dashed py-2 text-xs text-[#8a8a8a] hover:text-[#080808] transition-colors bg-transparent cursor-pointer font-sans',
+    config.accentBg
+      ? 'border-[#dfff00]/50 hover:border-[#dfff00]'
+      : 'border-[#d1d5db] hover:border-[#9bbdf7]',
+  ].join(' ')
+
   return (
-    <div
-      ref={setNodeRef}
-      className={`flex w-72 flex-shrink-0 flex-col rounded-xl transition-colors ${
-        isOver ? 'bg-indigo-50 ring-2 ring-indigo-300' : 'bg-gray-100'
-      }`}
-    >
+    <div ref={setNodeRef} className={containerClass}>
       {/* Column header */}
-      <div className="flex items-center justify-between px-4 py-3">
-        <span
-          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${config.badgeClass}`}
-        >
+      <div className="flex items-center justify-between mb-3">
+        <span className={`text-[11px] font-bold uppercase tracking-[0.06em] ${config.labelColor}`}>
           {config.label}
         </span>
-        <span className="min-w-5 text-center text-xs font-medium text-gray-500">
+        <span className={countBadgeClass}>
           {deals.length}
         </span>
       </div>
 
       {/* Cards area */}
-      <div className="flex min-h-20 flex-col gap-2 px-3 pb-3">
+      <div className="flex flex-col gap-1.5 min-h-16">
         {deals.map((deal) => (
           <DealCard
             key={deal.id}
@@ -70,10 +72,10 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
       </div>
 
       {/* Add button */}
-      <div className="px-3 pb-3">
+      <div className="mt-3">
         <button
           onClick={() => setModalOpen(true)}
-          className="flex w-full items-center justify-center gap-1 rounded-lg border border-dashed border-gray-300 py-2 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-700"
+          className={addButtonClass}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
