@@ -5,12 +5,16 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { RegistrationStatus } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 type State = { error: string } | null
 
 const webinarSchema = z.object({
   title: z.string().min(1, 'El título es requerido'),
-  date: z.string().min(1, 'La fecha es requerida'),
+  date: z.string().min(1, 'La fecha es requerida').refine(
+    (s) => !Number.isNaN(Date.parse(s)),
+    'La fecha no es válida',
+  ),
   platform: z.string().optional(),
   link: z.string().optional(),
   description: z.string().optional(),
@@ -45,7 +49,8 @@ export async function createWebinar(
         description: parsed.data.description ?? null,
       },
     })
-  } catch {
+  } catch (e) {
+    console.error(e)
     return { error: 'Error al crear el webinar' }
   }
 
@@ -84,7 +89,8 @@ export async function updateWebinar(
         description: parsed.data.description ?? null,
       },
     })
-  } catch {
+  } catch (e) {
+    console.error(e)
     return { error: 'Error al actualizar el webinar' }
   }
 
@@ -93,12 +99,18 @@ export async function updateWebinar(
   return null
 }
 
-export async function deleteWebinar(id: number): Promise<void> {
+export async function deleteWebinar(id: number): Promise<{ error?: string }> {
   const session = await auth()
-  if (!session?.user) throw new Error('No autorizado')
+  if (!session?.user) return { error: 'No autorizado' }
 
-  await prisma.webinar.delete({ where: { id } })
+  try {
+    await prisma.webinar.delete({ where: { id } })
+  } catch (e) {
+    console.error(e)
+    return { error: 'Error al eliminar el webinar' }
+  }
   revalidatePath('/crm/webinars')
+  return {}
 }
 
 export async function addRegistration(
@@ -112,8 +124,10 @@ export async function addRegistration(
     await prisma.webinarRegistration.create({
       data: { webinarId, contactId, status: 'REGISTERED' },
     })
-  } catch {
-    return { error: 'El contacto ya está registrado en este webinar' }
+  } catch (e) {
+    console.error(e)
+    const code = (e as Prisma.PrismaClientKnownRequestError)?.code
+    return { error: code === 'P2002' ? 'El contacto ya está registrado en este webinar' : 'Error al registrar' }
   }
 
   revalidatePath(`/crm/webinars/${webinarId}`)
@@ -128,8 +142,9 @@ export async function createAndRegister(
   const session = await auth()
   if (!session?.user) return { error: 'No autorizado' }
 
+  let contact: { id: number }
   try {
-    const contact = await prisma.contact.upsert({
+    contact = await prisma.contact.upsert({
       where: { email: email.trim().toLowerCase() },
       update: {},
       create: {
@@ -138,14 +153,20 @@ export async function createAndRegister(
         source: 'WEBINAR',
       },
     })
+  } catch (e) {
+    console.error(e)
+    return { error: 'Error al crear el contacto' }
+  }
 
+  try {
     await prisma.webinarRegistration.upsert({
       where: { webinarId_contactId: { webinarId, contactId: contact.id } },
       update: {},
       create: { webinarId, contactId: contact.id, status: 'REGISTERED' },
     })
-  } catch {
-    return { error: 'Error al crear el contacto' }
+  } catch (e) {
+    console.error(e)
+    return { error: 'Error al registrar' }
   }
 
   revalidatePath(`/crm/webinars/${webinarId}`)
@@ -156,38 +177,48 @@ export async function createAndRegister(
 export async function updateRegistrationStatus(
   registrationId: number,
   status: RegistrationStatus,
-): Promise<void> {
+): Promise<{ error?: string }> {
   const session = await auth()
-  if (!session?.user) throw new Error('No autorizado')
+  if (!session?.user) return { error: 'No autorizado' }
 
-  const updated = await prisma.webinarRegistration.update({
-    where: { id: registrationId },
-    data: { status },
-  })
-
-  revalidatePath(`/crm/webinars/${updated.webinarId}`)
+  try {
+    const updated = await prisma.webinarRegistration.update({
+      where: { id: registrationId },
+      data: { status },
+    })
+    revalidatePath(`/crm/webinars/${updated.webinarId}`)
+  } catch (e) {
+    console.error(e)
+    return { error: 'Error al actualizar el estado' }
+  }
+  return {}
 }
 
-export async function removeRegistration(registrationId: number): Promise<void> {
+export async function removeRegistration(registrationId: number): Promise<{ error?: string }> {
   const session = await auth()
-  if (!session?.user) throw new Error('No autorizado')
+  if (!session?.user) return { error: 'No autorizado' }
 
-  const reg = await prisma.webinarRegistration.findUnique({
-    where: { id: registrationId },
-    select: { webinarId: true },
-  })
-
-  await prisma.webinarRegistration.delete({ where: { id: registrationId } })
-
-  if (reg) revalidatePath(`/crm/webinars/${reg.webinarId}`)
+  try {
+    const reg = await prisma.webinarRegistration.delete({
+      where: { id: registrationId },
+      select: { webinarId: true },
+    })
+    revalidatePath(`/crm/webinars/${reg.webinarId}`)
+  } catch (e) {
+    console.error(e)
+    const code = (e as Prisma.PrismaClientKnownRequestError)?.code
+    if (code !== 'P2025') return { error: 'Error al eliminar el registro' }
+    // P2025 = record not found — already gone, silently succeed
+  }
+  return {}
 }
 
 export async function importRegistrations(
   webinarId: number,
   rows: { name: string; email: string }[],
-): Promise<{ imported: number; skipped: number }> {
+): Promise<{ imported: number; skipped: number; error?: string }> {
   const session = await auth()
-  if (!session?.user) throw new Error('No autorizado')
+  if (!session?.user) return { imported: 0, skipped: 0, error: 'No autorizado' }
 
   let imported = 0
   let skipped = 0
@@ -216,7 +247,8 @@ export async function importRegistrations(
       })
 
       imported++
-    } catch {
+    } catch (e) {
+      console.error(e)
       skipped++
     }
   }
