@@ -1,25 +1,17 @@
 'use client'
 
 import { signOut } from 'next-auth/react'
-import { LogOut } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import Logout01Icon from '@hugeicons/core-free-icons/Logout01Icon'
 
 export default function SignOutButton() {
   return (
     <button
       onClick={() => signOut({ callbackUrl: '/crm-login' })}
-      className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
-      style={{ color: '#64748b' }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = '#ef4444'
-        e.currentTarget.style.background = '#1e1e2e'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = '#64748b'
-        e.currentTarget.style.background = 'transparent'
-      }}
+      className="flex w-full items-center gap-2.5 px-3.5 py-2.5 rounded-full text-[13.5px] font-medium text-[#8a8a8a] hover:bg-white hover:text-[#080808] transition-colors border-none bg-transparent cursor-pointer font-sans"
     >
-      <LogOut size={16} />
-      <span>Cerrar sesión</span>
+      <HugeiconsIcon icon={Logout01Icon} size={16} strokeWidth={1.5} className="opacity-60" />
+      Cerrar sesión
     </button>
   )
 }
