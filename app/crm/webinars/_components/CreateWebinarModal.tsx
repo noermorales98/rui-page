@@ -26,13 +26,21 @@ function toDatetimeLocal(date: Date | string): string {
 export function CreateWebinarModal({ webinar, onClose }: Props) {
   const submittedRef = useRef(false)
   const action = webinar ? updateWebinar.bind(null, webinar.id) : createWebinar
-  const [state, formAction, isPending] = useActionState(action, null)
+  const [state, formAction, isPending] = useActionState<{ error: string } | null, FormData>(action, null)
 
   useEffect(() => {
     if (submittedRef.current && !isPending && state === null) {
       onClose()
     }
   }, [isPending, state, onClose])
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKey)
+    return () => document.removeEventListener('keydown', handleKey)
+  }, [onClose])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -49,6 +57,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
+            aria-label="Cerrar"
             className="rounded-lg p-1 text-gray-400 hover:bg-gray-100"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
