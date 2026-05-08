@@ -1,0 +1,100 @@
+<h2>Layout del Pipeline</h2>
+<p class="subtitle">¿Cómo quieres visualizar las oportunidades?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Kanban — columnas por etapa</h3>
+      <p>Cada etapa es una columna. Las tarjetas se arrastran entre columnas. Vista clásica de pipeline de ventas.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Pipeline — Vista Kanban</div>
+        <div class="mockup-body" style="padding:0;display:flex;gap:0;overflow-x:auto">
+          <!-- Column Lead -->
+          <div style="min-width:180px;border-right:1px solid #e2e8f0;padding:12px;background:#f8fafc;flex-shrink:0">
+            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between">
+              Lead <span style="background:#e2e8f0;border-radius:9999px;padding:1px 7px;font-size:10px">3</span>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+              <div style="font-size:12px;font-weight:600;color:#1e293b">María García</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px">Curso de Presencia Escénica</div>
+              <div style="font-size:10px;color:#94a3b8;margin-top:6px">hace 2 días</div>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+              <div style="font-size:12px;font-weight:600;color:#1e293b">Carlos López</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;font-style:italic">sin curso</div>
+              <div style="font-size:10px;color:#94a3b8;margin-top:6px">hace 5 días</div>
+            </div>
+          </div>
+          <!-- Column Demo -->
+          <div style="min-width:180px;border-right:1px solid #e2e8f0;padding:12px;background:#f8fafc;flex-shrink:0">
+            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between">
+              Demo/Llamada <span style="background:#e2e8f0;border-radius:9999px;padding:1px 7px;font-size:10px">2</span>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+              <div style="font-size:12px;font-weight:600;color:#1e293b">Ana Martínez</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px">Voz y Comunicación</div>
+              <div style="font-size:10px;color:#94a3b8;margin-top:6px">hoy</div>
+            </div>
+          </div>
+          <!-- Column Negociación -->
+          <div style="min-width:180px;border-right:1px solid #e2e8f0;padding:12px;background:#f8fafc;flex-shrink:0">
+            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between">
+              Negociación <span style="background:#e2e8f0;border-radius:9999px;padding:1px 7px;font-size:10px">1</span>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)">
+              <div style="font-size:12px;font-weight:600;color:#1e293b">Pedro Ruiz</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px">Pack Completo</div>
+              <div style="font-size:10px;color:#94a3b8;margin-top:6px">hace 1 día</div>
+            </div>
+          </div>
+          <!-- Column Inscrito -->
+          <div style="min-width:180px;padding:12px;background:#f8fafc;flex-shrink:0">
+            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between">
+              Inscrito <span style="background:#dcfce7;color:#166534;border-radius:9999px;padding:1px 7px;font-size:10px">1</span>
+            </div>
+            <div style="background:white;border-radius:8px;padding:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:3px solid #22c55e">
+              <div style="font-size:12px;font-weight:600;color:#1e293b">Laura Torres</div>
+              <div style="font-size:11px;color:#64748b;margin-top:2px">Presencia Escénica</div>
+              <div style="font-size:10px;color:#94a3b8;margin-top:6px">hace 3 días</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Lista con filtro por etapa</h3>
+      <p>Tabla con todas las oportunidades. Filtras por etapa. Sin drag-and-drop, más fácil de construir y de usar en móvil.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Pipeline — Vista Lista</div>
+        <div class="mockup-body" style="padding:0">
+          <div style="background:#f1f5f9;padding:10px 12px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #e2e8f0;flex-wrap:wrap">
+            <button class="mock-button" style="background:#6366f1;font-size:11px">Todos</button>
+            <button class="mock-button" style="background:white;color:#64748b;border:1px solid #e2e8f0;font-size:11px">Lead</button>
+            <button class="mock-button" style="background:white;color:#64748b;border:1px solid #e2e8f0;font-size:11px">Demo</button>
+            <button class="mock-button" style="background:white;color:#64748b;border:1px solid #e2e8f0;font-size:11px">Negociación</button>
+            <button class="mock-button" style="background:white;color:#64748b;border:1px solid #e2e8f0;font-size:11px">Inscrito</button>
+            <button class="mock-button" style="margin-left:auto;font-size:11px">+ Nueva oportunidad</button>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0">
+              <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:600">Contacto</th>
+              <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:600">Curso</th>
+              <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:600">Etapa</th>
+              <th style="padding:8px 12px;text-align:left;color:#64748b;font-weight:600">Actualizado</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 12px;font-weight:500">María García</td><td style="padding:8px 12px;color:#64748b">Presencia Escénica</td><td style="padding:8px 12px"><span style="background:#e0e7ff;color:#3730a3;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600">LEAD</span></td><td style="padding:8px 12px;color:#94a3b8;font-size:11px">hace 2 días</td></tr>
+              <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 12px;font-weight:500">Ana Martínez</td><td style="padding:8px 12px;color:#64748b">Voz y Comunicación</td><td style="padding:8px 12px"><span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600">DEMO</span></td><td style="padding:8px 12px;color:#94a3b8;font-size:11px">hoy</td></tr>
+              <tr><td style="padding:8px 12px;font-weight:500">Laura Torres</td><td style="padding:8px 12px;color:#94a3b8;font-style:italic">sin curso</td><td style="padding:8px 12px"><span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:600">INSCRITO</span></td><td style="padding:8px 12px;color:#94a3b8;font-size:11px">hace 3 días</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

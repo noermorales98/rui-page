@@ -13,6 +13,7 @@ function createPrismaClient() {
     user: decodeURIComponent(parsed.username),
     password: decodeURIComponent(parsed.password),
     database: parsed.pathname.replace(/^\//, ''),
+    connectionLimit: 1,
   })
 
   return new PrismaClient({ adapter, log: ['error'] })

@@ -26,7 +26,7 @@ interface Props {
 }
 
 export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: Props) {
-  const [submitted, setSubmitted] = useState(false)
+  const submittedRef = useRef(false)
   const [searchQuery, setSearchQuery] = useState(
     deal?.contact.name ?? lockedContact?.name ?? '',
   )
@@ -46,10 +46,10 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
   const [state, formAction, isPending] = useActionState(action, null)
 
   useEffect(() => {
-    if (state === null && submitted) {
+    if (submittedRef.current && !isPending && state === null) {
       onClose()
     }
-  }, [state, submitted, onClose])
+  }, [isPending, state, onClose])
 
   useEffect(() => {
     if (isContactLocked) return
@@ -111,7 +111,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
           </button>
         </div>
 
-        <form action={formAction} onSubmit={() => setSubmitted(true)}>
+        <form action={formAction} onSubmit={() => { submittedRef.current = true }}>
           {/* Contact */}
           <div className="mb-4">
             <label className="mb-1 block text-sm font-medium text-gray-700">

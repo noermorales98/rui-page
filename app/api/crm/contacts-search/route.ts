@@ -12,17 +12,13 @@ export async function GET(request: NextRequest) {
   if (!q) return Response.json([])
 
   try {
-    const contacts = await prisma.contact.findMany({
-      where: {
-        OR: [
-          { name: { contains: q } },
-          { email: { contains: q } },
-        ],
-      },
-      select: { id: true, name: true, email: true },
-      take: 10,
-      orderBy: { name: 'asc' },
-    })
+    const pattern = `%${q}%`
+    const contacts = await prisma.$queryRaw<{ id: number; name: string; email: string }[]>`
+      SELECT id, name, email FROM Contact
+      WHERE name LIKE ${pattern} OR email LIKE ${pattern}
+      ORDER BY name ASC
+      LIMIT 10
+    `
 
     return Response.json(contacts)
   } catch {

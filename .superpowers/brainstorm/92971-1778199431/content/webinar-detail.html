@@ -1,0 +1,143 @@
+<h2>Detalle de Webinar</h2>
+<p class="subtitle">Página interna al hacer clic en un webinar — ¿qué acciones necesitas?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Header + tabla de participantes</h3>
+      <p>Info del webinar arriba. Tabla de participantes abajo con estado editable (Registrado / Asistió / Compró). Botón para agregar contacto y botón para importar CSV.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Webinars › Cómo desarrollar tu voz</div>
+        <div class="mockup-body">
+          <!-- Header info -->
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#1e293b;margin-bottom:4px">Cómo desarrollar tu voz</div>
+              <div style="display:flex;gap:12px;font-size:11px;color:#64748b">
+                <span>📅 15 mayo 2026 · 18:00h</span>
+                <span>🎥 Zoom</span>
+                <span style="color:#6366f1;text-decoration:underline;cursor:pointer">Ver link</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="mock-button" style="background:white;color:#64748b;border:1px solid #e2e8f0;font-size:11px">Editar</button>
+              <button class="mock-button" style="font-size:11px">+ Agregar contacto</button>
+              <button class="mock-button" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;font-size:11px">↑ Importar CSV</button>
+            </div>
+          </div>
+          <!-- Stats row -->
+          <div style="display:flex;gap:16px;margin-bottom:14px">
+            <div style="background:#eff6ff;border-radius:8px;padding:8px 14px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#6366f1">42</div>
+              <div style="font-size:10px;color:#64748b">Registrados</div>
+            </div>
+            <div style="background:#fffbeb;border-radius:8px;padding:8px 14px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#f59e0b">28</div>
+              <div style="font-size:10px;color:#64748b">Asistieron</div>
+            </div>
+            <div style="background:#f0fdf4;border-radius:8px;padding:8px 14px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#22c55e">7</div>
+              <div style="font-size:10px;color:#64748b">Compraron</div>
+            </div>
+            <div style="background:#f8fafc;border-radius:8px;padding:8px 14px;text-align:center">
+              <div style="font-size:16px;font-weight:700;color:#94a3b8">67%</div>
+              <div style="font-size:10px;color:#64748b">Asistencia</div>
+            </div>
+          </div>
+          <!-- Table -->
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <thead>
+              <tr style="background:#f8fafc;border-bottom:1px solid #e2e8f0">
+                <th style="padding:7px 10px;text-align:left;color:#64748b;font-weight:600">Contacto</th>
+                <th style="padding:7px 10px;text-align:left;color:#64748b;font-weight:600">Email</th>
+                <th style="padding:7px 10px;text-align:left;color:#64748b;font-weight:600">Estado</th>
+                <th style="padding:7px 10px;text-align:left;color:#64748b;font-weight:600">Agregado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #f1f5f9">
+                <td style="padding:7px 10px;font-weight:600;color:#6366f1;cursor:pointer">María García</td>
+                <td style="padding:7px 10px;color:#64748b">maria@email.com</td>
+                <td style="padding:7px 10px">
+                  <select style="font-size:10px;border:1px solid #e2e8f0;border-radius:6px;padding:2px 6px;background:#f0fdf4;color:#15803d">
+                    <option>Compró</option>
+                  </select>
+                </td>
+                <td style="padding:7px 10px;color:#94a3b8">hace 2 días</td>
+              </tr>
+              <tr style="border-bottom:1px solid #f1f5f9">
+                <td style="padding:7px 10px;font-weight:600;color:#6366f1;cursor:pointer">Carlos López</td>
+                <td style="padding:7px 10px;color:#64748b">carlos@email.com</td>
+                <td style="padding:7px 10px">
+                  <select style="font-size:10px;border:1px solid #e2e8f0;border-radius:6px;padding:2px 6px;background:#fffbeb;color:#92400e">
+                    <option>Asistió</option>
+                  </select>
+                </td>
+                <td style="padding:7px 10px;color:#94a3b8">hace 2 días</td>
+              </tr>
+              <tr>
+                <td style="padding:7px 10px;font-weight:600;color:#6366f1;cursor:pointer">Ana Martínez</td>
+                <td style="padding:7px 10px;color:#64748b">ana@email.com</td>
+                <td style="padding:7px 10px">
+                  <select style="font-size:10px;border:1px solid #e2e8f0;border-radius:6px;padding:2px 6px;background:#eff6ff;color:#3730a3">
+                    <option>Registrado</option>
+                  </select>
+                </td>
+                <td style="padding:7px 10px;color:#94a3b8">hace 3 días</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Sin página de detalle — todo inline</h3>
+      <p>Al hacer clic en un webinar se expande la fila mostrando los participantes directamente en la lista. Sin navegación extra.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Webinars</div>
+        <div class="mockup-body" style="padding:0">
+          <table style="width:100%;border-collapse:collapse;font-size:11px">
+            <tbody>
+              <tr style="border-bottom:1px solid #e2e8f0;background:#f8fafc">
+                <td style="padding:8px 12px;font-weight:600;color:#1e293b">▼ Cómo desarrollar tu voz</td>
+                <td style="padding:8px 12px;color:#64748b">15 may 2026</td>
+                <td style="padding:8px 12px;text-align:center;font-weight:700;color:#6366f1">42</td>
+                <td style="padding:8px 12px;text-align:center;font-weight:700;color:#f59e0b">28</td>
+                <td style="padding:8px 12px;text-align:center;font-weight:700;color:#22c55e">7</td>
+              </tr>
+              <!-- Expanded participants -->
+              <tr style="border-bottom:1px solid #f1f5f9;background:#fafafa">
+                <td colspan="5" style="padding:0 12px 0 32px">
+                  <table style="width:100%;font-size:10px;border-collapse:collapse">
+                    <tr style="border-bottom:1px solid #f1f5f9">
+                      <td style="padding:5px 8px;color:#6366f1;font-weight:600">María García</td>
+                      <td style="padding:5px 8px;color:#64748b">maria@email.com</td>
+                      <td style="padding:5px 8px"><span style="background:#f0fdf4;color:#15803d;padding:1px 6px;border-radius:9999px">Compró</span></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f1f5f9">
+                      <td style="padding:5px 8px;color:#6366f1;font-weight:600">Carlos López</td>
+                      <td style="padding:5px 8px;color:#64748b">carlos@email.com</td>
+                      <td style="padding:5px 8px"><span style="background:#fffbeb;color:#92400e;padding:1px 6px;border-radius:9999px">Asistió</span></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr style="border-bottom:1px solid #e2e8f0">
+                <td style="padding:8px 12px;font-weight:600;color:#1e293b">► Presencia escénica básica</td>
+                <td style="padding:8px 12px;color:#64748b">3 may 2026</td>
+                <td style="padding:8px 12px;text-align:center;font-weight:700;color:#6366f1">31</td>
+                <td style="padding:8px 12px;text-align:center;font-weight:700;color:#f59e0b">19</td>
+                <td style="padding:8px 12px;text-align:center;font-weight:700;color:#22c55e">4</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
