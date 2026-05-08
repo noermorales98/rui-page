@@ -70,13 +70,7 @@ export default async function VentasPage({ searchParams }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Ventas</h1>
-          <p className="mt-1.5 text-sm text-[#8a8a8a]">
-            Registra ventas, cierra oportunidades y mide ingresos del CRM.
-          </p>
-        </div>
+      <div className="flex justify-end">
         <CreateSaleModal deals={deals} />
       </div>
 
@@ -126,7 +120,7 @@ export default async function VentasPage({ searchParams }: Props) {
 
       <SalesFilters />
 
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6">
         <SalesTable sales={sales as SaleRow[]} />
       </div>
 
@@ -139,7 +133,7 @@ export default async function VentasPage({ searchParams }: Props) {
             {page > 1 && (
               <a
                 href={`?${new URLSearchParams({ ...params, page: String(page - 1) })}`}
-                className="bg-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f2f2f2] transition shadow-sm"
+                className="bg-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f2f2f2] transition"
               >
                 Anterior
               </a>
@@ -147,7 +141,7 @@ export default async function VentasPage({ searchParams }: Props) {
             {skip + PAGE_SIZE < total && (
               <a
                 href={`?${new URLSearchParams({ ...params, page: String(page + 1) })}`}
-                className="bg-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f2f2f2] transition shadow-sm"
+                className="bg-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f2f2f2] transition"
               >
                 Siguiente
               </a>

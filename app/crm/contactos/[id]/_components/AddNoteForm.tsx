@@ -22,7 +22,7 @@ export function AddNoteForm({ contactId }: { contactId: number }) {
           name="body"
           rows={3}
           placeholder="Agregar una nota..."
-          className="w-full bg-white rounded-2xl px-4 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition resize-none placeholder:text-[#aaa]"
+          className="w-full bg-white rounded-2xl px-4 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition resize-none placeholder:text-[#aaa]"
         />
         {state?.error && (
           <p className="mb-2 text-xs text-red-600">{state.error}</p>

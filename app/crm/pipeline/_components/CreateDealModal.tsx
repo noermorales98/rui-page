@@ -81,9 +81,9 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
   }, [searchQuery, isContactLocked])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div
-        className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-[28px] p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="deal-modal-title"
@@ -137,10 +137,10 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                   }}
                   onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                   placeholder="Buscar por nombre o email..."
-                  className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                  className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
                 />
                 {showDropdown && (
-                  <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                  <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1">
                     {searchResults.map((c) => (
                       <li key={c.id}>
                         <button
@@ -174,7 +174,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
               name="courseName"
               defaultValue={deal?.courseName ?? ''}
               placeholder="ej. Presencia Escénica"
-              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
             />
           </div>
 
@@ -184,7 +184,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
             <select
               name="stage"
               defaultValue={deal?.stage ?? initialStage ?? 'LEAD'}
-              className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
+              className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af]"
             >
               {STAGE_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -205,7 +205,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
               defaultValue={deal?.notes ?? ''}
               rows={3}
               placeholder="Observaciones sobre esta oportunidad..."
-              className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] resize-none"
+              className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] resize-none"
             />
           </div>
 

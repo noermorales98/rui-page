@@ -1,8 +1,10 @@
 'use client'
 
+import { Plus, X } from 'lucide-react'
 import { useState, useActionState, useEffect } from 'react'
 import type { Tag, Contact, ContactTag } from '@prisma/client'
 import { createContact, updateContact } from '../actions'
+import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
 
 type ContactWithTags = Contact & { tags: (ContactTag & { tag: Tag })[] }
 
@@ -24,6 +26,9 @@ const STATUS_OPTIONS = [
   { value: 'QUALIFIED', label: 'Calificado' },
   { value: 'CLIENT', label: 'Cliente' },
 ]
+
+const fieldClass = 'bg-[#f7f8fa]'
+const selectClass = 'min-h-11 w-full rounded-full border border-[#f2f2f2] bg-[#f7f8fa] px-4 py-2.5 text-sm text-[#080808] outline-none transition focus:border-[#9ca3af] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]'
 
 export function CreateContactModal({ tags, contact, trigger }: Props) {
   const [open, setOpen] = useState(false)
@@ -81,38 +86,29 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
   return (
     <>
       {trigger ? (
-        <span onClick={handleOpen} className="cursor-pointer">
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={handleOpen}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              handleOpen()
+            }
+          }}
+          className="cursor-pointer"
+        >
           {trigger}
         </span>
       ) : (
-        <button
-          onClick={handleOpen}
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-            <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-          </svg>
+        <Button onClick={handleOpen}>
+          <Plus size={16} strokeWidth={2} />
           Nuevo contacto
-        </button>
+        </Button>
       )}
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div role="dialog" aria-modal="true" className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">
-                {contact ? 'Editar contacto' : 'Nuevo contacto'}
-              </h2>
-              <button
-                onClick={handleClose}
-                className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-                  <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-                </svg>
-              </button>
-            </div>
-
+        <ModalWrapper onClose={handleClose} title={contact ? 'Editar contacto' : 'Nuevo contacto'}>
             {state?.error && (
               <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
                 {state.error}
@@ -128,51 +124,51 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                 setSubmitted(true)
                 formAction(fd)
               }}
-              className="space-y-4"
+              className="min-w-0 space-y-4"
             >
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
+              <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="min-w-0 sm:col-span-2">
                   <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Nombre *</label>
-                  <input
+                  <Input
                     name="name"
                     type="text"
                     required
                     minLength={2}
                     defaultValue={contact?.name}
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className={fieldClass}
                     placeholder="Nombre completo"
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="min-w-0 sm:col-span-2">
                   <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Email *</label>
-                  <input
+                  <Input
                     name="email"
                     type="email"
                     required
                     defaultValue={contact?.email}
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className={fieldClass}
                     placeholder="email@ejemplo.com"
                   />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Teléfono</label>
-                  <input
+                  <Input
                     name="phone"
                     type="tel"
                     defaultValue={contact?.phone ?? ''}
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className={fieldClass}
                     placeholder="+52 55 1234 5678"
                   />
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Fuente</label>
                   <select
                     name="source"
                     defaultValue={contact?.source ?? 'MANUAL'}
-                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
+                    className={selectClass}
                   >
                     {SOURCE_OPTIONS.map((o) => (
                       <option key={o.value} value={o.value}>{o.label}</option>
@@ -180,12 +176,12 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                   </select>
                 </div>
 
-                <div>
+                <div className="min-w-0 sm:col-span-2">
                   <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Estado</label>
                   <select
                     name="status"
                     defaultValue={contact?.status ?? 'NEW'}
-                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
+                    className={selectClass}
                   >
                     {STATUS_OPTIONS.map((o) => (
                       <option key={o.value} value={o.value}>{o.label}</option>
@@ -195,7 +191,7 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
               </div>
 
               {/* Tags */}
-              <div>
+              <div className="min-w-0">
                 <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Tags</label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {tags.map((tag) => (
@@ -203,7 +199,7 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                       type="button"
                       key={tag.id}
                       onClick={() => toggleTag(tag.id)}
-                      className={`rounded px-2.5 py-1 text-xs font-medium text-white transition-opacity ${selectedTagIds.includes(tag.id) ? 'opacity-100 ring-2 ring-offset-1 ring-indigo-500' : 'opacity-50'}`}
+                      className={`cursor-pointer rounded-full border-none px-2.5 py-1 text-xs font-semibold text-white transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7] ${selectedTagIds.includes(tag.id) ? 'opacity-100 outline outline-2 outline-offset-2 outline-[#9ca3af]' : 'opacity-55 hover:opacity-85'}`}
                       style={{ backgroundColor: tag.color }}
                     >
                       {tag.name}
@@ -211,49 +207,54 @@ export function CreateContactModal({ tags, contact, trigger }: Props) {
                   ))}
                 </div>
                 {newTagNames.map((name) => (
-                  <span key={name} className="mr-1 inline-flex items-center gap-1 rounded bg-indigo-100 px-2 py-0.5 text-xs text-indigo-800">
+                  <span key={name} className="mr-1 inline-flex items-center gap-1 rounded-full bg-[#9bbdf7] px-2.5 py-1 text-xs font-semibold text-[#080808]">
                     {name}
-                    <button type="button" onClick={() => setNewTagNames((p) => p.filter((n) => n !== name))}>×</button>
+                    <button
+                      type="button"
+                      aria-label={`Quitar tag ${name}`}
+                      onClick={() => setNewTagNames((p) => p.filter((n) => n !== name))}
+                      className="cursor-pointer rounded-full border-none bg-transparent p-0 text-[#080808]/60 transition hover:text-[#080808] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#080808]/40"
+                    >
+                      <X size={12} strokeWidth={2} />
+                    </button>
                   </span>
                 ))}
-                <div className="mt-2 flex gap-2">
-                  <input
+                <div className="mt-2 grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
+                  <Input
                     type="text"
                     value={newTagInput}
                     onChange={(e) => setNewTagInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addNewTag())}
-                    className="flex-1 bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className={`min-w-0 ${fieldClass}`}
                     placeholder="Nuevo tag..."
                   />
-                  <button
-                    type="button"
-                    onClick={addNewTag}
-                    className="bg-[#f0f1f3] text-[#080808] rounded-full px-4 py-2 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer"
-                  >
+                  <Button type="button" variant="secondary" onClick={addNewTag}>
                     Agregar
-                  </button>
+                  </Button>
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button
+              <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
+                <Button
                   type="button"
                   onClick={handleClose}
-                  className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
                 >
                   Cancelar
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={isPending}
-                  className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
+                  fullWidth
+                  size="lg"
                 >
                   {isPending ? 'Guardando...' : contact ? 'Guardar cambios' : 'Crear contacto'}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
+        </ModalWrapper>
       )}
     </>
   )

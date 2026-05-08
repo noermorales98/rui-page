@@ -8,27 +8,20 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
   if (!session) redirect('/crm-login')
 
   return (
-    <div className="min-h-screen bg-[#edeef0] p-5">
-      <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: '260px 1fr',
-          gridTemplateRows: '68px 1fr',
-          minHeight: 'calc(100vh - 40px)',
-        }}
-      >
+    <div className="min-h-screen bg-[#edeef0] p-3 sm:p-5">
+      <div className="grid min-h-[calc(100vh-24px)] gap-4 lg:min-h-[calc(100vh-40px)] lg:grid-cols-[260px_minmax(0,1fr)] lg:grid-rows-[80px_minmax(0,1fr)]">
         {/* Sidebar spans both rows */}
-        <div style={{ gridColumn: '1', gridRow: '1 / 3' }}>
+        <div className="lg:col-start-1 lg:row-span-2">
           <Sidebar />
         </div>
 
         {/* Navbar: col 2, row 1 */}
-        <div style={{ gridColumn: '2', gridRow: '1' }}>
+        <div className="lg:col-start-2 lg:row-start-1">
           <Navbar />
         </div>
 
         {/* Main content: col 2, row 2 */}
-        <main style={{ gridColumn: '2', gridRow: '2' }} className="min-w-0">
+        <main className="min-w-0 lg:col-start-2 lg:row-start-2">
           <div className="flex flex-col gap-6">{children}</div>
         </main>
       </div>

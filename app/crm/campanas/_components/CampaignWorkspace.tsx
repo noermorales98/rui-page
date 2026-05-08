@@ -43,9 +43,9 @@ function formatDate(value: Date | string) {
 }
 
 const inputClass =
-  'w-full rounded-full px-5 py-2.5 border-2 border-transparent bg-white focus:border-[#dfff00] outline-none transition text-sm'
+  'w-full rounded-full px-5 py-2.5 border border-[#f2f2f2] bg-white focus:border-[#9ca3af] outline-none transition text-sm'
 const textareaClass =
-  'w-full rounded-2xl px-5 py-2.5 border-2 border-transparent bg-white focus:border-[#dfff00] outline-none transition text-sm leading-6'
+  'w-full rounded-2xl px-5 py-2.5 border border-[#f2f2f2] bg-white focus:border-[#9ca3af] outline-none transition text-sm leading-6'
 const labelClass = 'block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5'
 
 export function CampaignWorkspace({ forms, webinars }: Props) {
@@ -147,11 +147,11 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
           <div className="mt-4 space-y-5">
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm text-[#080808]">
-                <input name="audience" value="registered" type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
+                <input name="audience" value="registered" type="checkbox" defaultChecked className="h-4 w-4 rounded border-[#f2f2f2] accent-[#080808]" />
                 Contactos registrados
               </label>
               <label className="flex items-center gap-2 text-sm text-[#080808]">
-                <input name="audience" value="pipeline_leads" type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300 text-indigo-600" />
+                <input name="audience" value="pipeline_leads" type="checkbox" defaultChecked className="h-4 w-4 rounded border-[#f2f2f2] accent-[#080808]" />
                 Leads del pipeline
               </label>
             </div>
@@ -161,7 +161,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               <div className="flex flex-wrap gap-2">
                 {CONTACT_STATUSES.map((status) => (
                   <label key={status.value} className="rounded-xl border border-[#e8e8e8] bg-white px-3 py-2 text-xs text-[#080808]">
-                    <input name="contactStatuses" value={status.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded border-gray-300 text-indigo-600" />
+                    <input name="contactStatuses" value={status.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
                     {status.label}
                   </label>
                 ))}
@@ -173,7 +173,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               <div className="grid grid-cols-2 gap-2">
                 {DEAL_STAGES.map((stage) => (
                   <label key={stage.value} className="rounded-xl border border-[#e8e8e8] bg-white px-3 py-2 text-xs text-[#080808]">
-                    <input name="dealStages" value={stage.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded border-gray-300 text-indigo-600" />
+                    <input name="dealStages" value={stage.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
                     {stage.label}
                   </label>
                 ))}
@@ -199,7 +199,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
                 ) : (
                   forms.map((form) => (
                     <label key={form.id} className="flex items-center gap-2 text-xs text-[#080808]">
-                      <input name="formIds" value={form.id} type="checkbox" className="h-3.5 w-3.5 rounded border-gray-300 text-indigo-600" />
+                      <input name="formIds" value={form.id} type="checkbox" className="h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
                       <span className="truncate">{form.name}</span>
                       <span className="ml-auto text-[10px] text-[#b0b0b0]">{form.status}</span>
                     </label>
@@ -216,7 +216,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
                 ) : (
                   webinars.map((webinar) => (
                     <label key={webinar.id} className="flex items-center gap-2 text-xs text-[#080808]">
-                      <input name="webinarIds" value={webinar.id} type="checkbox" className="h-3.5 w-3.5 rounded border-gray-300 text-indigo-600" />
+                      <input name="webinarIds" value={webinar.id} type="checkbox" className="h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
                       <span className="min-w-0 flex-1 truncate">{webinar.title}</span>
                       <span className="text-[10px] text-[#b0b0b0]">{formatDate(webinar.date)}</span>
                     </label>

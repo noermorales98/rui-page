@@ -134,7 +134,7 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
       </div>
       <DragOverlay>
         {activeDeal ? (
-          <div className="w-64 cursor-grabbing rounded-2xl bg-white px-3.5 py-3 shadow-xl ring-2 ring-[#9bbdf7] opacity-90">
+          <div className="w-64 cursor-grabbing rounded-2xl bg-white px-3.5 py-3 border-2 border-[#9bbdf7] opacity-90">
             <p className="truncate text-sm font-semibold text-gray-900">
               {activeDeal.contact.name}
             </p>

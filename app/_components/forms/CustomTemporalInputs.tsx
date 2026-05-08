@@ -60,7 +60,7 @@ export function CustomDateInput({ name, label, required, placeholder }: BaseProp
   return (
     <div>
       <input type="hidden" name={name} value={selected} required={required} />
-      <div className="rounded-xl border border-gray-200 bg-white p-3">
+      <div className="rounded-xl border border-[#f2f2f2] bg-white p-3">
         <div className="mb-3 flex items-center justify-between">
           <button
             type="button"
@@ -125,7 +125,7 @@ export function CustomTimeInput({ name, label, required, placeholder }: BaseProp
   return (
     <div>
       <input type="hidden" name={name} value={selected} required={required} />
-      <div className="rounded-xl border border-gray-200 bg-white p-3">
+      <div className="rounded-xl border border-[#f2f2f2] bg-white p-3">
         <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
           <Clock size={16} />
           {value}
@@ -201,7 +201,7 @@ function CustomDatePart({ label, onChange }: { label: string; onChange: (value: 
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-3">
+    <div className="rounded-xl border border-[#f2f2f2] bg-white p-3">
       <div className="mb-3 flex items-center justify-between">
         <button
           type="button"
@@ -250,7 +250,7 @@ function CustomTimePart({ label, onChange }: { label: string; onChange: (value: 
   const options = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00']
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-3">
+    <div className="rounded-xl border border-[#f2f2f2] bg-white p-3">
       <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
         <Clock size={16} />
         {selected || 'Selecciona hora'}

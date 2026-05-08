@@ -62,7 +62,7 @@ export function FormBuilder({ form }: Props) {
             </span>
           </div>
           <div className="flex items-center gap-3 text-sm text-gray-500">
-            <code className="rounded bg-white px-2 py-1 font-mono ring-1 ring-gray-200">
+            <code className="rounded bg-white px-2 py-1 font-mono border border-gray-200">
               /formularios/{form.slug}
             </code>
             <Link
@@ -111,7 +111,7 @@ export function FormBuilder({ form }: Props) {
       <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)_340px]">
         <FieldPalette formId={form.id} />
 
-        <section className="min-h-[560px] rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+        <section className="min-h-[560px] rounded-xl bg-white p-5 border border-gray-200">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-base font-semibold text-gray-900">Vista del formulario</h2>
@@ -139,7 +139,7 @@ export function FormBuilder({ form }: Props) {
         </section>
 
         <aside className="space-y-5">
-          <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+          <section className="rounded-xl bg-white p-5 border border-gray-200">
             <h2 className="mb-4 text-base font-semibold text-gray-900">Configuracion</h2>
             <form action={settingsAction} className="space-y-4">
               <div>
@@ -147,7 +147,7 @@ export function FormBuilder({ form }: Props) {
                 <input
                   name="name"
                   defaultValue={form.name}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
                 />
               </div>
               <div>
@@ -160,7 +160,7 @@ export function FormBuilder({ form }: Props) {
                   name="description"
                   defaultValue={form.description ?? ''}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
                 />
               </div>
               <div>
@@ -168,7 +168,7 @@ export function FormBuilder({ form }: Props) {
                 <input
                   name="submitLabel"
                   defaultValue={form.submitLabel}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
                 />
               </div>
               <div>
@@ -177,7 +177,7 @@ export function FormBuilder({ form }: Props) {
                   name="successMessage"
                   defaultValue={form.successMessage}
                   rows={2}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
                 />
               </div>
               <button
@@ -206,7 +206,7 @@ function SlugInput({ defaultValue }: { defaultValue: string }) {
       name="slug"
       value={value}
       onChange={(event) => setValue(slugify(event.target.value))}
-      className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+      className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 font-mono text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
     />
   )
 }

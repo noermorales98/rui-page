@@ -38,7 +38,7 @@ function LoginForm() {
       <div className="w-full max-w-sm">
         <span className="text-2xl font-bold tracking-[-0.04em] text-[#080808] mb-8 block text-center">Rui CRM</span>
 
-        <div className="bg-[#f7f8fa] rounded-[32px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-10">
+        <div className="bg-[#f7f8fa] rounded-[32px] border border-[#e5e7eb] p-10">
           <h1 className="text-3xl font-semibold tracking-[-0.04em] text-[#080808] mb-2 text-center">Iniciar sesión</h1>
           <p className="text-sm text-[#8a8a8a] mb-8 text-center">Accede a tu panel de control</p>
 
@@ -57,7 +57,7 @@ function LoginForm() {
                 required
                 autoComplete="email"
                 placeholder="tu@email.com"
-                className="w-full bg-white rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] mb-3"
+                className="w-full bg-white rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] mb-3"
               />
             </div>
 
@@ -75,7 +75,7 @@ function LoginForm() {
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full bg-white rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] mb-3"
+                className="w-full bg-white rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] mb-3"
               />
             </div>
 

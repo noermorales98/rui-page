@@ -1,7 +1,12 @@
 'use client'
 
+import { Plus } from 'lucide-react'
 import { useState, useActionState, useEffect } from 'react'
 import { createUser } from '../actions'
+import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
+
+const fieldClass = 'bg-[#f7f8fa]'
+const selectClass = 'min-h-10 w-full rounded-full border border-[#f2f2f2] bg-[#f7f8fa] px-5 py-2.5 text-sm text-[#080808] outline-none transition focus:border-[#9ca3af] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]'
 
 export function CreateUserModal() {
   const [open, setOpen] = useState(false)
@@ -27,52 +32,18 @@ export function CreateUserModal() {
 
   return (
     <>
-      <button
+      <Button
+        type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="h-4 w-4"
-        >
-          <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-        </svg>
+        <Plus size={16} strokeWidth={2} />
         Nuevo usuario
-      </button>
+      </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Overlay */}
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={handleClose}
-            aria-hidden="true"
-          />
-
-          {/* Dialog */}
-          <div className="relative z-10 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Nuevo usuario</h2>
-              <button
-                onClick={handleClose}
-                className="rounded-md p-1 text-gray-400 hover:text-gray-600 focus:outline-none"
-                aria-label="Cerrar"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
-                >
-                  <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-                </svg>
-              </button>
-            </div>
-
+        <ModalWrapper onClose={handleClose} title="Nuevo usuario">
             {state?.error && (
-              <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
                 {state.error}
               </div>
             )}
@@ -88,17 +59,17 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="name"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
                 >
                   Nombre
                 </label>
-                <input
+                <Input
                   id="name"
                   name="name"
                   type="text"
                   required
                   minLength={2}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className={fieldClass}
                   placeholder="Nombre completo"
                 />
               </div>
@@ -106,16 +77,16 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
                 >
                   Email
                 </label>
-                <input
+                <Input
                   id="email"
                   name="email"
                   type="email"
                   required
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className={fieldClass}
                   placeholder="usuario@ejemplo.com"
                 />
               </div>
@@ -123,17 +94,17 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="password"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
                 >
                   Contraseña
                 </label>
-                <input
+                <Input
                   id="password"
                   name="password"
                   type="password"
                   required
                   minLength={8}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className={fieldClass}
                   placeholder="Mínimo 8 caracteres"
                 />
               </div>
@@ -141,7 +112,7 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="role"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
                 >
                   Rol
                 </label>
@@ -149,7 +120,7 @@ export function CreateUserModal() {
                   id="role"
                   name="role"
                   defaultValue="EDITOR"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className={selectClass}
                 >
                   <option value="EDITOR">Editor</option>
                   <option value="ADMIN">Administrador</option>
@@ -157,24 +128,26 @@ export function CreateUserModal() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button
+                <Button
                   type="button"
                   onClick={handleClose}
-                  className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
                 >
                   Cancelar
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60"
+                  fullWidth
+                  size="lg"
                 >
                   {isPending ? 'Creando...' : 'Crear usuario'}
-                </button>
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
+        </ModalWrapper>
       )}
     </>
   )

@@ -1272,7 +1272,7 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
       {/* Add button */}
       <button
         onClick={() => setModalOpen(true)}
-        className={`mt-2 flex w-full items-center justify-center gap-1 rounded-xl border-2 border-dashed py-2 text-xs text-[#8a8a8a] hover:text-[#080808] transition-colors bg-transparent cursor-pointer font-sans ${config.accentBg ? 'border-[#dfff00]/50 hover:border-[#dfff00]' : 'border-[#d1d5db] hover:border-[#9bbdf7]'}`}
+        className={`mt-2 flex w-full items-center justify-center gap-1 rounded-xl border-2 border-dashed py-2 text-xs text-[#8a8a8a] hover:text-[#080808] transition-colors bg-transparent cursor-pointer font-sans ${config.accentBg ? 'border-[#dfff00]/50 hover:border-[#dfff00]' : 'border-[#f2f2f2] hover:border-[#9bbdf7]'}`}
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 5v14M5 12h14" strokeLinecap="round"/>

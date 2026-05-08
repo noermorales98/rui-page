@@ -29,7 +29,7 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
   const containerClass = [
     'flex flex-col flex-shrink-0 w-64 rounded-[22px] p-3.5 transition-colors',
     isOver
-      ? 'bg-[#9bbdf7]/15 ring-2 ring-[#9bbdf7]'
+      ? 'bg-[#9bbdf7]/15 border-2 border-[#9bbdf7]'
       : config.accentBg
         ? 'bg-[#dfff00]/10'
         : 'bg-[#f0f1f3]',
@@ -43,8 +43,8 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
   const addButtonClass = [
     'flex w-full items-center justify-center gap-1 rounded-xl border-2 border-dashed py-2 text-xs text-[#8a8a8a] hover:text-[#080808] transition-colors bg-transparent cursor-pointer font-sans',
     config.accentBg
-      ? 'border-[#dfff00]/50 hover:border-[#dfff00]'
-      : 'border-[#d1d5db] hover:border-[#9bbdf7]',
+      ? 'border-[#9ca3af] hover:border-[#9ca3af]'
+      : 'border-[#f2f2f2] hover:border-[#9bbdf7]',
   ].join(' ')
 
   return (

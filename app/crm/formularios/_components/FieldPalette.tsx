@@ -34,7 +34,7 @@ export function FieldPalette({ formId }: Props) {
   }
 
   return (
-    <aside className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-gray-200">
+    <aside className="rounded-xl bg-white p-4 border border-gray-200">
       <h2 className="mb-3 text-sm font-semibold text-gray-900">Inputs</h2>
       {error && <p className="mb-3 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p>}
       <div className="space-y-2">

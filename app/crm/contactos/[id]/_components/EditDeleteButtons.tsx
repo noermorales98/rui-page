@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import type { Contact, ContactTag, Tag } from '@prisma/client'
 import { deleteContact } from '../actions'
 import { CreateContactModal } from '../../_components/CreateContactModal'
+import { Button } from '@/app/crm/_components/ui'
 
 type ContactWithTags = Contact & { tags: (ContactTag & { tag: Tag })[] }
 
@@ -30,19 +31,20 @@ export function EditDeleteButtons({
         tags={allTags}
         contact={contact}
         trigger={
-          <button className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Button variant="secondary" size="sm">
             Editar
-          </button>
+          </Button>
         }
       />
       <form ref={formRef} action={deleteWithId} className="inline">
-        <button
+        <Button
           type="button"
           onClick={handleDeleteClick}
-          className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-100"
+          variant="danger"
+          size="sm"
         >
           Eliminar
-        </button>
+        </Button>
       </form>
     </div>
   )

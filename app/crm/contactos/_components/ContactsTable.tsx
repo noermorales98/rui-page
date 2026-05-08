@@ -13,8 +13,9 @@ const SOURCE_LABELS: Record<string, string> = {
 export function ContactsTable({ contacts }: { contacts: ContactWithTags[] }) {
   if (contacts.length === 0) {
     return (
-      <div className="py-12 text-center text-sm text-[#8a8a8a]">
-        No hay contactos que coincidan con los filtros.
+      <div className="rounded-2xl border border-dashed border-[#f2f2f2] bg-white/60 px-6 py-12 text-center">
+        <p className="text-sm font-semibold text-[#080808]">Sin resultados</p>
+        <p className="mt-1 text-sm text-[#8a8a8a]">No hay contactos que coincidan con los filtros.</p>
       </div>
     )
   }
@@ -22,8 +23,7 @@ export function ContactsTable({ contacts }: { contacts: ContactWithTags[] }) {
   return (
     <div>
       {/* Column headers */}
-      <div className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
-        style={{ gridTemplateColumns: '2fr 1.8fr 0.8fr 0.8fr 0.8fr' }}>
+      <div className="hidden grid-cols-[2fr_1.8fr_.8fr_.8fr_.8fr] px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a] lg:grid">
         <span>Nombre</span>
         <span>Email</span>
         <span>Estado</span>
@@ -35,8 +35,7 @@ export function ContactsTable({ contacts }: { contacts: ContactWithTags[] }) {
       {contacts.map((contact) => (
         <div
           key={contact.id}
-          className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
-          style={{ gridTemplateColumns: '2fr 1.8fr 0.8fr 0.8fr 0.8fr' }}
+          className="mb-2 grid items-center gap-3 rounded-2xl bg-white px-4 py-4 transition last:mb-0 lg:grid-cols-[2fr_1.8fr_.8fr_.8fr_.8fr] lg:py-3"
         >
           <div>
             <Link
@@ -56,10 +55,17 @@ export function ContactsTable({ contacts }: { contacts: ContactWithTags[] }) {
               </div>
             )}
           </div>
-          <span className="text-xs text-[#8a8a8a] truncate">{contact.email}</span>
-          <ContactStatusBadge status={contact.status} />
-          <span className="text-xs text-[#8a8a8a]">{SOURCE_LABELS[contact.source] ?? contact.source}</span>
+          <span className="truncate text-xs text-[#8a8a8a]">{contact.email}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a] lg:hidden">Estado</span>
+            <ContactStatusBadge status={contact.status} />
+          </div>
           <span className="text-xs text-[#8a8a8a]">
+            <span className="mr-2 text-[10px] font-semibold uppercase tracking-[0.07em] lg:hidden">Fuente</span>
+            {SOURCE_LABELS[contact.source] ?? contact.source}
+          </span>
+          <span className="text-xs text-[#8a8a8a]">
+            <span className="mr-2 text-[10px] font-semibold uppercase tracking-[0.07em] lg:hidden">Fecha</span>
             {new Intl.DateTimeFormat('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(contact.createdAt))}
           </span>
         </div>

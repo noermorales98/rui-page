@@ -4,6 +4,7 @@ import { useActionState, useEffect, useMemo, useRef, useState } from 'react'
 import type { DealStage } from '@prisma/client'
 import { DollarSign, Plus, X } from 'lucide-react'
 import { createSale } from '../actions'
+import { Button } from '@/app/crm/_components/ui'
 
 type ContactOption = {
   id: number
@@ -129,26 +130,25 @@ export function CreateSaleModal({ deals }: Props) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
       >
-        <Plus size={16} />
+        <Plus size={16} strokeWidth={2} />
         Registrar venta
-      </button>
+      </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div
-            className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-[28px] p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
             role="dialog"
             aria-modal="true"
             aria-labelledby="sale-modal-title"
           >
             <div className="mb-5 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="rounded-lg bg-indigo-50 p-2 text-indigo-600">
+                <span className="rounded-full bg-[#dfff00] p-2 text-[#080808]">
                   <DollarSign size={18} />
                 </span>
                 <h2 id="sale-modal-title" className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">
@@ -195,16 +195,16 @@ export function CreateSaleModal({ deals }: Props) {
                     }}
                     onBlur={() => window.setTimeout(() => setShowDropdown(false), 150)}
                     placeholder="Buscar por nombre o email..."
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
                   />
                   {showDropdown && (
-                    <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                    <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1">
                       {searchResults.map((contact) => (
                         <li key={contact.id}>
                           <button
                             type="button"
                             onMouseDown={() => chooseContact(contact)}
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+                            className="w-full cursor-pointer border-none bg-transparent px-3 py-2 text-left text-sm hover:bg-[#f7f8fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]"
                           >
                             <span className="font-medium text-gray-900">{contact.name}</span>
                             <span className="ml-2 text-xs text-gray-400">{contact.email}</span>
@@ -225,7 +225,7 @@ export function CreateSaleModal({ deals }: Props) {
                   value={selectedDealId}
                   onChange={(event) => chooseDeal(event.target.value)}
                   disabled={!selectedContact || contactDeals.length === 0}
-                  className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00] disabled:opacity-50"
+                  className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af] disabled:opacity-50"
                 >
                   <option value="">Sin oportunidad vinculada</option>
                   {contactDeals.map((deal) => (
@@ -248,7 +248,7 @@ export function CreateSaleModal({ deals }: Props) {
                     required
                     minLength={2}
                     placeholder="Metodo de los 4 Angeles"
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
                   />
                 </div>
                 <div>
@@ -260,7 +260,7 @@ export function CreateSaleModal({ deals }: Props) {
                     required
                     inputMode="decimal"
                     placeholder="1250.00"
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
                   />
                 </div>
               </div>
@@ -272,7 +272,7 @@ export function CreateSaleModal({ deals }: Props) {
                     name="currency"
                     defaultValue="MXN"
                     maxLength={3}
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm uppercase border-2 border-transparent focus:border-[#dfff00] outline-none transition"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm uppercase border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition"
                   />
                 </div>
                 <div>
@@ -280,7 +280,7 @@ export function CreateSaleModal({ deals }: Props) {
                   <select
                     name="status"
                     defaultValue="PAID"
-                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
+                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af]"
                   >
                     {STATUS_OPTIONS.map((status) => (
                       <option key={status.value} value={status.value}>
@@ -294,7 +294,7 @@ export function CreateSaleModal({ deals }: Props) {
                   <select
                     name="paymentMethod"
                     defaultValue="TRANSFER"
-                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border-none outline-none focus:ring-2 focus:ring-[#dfff00]"
+                    className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af]"
                   >
                     {METHOD_OPTIONS.map((method) => (
                       <option key={method.value} value={method.value}>
@@ -309,7 +309,7 @@ export function CreateSaleModal({ deals }: Props) {
                     name="soldAt"
                     type="date"
                     defaultValue={todayForInput()}
-                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition"
+                    className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition"
                   />
                 </div>
               </div>
@@ -320,25 +320,28 @@ export function CreateSaleModal({ deals }: Props) {
                   name="notes"
                   rows={3}
                   placeholder="Detalles de pago, referencia o acuerdo..."
-                  className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] resize-none"
+                  className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] resize-none"
                 />
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button
+                <Button
                   type="button"
                   onClick={close}
-                  className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
                 >
                   Cancelar
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={isPending || !selectedContact}
-                  className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
+                  fullWidth
+                  size="lg"
                 >
                   {isPending ? 'Guardando...' : 'Registrar venta'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
