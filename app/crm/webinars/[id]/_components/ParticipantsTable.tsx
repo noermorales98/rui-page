@@ -101,7 +101,7 @@ export function ParticipantsTable({ registrations }: Props) {
                   handleStatusChange(reg.id, e.target.value as RegistrationStatus)
                 }
                 aria-label={`Estado de ${reg.contact.name}`}
-                className={`rounded-lg border-0 py-1 pl-2 pr-6 text-xs font-medium ring-1 ring-gray-200 focus:outline-none focus:ring-indigo-400 ${statusConfig?.colorClass ?? ''}`}
+                className={`rounded-lg border border-[#f2f2f2] py-1 pl-2 pr-6 text-xs font-medium focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7] ${statusConfig?.colorClass ?? ''}`}
               >
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s.value} value={s.value}>

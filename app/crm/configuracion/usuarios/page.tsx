@@ -16,18 +16,12 @@ export default async function UsuariosPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Usuarios</h1>
-          <p className="mt-1.5 text-sm text-[#8a8a8a]">
-            Gestiona los usuarios del sistema y sus permisos.
-          </p>
-        </div>
+      <div className="mb-6 flex justify-end">
         <CreateUserModal />
       </div>
 
       {/* Table card */}
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6 overflow-hidden">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6 overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -62,11 +56,11 @@ export default async function UsuariosPage() {
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
                     {user.role === 'ADMIN' ? (
-                      <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
+                      <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 border border-[#9bbdf7]/30">
                         Admin
                       </span>
                     ) : (
-                      <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                      <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 border border-gray-200">
                         Editor
                       </span>
                     )}

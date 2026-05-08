@@ -1,7 +1,9 @@
 'use client'
 
+import { Upload } from 'lucide-react'
 import { useState, useActionState, useRef } from 'react'
 import { importContacts } from '../actions'
+import { Button, ModalWrapper } from '@/app/crm/_components/ui'
 
 type Row = { name: string; email: string; phone?: string; source?: string }
 
@@ -80,32 +82,14 @@ export function ImportCsvModal() {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-          <path fillRule="evenodd" d="M10 3a.75.75 0 0 1 .75.75v10.19l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3.75A.75.75 0 0 1 10 3Z" clipRule="evenodd" />
-        </svg>
+      <Button onClick={() => setOpen(true)} variant="secondary">
+        <Upload size={16} strokeWidth={2} />
         Importar CSV
-      </button>
+      </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div role="dialog" aria-modal="true" className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">Importar contactos desde CSV</h2>
-              <button
-                onClick={handleClose}
-                className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-                  <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-                </svg>
-              </button>
-            </div>
-
-            <p className="mb-4 text-sm text-gray-500">
+        <ModalWrapper onClose={handleClose} title="Importar contactos desde CSV">
+            <p className="mb-4 text-sm leading-6 text-[#8a8a8a]">
               El CSV debe tener cabecera con columnas: <code className="rounded bg-gray-100 px-1">nombre</code>, <code className="rounded bg-gray-100 px-1">email</code> (requeridas), <code className="rounded bg-gray-100 px-1">telefono</code>, <code className="rounded bg-gray-100 px-1">fuente</code> (opcionales).
             </p>
 
@@ -114,17 +98,17 @@ export function ImportCsvModal() {
               type="file"
               accept=".csv"
               onChange={handleFileChange}
-              className="mb-4 block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100"
+              className="mb-4 block w-full rounded-2xl border border-[#f2f2f2] bg-[#f7f8fa] p-3 text-sm text-[#8a8a8a] file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-[#dfff00] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[#080808] hover:file:brightness-95"
             />
 
             {rows.length > 0 && (
               <div className="mb-4">
                 <p className="mb-2 text-sm font-medium text-gray-700">
-                  Vista previa — primeras 5 filas de {rows.length} detectadas:
+                  Vista previa: primeras 5 filas de {rows.length} detectadas:
                 </p>
-                <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <div className="overflow-x-auto rounded-2xl border border-[#e5e7eb]">
                   <table className="min-w-full text-xs">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-[#f7f8fa]">
                       <tr>
                         {['Nombre', 'Email', 'Teléfono', 'Fuente'].map((h) => (
                           <th key={h} className="px-3 py-2 text-left font-medium text-gray-500">{h}</th>
@@ -147,7 +131,7 @@ export function ImportCsvModal() {
             )}
 
             {state && submitted && (
-              <div className="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-800">
+              <div className="mb-4 rounded-2xl bg-[#dfff00]/20 px-4 py-3 text-sm text-[#080808]">
                 Importados: <strong>{state.imported}</strong> · Omitidos: <strong>{state.skipped}</strong>
                 {state.errors.length > 0 && (
                   <p className="mt-1 text-xs text-red-600">
@@ -166,26 +150,28 @@ export function ImportCsvModal() {
               }}
             >
               <div className="flex gap-3">
-                <button
+                <Button
                   type="button"
                   onClick={handleClose}
-                  className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
+                  variant="secondary"
+                  fullWidth
+                  size="lg"
                 >
                   {state && submitted ? 'Cerrar' : 'Cancelar'}
-                </button>
+                </Button>
                 {rows.length > 0 && !(state && submitted) && (
-                  <button
+                  <Button
                     type="submit"
                     disabled={isPending}
-                    className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
+                    fullWidth
+                    size="lg"
                   >
                     {isPending ? 'Importando...' : `Importar ${rows.length} contactos`}
-                  </button>
+                  </Button>
                 )}
               </div>
             </form>
-          </div>
-        </div>
+        </ModalWrapper>
       )}
     </>
   )

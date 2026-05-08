@@ -44,7 +44,7 @@ export default async function WebinarDetailPage({ params }: Props) {
         Webinars
       </Link>
 
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)]">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb]">
         <WebinarHeader webinar={webinar} />
         <div className="p-6">
           <WebinarStats registrations={webinar.registrations} />

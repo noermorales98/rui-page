@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { createWebinar, updateWebinar } from '../actions'
+import { Button } from '@/app/crm/_components/ui'
 
 type WebinarForEdit = {
   id: number
@@ -43,9 +44,9 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div
-        className="bg-white rounded-[28px] shadow-2xl p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-[28px] p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="webinar-modal-title"
@@ -58,7 +59,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
             type="button"
             onClick={onClose}
             aria-label="Cerrar"
-            className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] hover:text-[#080808] transition border-none cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
               <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -77,7 +78,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
               required
               defaultValue={webinar?.title ?? ''}
               placeholder="ej. Cómo desarrollar tu voz"
-              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
             />
           </div>
 
@@ -90,7 +91,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
               name="date"
               required
               defaultValue={webinar ? toDatetimeLocal(webinar.date) : ''}
-              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition"
+              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition"
             />
           </div>
 
@@ -103,7 +104,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
               name="platform"
               defaultValue={webinar?.platform ?? ''}
               placeholder="ej. Zoom"
-              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
             />
           </div>
 
@@ -116,7 +117,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
               name="link"
               defaultValue={webinar?.link ?? ''}
               placeholder="https://zoom.us/j/..."
-              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa]"
+              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
             />
           </div>
 
@@ -129,7 +130,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
               defaultValue={webinar?.description ?? ''}
               rows={3}
               placeholder="Tema, audiencia objetivo..."
-              className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition placeholder:text-[#aaa] resize-none"
+              className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] resize-none"
             />
           </div>
 
@@ -140,20 +141,23 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
           )}
 
           <div className="flex gap-3">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
+              variant="secondary"
+              fullWidth
+              size="lg"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isPending}
-              className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
+              fullWidth
+              size="lg"
             >
               {isPending ? 'Guardando...' : webinar ? 'Guardar' : 'Crear'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -54,7 +54,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
       <div
         ref={setNodeRef}
         style={style}
-        className={`bg-white rounded-2xl px-3.5 py-3 shadow-sm transition-opacity ${
+        className={`bg-white rounded-2xl px-3.5 py-3 transition-opacity ${
           isDragging ? 'opacity-40' : 'cursor-grab active:cursor-grabbing'
         }`}
         {...attributes}
@@ -125,7 +125,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
           <select
             value={deal.stage}
             onChange={(e) => onMove(e.target.value as DealStage)}
-            className="w-full rounded-xl border-0 bg-[#f0f1f3] py-1 px-2 text-xs text-[#8a8a8a] focus:outline-none focus:ring-1 focus:ring-[#dfff00] cursor-pointer"
+            className="w-full cursor-pointer rounded-xl border border-[#f2f2f2] bg-[#f0f1f3] px-2 py-1 text-xs text-[#8a8a8a] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af]"
           >
             {STAGE_OPTIONS.map((s) => (
               <option key={s.value} value={s.value}>

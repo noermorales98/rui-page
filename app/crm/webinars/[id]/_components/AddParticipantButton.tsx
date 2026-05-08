@@ -105,7 +105,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div
-            className="w-full max-w-sm rounded-xl bg-white p-6 shadow-xl"
+            className="w-full max-w-sm rounded-xl bg-white p-6"
             role="dialog"
             aria-modal="true"
             aria-labelledby="add-participant-title"
@@ -142,10 +142,10 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                     onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     placeholder="Buscar por nombre o email..."
                     autoFocus
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline-none"
                   />
                   {showDropdown && (
-                    <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                    <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1">
                       {results.map((c) => {
                         const alreadyAdded = registeredContactIds.includes(c.id)
                         return (
@@ -185,14 +185,14 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                     onChange={(e) => setNewName(e.target.value)}
                     placeholder="Nombre completo"
                     autoFocus
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline-none"
                   />
                   <input
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="email@ejemplo.com"
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline-none"
                   />
                 </div>
                 <button

@@ -30,13 +30,7 @@ export default async function CampanasPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Campañas</h1>
-          <p className="mt-1.5 text-sm text-[#8a8a8a]">
-            Email marketing segmentado por contactos registrados, leads, formularios, webinars y proyecto.
-          </p>
-        </div>
+      <div className="flex justify-end">
         <Link
           href="/crm/campanas/new"
           className="inline-flex items-center gap-2 bg-[#080808] text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:bg-[#222] transition"
@@ -52,7 +46,7 @@ export default async function CampanasPage() {
         </div>
       )}
 
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6">
         <CampaignsTable campaigns={campaigns as CampaignRow[]} smtpReady={missingSmtpConfig.length === 0} />
       </div>
     </div>

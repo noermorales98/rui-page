@@ -15,7 +15,7 @@ export function FieldEditor({ field }: Props) {
   const [state, formAction, isPending] = useActionState(action, null)
 
   return (
-    <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+    <section className="rounded-xl bg-white p-5 border border-gray-200">
       <h2 className="mb-4 text-base font-semibold text-gray-900">Campo</h2>
       {state?.error && (
         <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{state.error}</p>
@@ -35,7 +35,7 @@ export function FieldEditor({ field }: Props) {
           <input
             name="label"
             defaultValue={field.label}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
           />
         </div>
 
@@ -46,7 +46,7 @@ export function FieldEditor({ field }: Props) {
           <input
             name="placeholder"
             defaultValue={field.placeholder ?? ''}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
           />
         </div>
 
@@ -56,7 +56,7 @@ export function FieldEditor({ field }: Props) {
             name="helpText"
             defaultValue={field.helpText ?? ''}
             rows={2}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
           />
         </div>
 
@@ -65,7 +65,7 @@ export function FieldEditor({ field }: Props) {
             type="checkbox"
             name="isRequired"
             defaultChecked={field.isRequired}
-            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            className="h-4 w-4 rounded border-[#f2f2f2] accent-[#080808] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
           />
           Obligatorio
         </label>
@@ -75,7 +75,7 @@ export function FieldEditor({ field }: Props) {
           <select
             name="contactTarget"
             defaultValue={field.contactTarget}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
           >
             <option value="NONE">Sin mapeo</option>
             <option value="NAME">Nombre</option>
@@ -107,7 +107,7 @@ function FieldKeyInput({ defaultValue }: { defaultValue: string }) {
         onBlur={(event) => {
           event.currentTarget.value = slugify(event.currentTarget.value)
         }}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 font-mono text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
       />
     </div>
   )

@@ -46,7 +46,7 @@ export function FormRenderer({
 
   if (state?.success) {
     return (
-      <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-gray-200">
+      <div className="rounded-2xl bg-white p-8 text-center border border-gray-200">
         <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
         <p className="mt-4 text-gray-600">{state.message || successMessage}</p>
       </div>
@@ -54,7 +54,7 @@ export function FormRenderer({
   }
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 sm:p-8">
+    <div className="rounded-2xl bg-white p-6 border border-gray-200 sm:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
         {description && <p className="mt-2 text-sm leading-6 text-gray-500">{description}</p>}
@@ -74,7 +74,7 @@ export function FormRenderer({
         <button
           type="submit"
           disabled={isPending}
-          className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
         >
           {isPending ? 'Enviando...' : submitLabel}
         </button>
@@ -85,7 +85,7 @@ export function FormRenderer({
 
 function FieldControl({ field }: { field: RenderField }) {
   const commonClass =
-    'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500'
+    'w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]'
 
   return (
     <div>

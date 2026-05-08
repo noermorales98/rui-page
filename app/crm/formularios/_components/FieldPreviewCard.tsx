@@ -42,7 +42,7 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
               </span>
             )}
           </div>
-          <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-400">
+          <div className="rounded-lg border border-[#f2f2f2] bg-gray-50 px-3 py-2 text-sm text-gray-400">
             {field.placeholder || FIELD_TYPE_LABELS[field.type]}
           </div>
           {field.helpText && <p className="mt-2 text-xs text-gray-500">{field.helpText}</p>}

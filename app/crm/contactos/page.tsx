@@ -1,8 +1,11 @@
+import { BadgeCheck, UserCheck, UserPlus, UsersRound } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { ContactsTable } from './_components/ContactsTable'
 import { ContactFilters } from './_components/ContactFilters'
 import { CreateContactModal } from './_components/CreateContactModal'
 import { ImportCsvModal } from './_components/ImportCsvModal'
+import { Card, MetricCard } from '@/app/crm/_components/ui'
+import { buildContactMetrics } from './_lib/contact-metrics'
 
 const PAGE_SIZE = 50
 
@@ -26,7 +29,7 @@ export default async function ContactosPage({ searchParams }: Props) {
     ...(tagId ? { tags: { some: { tagId } } } : {}),
   }
 
-  const [contacts, total, allTags] = await Promise.all([
+  const [contacts, total, allTags, overviewTotal, overviewByStatus] = await Promise.all([
     prisma.contact.findMany({
       where, skip, take: PAGE_SIZE,
       orderBy: { createdAt: 'desc' },
@@ -34,44 +37,69 @@ export default async function ContactosPage({ searchParams }: Props) {
     }),
     prisma.contact.count({ where }),
     prisma.tag.findMany({ orderBy: { name: 'asc' } }),
+    prisma.contact.count(),
+    prisma.contact.groupBy({
+      by: ['status'],
+      _count: { _all: true },
+    }),
   ])
+
+  const contactMetrics = buildContactMetrics({
+    total: overviewTotal,
+    byStatus: Object.fromEntries(
+      overviewByStatus.map((row) => [row.status, row._count._all]),
+    ),
+  })
+
+  const metricIcons = {
+    total: <UsersRound size={20} strokeWidth={1.7} />,
+    new: <UserPlus size={20} strokeWidth={1.7} />,
+    qualified: <BadgeCheck size={20} strokeWidth={1.7} />,
+    clients: <UserCheck size={20} strokeWidth={1.7} />,
+  }
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Contactos</h1>
-          <p className="mt-1.5 text-sm text-[#8a8a8a]">{total} {total === 1 ? 'contacto' : 'contactos'}</p>
-        </div>
-        <div className="flex gap-2">
-          <ImportCsvModal />
-          <CreateContactModal tags={allTags} />
-        </div>
+      <div className="flex flex-wrap justify-end gap-2">
+        <ImportCsvModal />
+        <CreateContactModal tags={allTags} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {contactMetrics.map((metric) => (
+          <MetricCard
+            key={metric.key}
+            accent={metric.accent}
+            icon={metricIcons[metric.key]}
+            value={metric.value}
+            label={metric.label}
+            detail={metric.detail}
+          />
+        ))}
       </div>
 
       {/* Filters */}
       <ContactFilters tags={allTags} />
 
       {/* Table card */}
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
+      <Card>
         <ContactsTable contacts={contacts} />
-      </div>
+      </Card>
 
       {/* Pagination */}
       {total > PAGE_SIZE && (
-        <div className="flex items-center justify-between text-sm text-[#8a8a8a]">
+        <div className="flex flex-col gap-3 text-sm text-[#8a8a8a] sm:flex-row sm:items-center sm:justify-between">
           <span>Mostrando {skip + 1}–{Math.min(skip + PAGE_SIZE, total)} de {total}</span>
           <div className="flex gap-2">
             {page > 1 && (
               <a href={`?${new URLSearchParams({ ...params, page: String(page - 1) })}`}
-                className="bg-white rounded-full px-4 py-2 text-[#080808] text-sm font-medium hover:bg-[#f2f2f2] transition shadow-sm">
+                className="inline-flex min-h-10 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#080808] transition hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]">
                 Anterior
               </a>
             )}
             {skip + PAGE_SIZE < total && (
               <a href={`?${new URLSearchParams({ ...params, page: String(page + 1) })}`}
-                className="bg-white rounded-full px-4 py-2 text-[#080808] text-sm font-medium hover:bg-[#f2f2f2] transition shadow-sm">
+                className="inline-flex min-h-10 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#080808] transition hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]">
                 Siguiente
               </a>
             )}

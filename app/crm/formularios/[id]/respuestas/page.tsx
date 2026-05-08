@@ -69,14 +69,7 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
         {form.name}
       </Link>
 
-      <div className="mb-6">
-        <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Respuestas</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {total} {total === 1 ? 'respuesta' : 'respuestas'}
-        </p>
-      </div>
-
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6">
         {submissions.length === 0 ? (
           <div className="px-4 py-12 text-center text-sm text-gray-500">
             No hay respuestas registradas.

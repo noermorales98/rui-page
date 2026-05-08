@@ -2,9 +2,11 @@
 
 import { useState, startTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { Plus } from 'lucide-react'
 import type { RegistrationStatus } from '@prisma/client'
 import { deleteWebinar } from '../actions'
 import { CreateWebinarModal } from './CreateWebinarModal'
+import { Button } from '@/app/crm/_components/ui'
 
 export type WebinarWithStats = {
   id: number; title: string; date: Date | string
@@ -29,15 +31,14 @@ export function WebinarTable({ webinars }: { webinars: WebinarWithStats[] }) {
 
   return (
     <>
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <span className="text-sm text-[#8a8a8a]">{webinars.length} webinar{webinars.length !== 1 ? 's' : ''}</span>
-          <button onClick={() => setCreateOpen(true)}
-            className="bg-[#080808] text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" strokeLinecap="round"/></svg>
+          <Button onClick={() => setCreateOpen(true)}>
+            <Plus size={16} strokeWidth={2} />
             Nuevo webinar
-          </button>
+          </Button>
         </div>
 
         {webinars.length === 0 ? (
@@ -56,7 +57,7 @@ export function WebinarTable({ webinars }: { webinars: WebinarWithStats[] }) {
 
             {webinars.map((w) => (
               <div key={w.id} onClick={() => router.push(`/crm/webinars/${w.id}`)}
-                className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0 cursor-pointer hover:shadow-sm transition-shadow"
+                className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0 cursor-pointer"
                 style={{ gridTemplateColumns: '2fr 1fr 0.6fr 0.6fr 0.6fr 0.4fr' }}>
                 <div>
                   <p className="text-sm font-semibold text-[#080808]">{w.title}</p>

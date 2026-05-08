@@ -1,7 +1,9 @@
 'use client'
 
+import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { CreateDealModal } from '@/app/crm/pipeline/_components/CreateDealModal'
+import { Button } from '@/app/crm/_components/ui'
 
 interface Props {
   contactId: number
@@ -13,13 +15,14 @@ export function NewDealButton({ contactId, contactName }: Props) {
 
   return (
     <>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700"
+        size="sm"
       >
-        + Nueva oportunidad
-      </button>
+        <Plus size={14} strokeWidth={2} />
+        Nueva oportunidad
+      </Button>
       {open && (
         <CreateDealModal
           lockedContact={{ id: contactId, name: contactName }}

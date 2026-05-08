@@ -47,14 +47,14 @@ export default async function ContactDetailPage({ params }: Props) {
       <div className="flex gap-5 items-start">
         {/* Left: info */}
         <div className="w-72 flex-shrink-0">
-          <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] overflow-hidden">
+          <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] overflow-hidden">
             <ContactInfo contact={contact} />
           </div>
         </div>
 
         {/* Right: header + activity */}
         <div className="min-w-0 flex-1">
-          <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] overflow-hidden">
+          <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] overflow-hidden">
             <ContactHeader contact={contact} allTags={allTags} />
             <div className="p-6">
               <ContactDeals contactId={contact.id} contactName={contact.name} />

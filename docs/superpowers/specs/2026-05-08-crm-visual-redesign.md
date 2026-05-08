@@ -173,7 +173,7 @@ Los links y acciones dentro de cada fila se mantienen idénticos, solo cambia el
 - Drop active: `bg-[#9bbdf7]/10 ring-2 ring-[#9bbdf7]` (en vez de indigo)
 - Columna ENROLLED: `bg-[#dfff00]/10` con count badge en `bg-[#dfff00]`
 - Deal cards: `bg-white rounded-2xl px-3.5 py-3 shadow-sm`
-- Botón añadir: `border-dashed border-[#d1d5db] rounded-xl` (mismo estilo)
+- Botón añadir: `border-dashed border-[#f2f2f2] rounded-xl` (mismo estilo)
 - DragOverlay card: `ring-[#9bbdf7]`
 
 ---

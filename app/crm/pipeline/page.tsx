@@ -23,10 +23,6 @@ export default async function PipelinePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Pipeline</h1>
-        <p className="mt-1.5 text-sm text-[#8a8a8a]">Seguimiento de oportunidades de venta</p>
-      </div>
       <PipelineBoard initialDeals={grouped} />
     </div>
   )
