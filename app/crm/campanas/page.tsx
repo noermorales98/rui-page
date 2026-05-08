@@ -29,17 +29,17 @@ export default async function CampanasPage() {
   const missingSmtpConfig = getMissingSmtpConfig()
 
   return (
-    <div>
-      <div className="mb-6 flex items-start justify-between gap-4">
+    <div className="flex flex-col gap-6">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Campañas</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Campañas</h1>
+          <p className="mt-1.5 text-sm text-[#8a8a8a]">
             Email marketing segmentado por contactos registrados, leads, formularios, webinars y proyecto.
           </p>
         </div>
         <Link
           href="/crm/campanas/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
+          className="inline-flex items-center gap-2 bg-[#080808] text-white rounded-full px-5 py-2.5 text-sm font-semibold hover:bg-[#222] transition"
         >
           <Plus size={16} />
           Crear campaña
@@ -47,12 +47,12 @@ export default async function CampanasPage() {
       </div>
 
       {missingSmtpConfig.length > 0 && (
-        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           Configura {missingSmtpConfig.join(', ')} para habilitar el envío real de campañas.
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6">
         <CampaignsTable campaigns={campaigns as CampaignRow[]} smtpReady={missingSmtpConfig.length === 0} />
       </div>
     </div>

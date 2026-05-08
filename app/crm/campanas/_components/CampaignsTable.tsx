@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { Archive, MailCheck, Send, TriangleAlert } from 'lucide-react'
 import type { CrmCampaignStatus } from '@prisma/client'
 import { archiveCampaign, sendCampaign } from '../actions'
+import { CampaignStatusBadge } from '@/app/crm/_components/ui'
 
 export type CampaignRow = {
   id: number
@@ -25,24 +26,6 @@ type Props = {
   smtpReady: boolean
 }
 
-const STATUS_LABELS: Record<CrmCampaignStatus, string> = {
-  DRAFT: 'Borrador',
-  SENDING: 'Enviando',
-  SENT: 'Enviada',
-  PARTIAL: 'Parcial',
-  FAILED: 'Fallida',
-  ARCHIVED: 'Archivada',
-}
-
-const STATUS_CLASSES: Record<CrmCampaignStatus, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  SENDING: 'bg-blue-50 text-blue-700',
-  SENT: 'bg-green-50 text-green-700',
-  PARTIAL: 'bg-amber-50 text-amber-700',
-  FAILED: 'bg-red-50 text-red-700',
-  ARCHIVED: 'bg-gray-100 text-gray-500',
-}
-
 function formatDate(value: Date | null) {
   if (!value) return 'Sin envio'
   return new Intl.DateTimeFormat('es-MX', {
@@ -54,8 +37,11 @@ function formatDate(value: Date | null) {
   }).format(new Date(value))
 }
 
+const GRID_COLS = '2fr 1.2fr 120px 100px 160px 88px'
+
 export function CampaignsTable({ campaigns, smtpReady }: Props) {
   const [message, setMessage] = useState<string | null>(null)
+  const [isError, setIsError] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   function handleSend(campaign: CampaignRow) {
@@ -65,11 +51,14 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
     if (!confirmed) return
 
     setMessage(null)
+    setIsError(false)
     startTransition(async () => {
       const result = await sendCampaign(campaign.id)
       if (result?.error) {
+        setIsError(true)
         setMessage(result.error)
       } else {
+        setIsError(false)
         setMessage(`Envío terminado: ${result?.sent ?? 0} enviados, ${result?.failed ?? 0} fallidos.`)
       }
     })
@@ -80,18 +69,22 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
     if (!confirmed) return
 
     setMessage(null)
+    setIsError(false)
     startTransition(async () => {
       const result = await archiveCampaign(campaign.id)
-      if (result.error) setMessage(result.error)
+      if (result.error) {
+        setIsError(true)
+        setMessage(result.error)
+      }
     })
   }
 
   if (campaigns.length === 0) {
     return (
-      <div className="flex min-h-[260px] flex-col items-center justify-center px-6 py-12 text-center">
-        <MailCheck className="mb-4 text-gray-300" size={42} />
-        <h2 className="text-base font-semibold text-gray-900">Sin campañas</h2>
-        <p className="mt-1 max-w-sm text-sm text-gray-500">
+      <div className="py-12 text-center text-sm text-[#8a8a8a]">
+        <MailCheck className="mx-auto mb-4 text-[#c8c8c8]" size={42} />
+        <p className="font-semibold text-[#080808]">Sin campañas</p>
+        <p className="mt-1 max-w-sm mx-auto">
           Crea un borrador, revisa la audiencia y luego envíalo a tus contactos segmentados.
         </p>
       </div>
@@ -101,93 +94,93 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
   return (
     <div>
       {message && (
-        <div className="border-b border-indigo-100 bg-indigo-50 px-6 py-3 text-sm text-indigo-700">
+        <div className={`mb-4 rounded-2xl px-4 py-3 text-sm ${isError ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
           {message}
         </div>
       )}
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-              Campaña
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-              Audiencia
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-              Estado
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-              Resultados
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-              Ultimo envio
-            </th>
-            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500">
-              Acciones
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
-          {campaigns.map((campaign) => {
-            const canSend = smtpReady && ['DRAFT', 'FAILED', 'PARTIAL'].includes(campaign.status)
-            return (
-              <tr key={campaign.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <p className="font-medium text-gray-900">{campaign.name}</p>
-                  <p className="mt-1 max-w-xs truncate text-sm text-gray-500">{campaign.subject}</p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    {campaign.createdBy?.name ?? 'CRM'} · #{campaign.id}
-                  </p>
-                </td>
-                <td className="px-6 py-4">
-                  <p className="max-w-xs text-sm text-gray-600">{campaign.audienceLabel}</p>
-                </td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_CLASSES[campaign.status]}`}>
-                    {STATUS_LABELS[campaign.status]}
+
+      {/* Column headers */}
+      <div
+        className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+        style={{ gridTemplateColumns: GRID_COLS }}
+      >
+        <span>Campaña</span>
+        <span>Audiencia</span>
+        <span>Estado</span>
+        <span>Resultados</span>
+        <span>Último envío</span>
+        <span className="text-right">Acciones</span>
+      </div>
+
+      {/* Rows */}
+      {campaigns.map((campaign) => {
+        const canSend = smtpReady && ['DRAFT', 'FAILED', 'PARTIAL'].includes(campaign.status)
+        return (
+          <div
+            key={campaign.id}
+            className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
+            style={{ gridTemplateColumns: GRID_COLS }}
+          >
+            {/* Campaña */}
+            <div>
+              <p className="font-medium text-[#080808] truncate">{campaign.name}</p>
+              <p className="mt-0.5 max-w-xs truncate text-sm text-[#8a8a8a]">{campaign.subject}</p>
+              <p className="mt-0.5 text-xs text-[#b0b0b0]">
+                {campaign.createdBy?.name ?? 'CRM'} · #{campaign.id}
+              </p>
+            </div>
+
+            {/* Audiencia */}
+            <div>
+              <p className="text-sm text-[#555] truncate">{campaign.audienceLabel}</p>
+            </div>
+
+            {/* Estado */}
+            <div>
+              <CampaignStatusBadge status={campaign.status} />
+            </div>
+
+            {/* Resultados */}
+            <div className="text-sm text-[#555]">
+              <div className="flex items-center gap-2">
+                <span>{campaign.sentCount}/{campaign.recipientCount}</span>
+                {campaign.failedCount > 0 && (
+                  <span className="inline-flex items-center gap-1 text-red-600">
+                    <TriangleAlert size={13} />
+                    {campaign.failedCount}
                   </span>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-3">
-                    <span>{campaign.sentCount}/{campaign.recipientCount}</span>
-                    {campaign.failedCount > 0 && (
-                      <span className="inline-flex items-center gap-1 text-red-600">
-                        <TriangleAlert size={14} />
-                        {campaign.failedCount}
-                      </span>
-                    )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-500">{formatDate(campaign.sentAt)}</td>
-                <td className="px-6 py-4">
-                  <div className="flex justify-end gap-1">
-                    <button
-                      type="button"
-                      disabled={isPending || !canSend}
-                      onClick={() => handleSend(campaign)}
-                      title={!smtpReady ? 'Configura SMTP para enviar' : 'Enviar campaña'}
-                      className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-indigo-600 disabled:opacity-40"
-                      aria-label="Enviar campaña"
-                    >
-                      <Send size={16} />
-                    </button>
-                    <button
-                      type="button"
-                      disabled={isPending || campaign.status === 'SENDING'}
-                      onClick={() => handleArchive(campaign)}
-                      className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-amber-600 disabled:opacity-40"
-                      aria-label="Archivar campaña"
-                    >
-                      <Archive size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+                )}
+              </div>
+            </div>
+
+            {/* Último envío */}
+            <div className="text-sm text-[#8a8a8a]">{formatDate(campaign.sentAt)}</div>
+
+            {/* Acciones */}
+            <div className="flex justify-end gap-1">
+              <button
+                type="button"
+                disabled={isPending || !canSend}
+                onClick={() => handleSend(campaign)}
+                title={!smtpReady ? 'Configura SMTP para enviar' : 'Enviar campaña'}
+                className="rounded-full bg-[#080808] text-white px-3 py-1.5 text-xs font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-50"
+                aria-label="Enviar campaña"
+              >
+                <Send size={13} />
+              </button>
+              <button
+                type="button"
+                disabled={isPending || campaign.status === 'SENDING'}
+                onClick={() => handleArchive(campaign)}
+                className="rounded-lg p-1.5 text-[#8a8a8a] hover:bg-[#f0f1f3] transition-colors border-none bg-transparent cursor-pointer disabled:opacity-50"
+                aria-label="Archivar campaña"
+              >
+                <Archive size={15} />
+              </button>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }
