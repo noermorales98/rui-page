@@ -53,13 +53,13 @@ export function SalesFilters() {
         placeholder="Buscar por contacto, email o producto..."
         defaultValue={searchParams.get('q') ?? ''}
         onChange={(event) => handleSearch(event.target.value)}
-        className="min-w-72 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="min-w-72 bg-white rounded-full px-5 py-2.5 text-sm text-[#080808] outline-none border-2 border-transparent focus:border-[#dfff00] transition placeholder:text-[#aaa] shadow-sm"
       />
 
       <select
         value={searchParams.get('status') ?? ''}
         onChange={(event) => updateParam('status', event.target.value)}
-        className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="bg-white rounded-full px-4 py-2.5 text-sm text-[#080808] border-none outline-none focus:ring-2 focus:ring-[#dfff00] cursor-pointer shadow-sm"
       >
         <option value="">Estado: Todos</option>
         {STATUSES.map((status) => (
@@ -72,7 +72,7 @@ export function SalesFilters() {
       <select
         value={searchParams.get('method') ?? ''}
         onChange={(event) => updateParam('method', event.target.value)}
-        className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="bg-white rounded-full px-4 py-2.5 text-sm text-[#080808] border-none outline-none focus:ring-2 focus:ring-[#dfff00] cursor-pointer shadow-sm"
       >
         <option value="">Metodo: Todos</option>
         {METHODS.map((method) => (

@@ -6,6 +6,7 @@ import type { CrmPaymentMethod, CrmSaleStatus, DealStage } from '@prisma/client'
 import { Trash2 } from 'lucide-react'
 import { deleteSale, updateSaleStatus } from '../actions'
 import { formatMoneyFromCents } from '../_lib/sales-metrics'
+import { SaleStatusBadge } from '@/app/crm/_components/ui'
 
 export type SaleRow = {
   id: number
@@ -30,13 +31,6 @@ const STATUS_LABELS: Record<CrmSaleStatus, string> = {
   PAID: 'Pagada',
   REFUNDED: 'Reembolsada',
   CANCELED: 'Cancelada',
-}
-
-const STATUS_CLASSES: Record<CrmSaleStatus, string> = {
-  PENDING: 'bg-amber-50 text-amber-700',
-  PAID: 'bg-green-50 text-green-700',
-  REFUNDED: 'bg-red-50 text-red-700',
-  CANCELED: 'bg-gray-100 text-gray-600',
 }
 
 const METHOD_LABELS: Record<CrmPaymentMethod, string> = {
@@ -80,85 +74,86 @@ export function SalesTable({ sales }: Props) {
 
   if (sales.length === 0) {
     return (
-      <div className="px-6 py-12 text-center text-sm text-gray-500">
-        No hay ventas que coincidan con los filtros.
-      </div>
+      <div className="py-12 text-center text-sm text-[#8a8a8a]">No hay ventas que coincidan con los filtros.</div>
     )
   }
 
   return (
     <div>
       {message && (
-        <div className="border-b border-red-100 bg-red-50 px-6 py-3 text-sm text-red-700">
-          {message}
-        </div>
+        <div className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{message}</div>
       )}
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            {['Venta', 'Contacto', 'Monto', 'Estado', 'Metodo', 'Fecha', 'Acciones'].map((heading) => (
-              <th
-                key={heading}
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500"
-              >
-                {heading}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
-          {sales.map((sale) => (
-            <tr key={sale.id} className="hover:bg-gray-50">
-              <td className="px-6 py-4">
-                <p className="font-medium text-gray-900">{sale.productName}</p>
-                <p className="mt-1 text-xs text-gray-400">
-                  #{sale.id}
-                  {sale.deal && ` · Pipeline #${sale.deal.id}`}
-                </p>
-              </td>
-              <td className="px-6 py-4">
-                <Link
-                  href={`/crm/contactos/${sale.contact.id}`}
-                  className="text-sm font-medium text-gray-900 hover:text-indigo-600 hover:underline"
-                >
-                  {sale.contact.name}
-                </Link>
-                <p className="mt-1 text-xs text-gray-500">{sale.contact.email}</p>
-              </td>
-              <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                {formatMoneyFromCents(sale.amountCents, sale.currency)}
-              </td>
-              <td className="px-6 py-4">
-                <select
-                  value={sale.status}
-                  disabled={isPending}
-                  onChange={(event) => handleStatusChange(sale.id, event.target.value as CrmSaleStatus)}
-                  className={`rounded-full border-0 px-2.5 py-1 text-xs font-semibold focus:outline-none ${STATUS_CLASSES[sale.status]}`}
-                >
-                  {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-600">{METHOD_LABELS[sale.paymentMethod]}</td>
-              <td className="px-6 py-4 text-sm text-gray-500">{formatDate(sale.soldAt)}</td>
-              <td className="px-6 py-4">
-                <button
-                  type="button"
-                  disabled={isPending}
-                  onClick={() => handleDelete(sale)}
-                  className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
-                  aria-label="Eliminar venta"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      {/* Column headers */}
+      <div
+        className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+        style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 0.5fr' }}
+      >
+        <span>Venta</span>
+        <span>Contacto</span>
+        <span>Monto</span>
+        <span>Estado</span>
+        <span>Método / Fecha</span>
+        <span></span>
+      </div>
+
+      {/* Rows */}
+      {sales.map((sale) => (
+        <div
+          key={sale.id}
+          className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
+          style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 0.5fr' }}
+        >
+          {/* Venta */}
+          <div>
+            <p className="text-sm font-medium text-[#080808]">{sale.productName}</p>
+            <p className="mt-0.5 text-xs text-[#8a8a8a]">
+              #{sale.id}
+              {sale.deal && ` · Pipeline #${sale.deal.id}`}
+            </p>
+          </div>
+
+          {/* Contacto */}
+          <div>
+            <Link
+              href={`/crm/contactos/${sale.contact.id}`}
+              className="text-sm font-medium text-[#080808] hover:text-[#5a5a5a] hover:underline"
+            >
+              {sale.contact.name}
+            </Link>
+            <p className="mt-0.5 text-xs text-[#8a8a8a]">{sale.contact.email}</p>
+          </div>
+
+          {/* Monto */}
+          <div className="text-sm font-semibold text-[#080808]">
+            {formatMoneyFromCents(sale.amountCents, sale.currency)}
+          </div>
+
+          {/* Estado */}
+          <div>
+            <SaleStatusBadge status={sale.status} />
+          </div>
+
+          {/* Método / Fecha */}
+          <div>
+            <p className="text-sm text-[#5a5a5a]">{METHOD_LABELS[sale.paymentMethod]}</p>
+            <p className="mt-0.5 text-xs text-[#8a8a8a]">{formatDate(sale.soldAt)}</p>
+          </div>
+
+          {/* Acciones */}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={() => handleDelete(sale)}
+              className="rounded-xl p-1.5 text-[#8a8a8a] hover:bg-red-50 hover:text-red-600 disabled:opacity-50 transition-colors border-none bg-transparent cursor-pointer"
+              aria-label="Eliminar venta"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
