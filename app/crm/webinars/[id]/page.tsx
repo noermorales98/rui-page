@@ -1,8 +1,9 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { WebinarHeader } from './_components/WebinarHeader'
 import { WebinarStats } from './_components/WebinarStats'
+import { ParticipantsTable } from './_components/ParticipantsTable'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -44,12 +45,10 @@ export default async function WebinarDetailPage({ params }: Props) {
         <div className="p-6">
           <WebinarStats registrations={webinar.registrations} />
           <div className="mt-6">
-            <h3 className="mb-2 text-sm font-semibold text-gray-700">
+            <h3 className="mb-4 text-sm font-semibold text-gray-700">
               Participantes ({webinar.registrations.length})
             </h3>
-            <p className="text-sm text-gray-400">
-              (Controles de participantes se añaden en las siguientes tareas)
-            </p>
+            <ParticipantsTable registrations={webinar.registrations} />
           </div>
         </div>
       </div>
