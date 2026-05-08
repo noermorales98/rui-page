@@ -28,8 +28,6 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
 
   useEffect(() => {
     if (!query.trim()) {
-      setResults([])
-      setShowDropdown(false)
       return
     }
 
@@ -134,7 +132,13 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                   <input
                     type="text"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={(e) => {
+                      setQuery(e.target.value)
+                      if (!e.target.value.trim()) {
+                        setResults([])
+                        setShowDropdown(false)
+                      }
+                    }}
                     onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     placeholder="Buscar por nombre o email..."
                     autoFocus

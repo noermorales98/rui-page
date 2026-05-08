@@ -16,13 +16,13 @@ export function AddNoteForm({ contactId }: { contactId: number }) {
 
   return (
     <form action={formAction}>
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+      <div className="p-3">
         <textarea
           ref={textareaRef}
           name="body"
           rows={3}
           placeholder="Agregar una nota..."
-          className="w-full resize-none border-0 bg-transparent text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
+          className="w-full bg-white rounded-2xl px-4 py-3 text-sm border-2 border-transparent focus:border-[#dfff00] outline-none transition resize-none placeholder:text-[#aaa]"
         />
         {state?.error && (
           <p className="mb-2 text-xs text-red-600">{state.error}</p>
@@ -31,7 +31,7 @@ export function AddNoteForm({ contactId }: { contactId: number }) {
           <button
             type="submit"
             disabled={isPending}
-            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="bg-[#080808] text-white rounded-full px-5 py-2 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
           >
             {isPending ? 'Guardando...' : 'Agregar nota'}
           </button>

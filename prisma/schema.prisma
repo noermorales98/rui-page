@@ -17,21 +17,30 @@ model User {
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
   activities ContactActivity[]
+  forms      CrmForm[]
+  campaigns  CrmCampaign[]
+  sales      CrmSale[]
 }
 
 model Contact {
-  id         Int               @id @default(autoincrement())
-  name       String
-  email      String            @unique
-  phone      String?
-  source     ContactSource     @default(MANUAL)
-  status     ContactStatus     @default(NEW)
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  tags       ContactTag[]
-  activities ContactActivity[]
-  deals      Deal[]
-  registrations WebinarRegistration[]
+  id                 Int                    @id @default(autoincrement())
+  name               String
+  email              String                 @unique
+  phone              String?
+  source             ContactSource          @default(MANUAL)
+  status             ContactStatus          @default(NEW)
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  tags               ContactTag[]
+  activities         ContactActivity[]
+  deals              Deal[]
+  sales              CrmSale[]
+  registrations      WebinarRegistration[]
+  formSubmissions    CrmFormSubmission[]
+  campaignRecipients CrmCampaignRecipient[]
+
+  @@index([status, source, createdAt])
+  @@index([source, createdAt])
 }
 
 model Tag {
@@ -85,6 +94,9 @@ enum ActivityType {
   WEBINAR_REGISTERED
   WEBINAR_ATTENDED
   COURSE_PURCHASED
+  FORM_SUBMITTED
+  CAMPAIGN_SENT
+  SALE_CREATED
 }
 
 enum DealStage {
@@ -123,6 +135,8 @@ model WebinarRegistration {
   updatedAt  DateTime           @updatedAt
 
   @@unique([webinarId, contactId])
+  @@index([contactId, status])
+  @@index([webinarId, status])
 }
 
 model Deal {
@@ -132,6 +146,209 @@ model Deal {
   courseName String?
   stage      DealStage @default(LEAD)
   notes      String?   @db.Text
+  sales      CrmSale[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+
+  @@index([contactId, stage])
+  @@index([stage, updatedAt])
+  @@index([courseName])
+}
+
+enum CrmSaleStatus {
+  PENDING
+  PAID
+  REFUNDED
+  CANCELED
+}
+
+enum CrmPaymentMethod {
+  CASH
+  TRANSFER
+  CARD
+  STRIPE
+  PAYPAL
+  OTHER
+}
+
+model CrmSale {
+  id            Int              @id @default(autoincrement())
+  contactId     Int
+  contact       Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  dealId        Int?
+  deal          Deal?            @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  productName   String
+  amountCents   Int
+  currency      String           @default("MXN") @db.VarChar(3)
+  status        CrmSaleStatus    @default(PAID)
+  paymentMethod CrmPaymentMethod @default(OTHER)
+  soldAt        DateTime         @default(now())
+  notes         String?          @db.Text
+  createdById   Int?
+  createdBy     User?            @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([status, soldAt])
+  @@index([contactId, soldAt])
+  @@index([dealId])
+  @@index([createdById, soldAt])
+  @@index([productName])
+}
+
+enum CrmCampaignStatus {
+  DRAFT
+  SENDING
+  SENT
+  PARTIAL
+  FAILED
+  ARCHIVED
+}
+
+enum CrmCampaignRecipientStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
+model CrmCampaign {
+  id             Int                    @id @default(autoincrement())
+  name           String
+  subject        String
+  previewText    String?
+  fromName       String?
+  fromEmail      String?
+  bodyHtml       String                 @db.Text
+  bodyText       String?                @db.Text
+  status         CrmCampaignStatus      @default(DRAFT)
+  filters        Json?
+  audienceLabel  String                 @default("Todos los contactos")
+  projectName    String?
+  recipientCount Int                    @default(0)
+  sentCount      Int                    @default(0)
+  failedCount    Int                    @default(0)
+  sentAt         DateTime?
+  createdById    Int?
+  createdBy      User?                  @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  recipients     CrmCampaignRecipient[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([createdById, status, updatedAt])
+  @@index([status, sentAt])
+  @@index([projectName])
+}
+
+model CrmCampaignRecipient {
+  id           Int                        @id @default(autoincrement())
+  campaignId   Int
+  campaign     CrmCampaign                @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  contactId    Int?
+  contact      Contact?                   @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  email        String
+  name         String?
+  status       CrmCampaignRecipientStatus @default(PENDING)
+  errorMessage String?                    @db.Text
+  sentAt       DateTime?
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+
+  @@unique([campaignId, contactId])
+  @@index([campaignId, status])
+  @@index([contactId, status])
+  @@index([email])
+}
+
+enum CrmFormStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CrmFormFieldType {
+  SHORT_TEXT
+  FULL_NAME
+  PHONE
+  PHONE_WITH_COUNTRY
+  EMAIL
+  CUSTOM_DATE
+  CUSTOM_TIME
+  CUSTOM_DATETIME
+}
+
+enum CrmFormContactTarget {
+  NONE
+  NAME
+  EMAIL
+  PHONE
+}
+
+model CrmForm {
+  id             Int                 @id @default(autoincrement())
+  name           String
+  slug           String              @unique @db.VarChar(191)
+  status         CrmFormStatus       @default(DRAFT)
+  description    String?             @db.Text
+  submitLabel    String              @default("Enviar")
+  successMessage String              @default("Gracias, recibimos tus datos.")
+  createdById    Int?
+  createdBy      User?               @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  fields         CrmFormField[]
+  submissions    CrmFormSubmission[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([createdById])
+  @@index([status, updatedAt])
+}
+
+model CrmFormField {
+  id            Int                  @id @default(autoincrement())
+  formId        Int
+  form          CrmForm              @relation(fields: [formId], references: [id], onDelete: Cascade)
+  type          CrmFormFieldType
+  contactTarget CrmFormContactTarget @default(NONE)
+  label         String
+  fieldKey      String               @db.VarChar(191)
+  placeholder   String?
+  helpText      String?              @db.Text
+  isRequired    Boolean              @default(false)
+  position      Int                  @default(0)
+  config        Json?
+  values        CrmFormSubmissionValue[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@unique([formId, fieldKey])
+  @@index([formId, position])
+}
+
+model CrmFormSubmission {
+  id          Int                      @id @default(autoincrement())
+  formId      Int
+  form        CrmForm                  @relation(fields: [formId], references: [id], onDelete: Cascade)
+  contactId   Int?
+  contact     Contact?                 @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  submittedAt DateTime                 @default(now())
+  ipHash      String?
+  userAgent   String?                  @db.Text
+  values      CrmFormSubmissionValue[]
+
+  @@index([formId, submittedAt])
+  @@index([formId, contactId])
+  @@index([contactId])
+}
+
+model CrmFormSubmissionValue {
+  id              Int               @id @default(autoincrement())
+  submissionId    Int
+  submission      CrmFormSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  fieldId         Int
+  field           CrmFormField      @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  rawValue        String?           @db.Text
+  normalizedValue String?           @db.VarChar(191)
+
+  @@unique([submissionId, fieldId])
+  @@index([fieldId, normalizedValue])
 }

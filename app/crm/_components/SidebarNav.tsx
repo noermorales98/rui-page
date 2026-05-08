@@ -1,0 +1,98 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { HugeiconsIcon } from '@hugeicons/react'
+import DashboardSquare01Icon from '@hugeicons/core-free-icons/DashboardSquare01Icon'
+import UserMultipleIcon from '@hugeicons/core-free-icons/UserMultipleIcon'
+import GitBranchIcon from '@hugeicons/core-free-icons/GitBranchIcon'
+import Video01Icon from '@hugeicons/core-free-icons/Video01Icon'
+import File01Icon from '@hugeicons/core-free-icons/File01Icon'
+import Mail01Icon from '@hugeicons/core-free-icons/Mail01Icon'
+import BookOpen01Icon from '@hugeicons/core-free-icons/BookOpen01Icon'
+import ShoppingCart01Icon from '@hugeicons/core-free-icons/ShoppingCart01Icon'
+import Settings01Icon from '@hugeicons/core-free-icons/Settings01Icon'
+import UserAccountIcon from '@hugeicons/core-free-icons/UserAccountIcon'
+
+const NAV_ITEMS = [
+  { label: 'Dashboard',   href: '/crm/dashboard',              icon: DashboardSquare01Icon },
+  { label: 'Contactos',   href: '/crm/contactos',              icon: UserMultipleIcon      },
+  { label: 'Pipeline',    href: '/crm/pipeline',               icon: GitBranchIcon         },
+  { label: 'Webinars',    href: '/crm/webinars',               icon: Video01Icon           },
+  { label: 'Formularios', href: '/crm/formularios',            icon: File01Icon            },
+  { label: 'Campañas',    href: '/crm/campanas',               icon: Mail01Icon            },
+  { label: 'Cursos',      href: '/crm/cursos',                 icon: BookOpen01Icon        },
+  { label: 'Ventas',      href: '/crm/ventas',                 icon: ShoppingCart01Icon    },
+]
+
+const CONFIG_ITEMS = [
+  { label: 'Configuración', href: '/crm/configuracion',          icon: Settings01Icon  },
+  { label: 'Usuarios',      href: '/crm/configuracion/usuarios', icon: UserAccountIcon, adminOnly: true },
+]
+
+interface SidebarNavProps {
+  isAdmin: boolean
+}
+
+export function SidebarNav({ isAdmin }: SidebarNavProps) {
+  const pathname = usePathname()
+
+  function isActive(href: string) {
+    if (href === '/crm/contactos') return pathname === href || pathname.startsWith('/crm/contactos/')
+    if (href === '/crm/webinars') return pathname === href || pathname.startsWith('/crm/webinars/')
+    if (href === '/crm/formularios') return pathname === href || pathname.startsWith('/crm/formularios/')
+    return pathname === href || pathname.startsWith(href + '/')
+  }
+
+  return (
+    <nav className="flex flex-col gap-0.5">
+      {NAV_ITEMS.map(({ label, href, icon }) => {
+        const active = isActive(href)
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-full text-[13.5px] font-medium transition-colors ${
+              active
+                ? 'bg-white text-[#080808] font-semibold shadow-md shadow-black/1'
+                : 'text-[#8a8a8a] hover:bg-white hover:text-[#080808]'
+            }`}
+          >
+            <HugeiconsIcon
+              icon={icon}
+              size={16}
+              strokeWidth={1.5}
+              className={active ? 'opacity-100' : 'opacity-60'}
+            />
+            {label}
+          </Link>
+        )
+      })}
+
+      <div className="my-2 h-px bg-[#e5e7eb]" />
+
+      {CONFIG_ITEMS.filter((item) => !item.adminOnly || isAdmin).map(({ label, href, icon }) => {
+        const active = isActive(href)
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-full text-[13.5px] font-medium transition-colors ${
+              active
+                ? 'bg-white text-[#080808] font-semibold shadow-sm'
+                : 'text-[#8a8a8a] hover:bg-white hover:text-[#080808]'
+            }`}
+          >
+            <HugeiconsIcon
+              icon={icon}
+              size={16}
+              strokeWidth={1.5}
+              className={active ? 'opacity-100' : 'opacity-60'}
+            />
+            {label}
+          </Link>
+        )
+      })}
+    </nav>
+  )
+}

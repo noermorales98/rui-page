@@ -62,75 +62,70 @@ export function ParticipantsTable({ registrations }: Props) {
 
   if (registrations.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-gray-200 py-10 text-center text-sm text-gray-400">
+      <div className="rounded-2xl border border-dashed border-gray-200 py-10 text-center text-sm text-[#8a8a8a]">
         No hay participantes todavía. Agrega contactos o importa un CSV.
       </div>
     )
   }
 
   return (
-    <div className="overflow-hidden rounded-lg ring-1 ring-gray-200">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b border-gray-200 bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            <th className="px-4 py-3 text-left">Contacto</th>
-            <th className="px-4 py-3 text-left">Email</th>
-            <th className="px-4 py-3 text-left">Estado</th>
-            <th className="px-4 py-3 text-left">Agregado</th>
-            <th className="px-4 py-3"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {registrations.map((reg) => {
-            const currentStatus = statuses[reg.id] ?? reg.status
-            const statusConfig = STATUS_OPTIONS.find((s) => s.value === currentStatus)
-            return (
-              <tr key={reg.id} className="border-b border-gray-100 last:border-0">
-                <td className="px-4 py-3">
-                  <a
-                    href={`/crm/contactos/${reg.contact.id}`}
-                    className="font-medium text-indigo-600 hover:underline"
-                  >
-                    {reg.contact.name}
-                  </a>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{reg.contact.email}</td>
-                <td className="px-4 py-3">
-                  <select
-                    value={currentStatus}
-                    onChange={(e) =>
-                      handleStatusChange(reg.id, e.target.value as RegistrationStatus)
-                    }
-                    aria-label={`Estado de ${reg.contact.name}`}
-                    className={`rounded-lg border-0 py-1 pl-2 pr-6 text-xs font-medium ring-1 ring-gray-200 focus:outline-none focus:ring-indigo-400 ${statusConfig?.colorClass ?? ''}`}
-                  >
-                    {STATUS_OPTIONS.map((s) => (
-                      <option key={s.value} value={s.value}>
-                        {s.label}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="px-4 py-3 text-xs text-gray-400">
-                  {relativeTime(reg.createdAt)}
-                </td>
-                <td className="px-4 py-3">
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(reg)}
-                    aria-label={`Quitar a ${reg.contact.name}`}
-                    className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
-                      <path fillRule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+    <div>
+      {/* Column headers */}
+      <div className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+        style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
+        <span>Contacto</span>
+        <span>Email</span>
+        <span>Estado</span>
+        <span>Agregado</span>
+        <span></span>
+      </div>
+
+      {registrations.map((reg) => {
+        const currentStatus = statuses[reg.id] ?? reg.status
+        const statusConfig = STATUS_OPTIONS.find((s) => s.value === currentStatus)
+        return (
+          <div key={reg.id}
+            className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
+            style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
+            <a
+              href={`/crm/contactos/${reg.contact.id}`}
+              className="text-sm font-medium text-indigo-600 hover:underline"
+            >
+              {reg.contact.name}
+            </a>
+            <span className="text-sm text-[#8a8a8a]">{reg.contact.email}</span>
+            <div>
+              <select
+                value={currentStatus}
+                onChange={(e) =>
+                  handleStatusChange(reg.id, e.target.value as RegistrationStatus)
+                }
+                aria-label={`Estado de ${reg.contact.name}`}
+                className={`rounded-lg border-0 py-1 pl-2 pr-6 text-xs font-medium ring-1 ring-gray-200 focus:outline-none focus:ring-indigo-400 ${statusConfig?.colorClass ?? ''}`}
+              >
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <span className="text-xs text-[#8a8a8a]">{relativeTime(reg.createdAt)}</span>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => handleRemove(reg)}
+                aria-label={`Quitar a ${reg.contact.name}`}
+                className="rounded-lg p-1.5 text-[#8a8a8a] hover:bg-red-50 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
+                  <path fillRule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

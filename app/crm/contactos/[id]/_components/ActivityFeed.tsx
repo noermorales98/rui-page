@@ -8,6 +8,9 @@ const ACTIVITY_ICONS: Record<string, string> = {
   WEBINAR_REGISTERED: '📅',
   WEBINAR_ATTENDED: '📅',
   COURSE_PURCHASED: '🎓',
+  FORM_SUBMITTED: '🧾',
+  CAMPAIGN_SENT: '✉️',
+  SALE_CREATED: '💰',
 }
 
 const ACTIVITY_LABELS: Record<string, string> = {
@@ -16,6 +19,9 @@ const ACTIVITY_LABELS: Record<string, string> = {
   WEBINAR_REGISTERED: 'Registrado al webinar',
   WEBINAR_ATTENDED: 'Asistió al webinar',
   COURSE_PURCHASED: 'Compró curso',
+  FORM_SUBMITTED: 'Envió formulario',
+  CAMPAIGN_SENT: 'Recibió campaña',
+  SALE_CREATED: 'Venta registrada',
 }
 
 function relativeTime(date: Date): string {
@@ -46,13 +52,13 @@ export function ActivityFeed({ activities }: { activities: ActivityWithUser[] })
           <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm">
             {ACTIVITY_ICONS[activity.type] ?? '•'}
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm text-gray-900">
+          <div className="min-w-0 flex-1 bg-white rounded-2xl px-4 py-3 mb-2 last:mb-0">
+            <p className="text-sm text-[#080808]">
               {activity.type === 'NOTE'
                 ? activity.body
                 : `${ACTIVITY_LABELS[activity.type]}${activity.body ? ` — ${activity.body}` : ''}`}
             </p>
-            <p className="mt-0.5 text-xs text-gray-400">
+            <p className="mt-1 text-xs text-[#8a8a8a]">
               {relativeTime(new Date(activity.createdAt))}
               {' · '}
               {activity.createdBy?.name ?? 'automático'}

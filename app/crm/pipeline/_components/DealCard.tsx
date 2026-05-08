@@ -54,7 +54,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
       <div
         ref={setNodeRef}
         style={style}
-        className={`rounded-lg bg-white px-4 py-3 shadow-sm ring-1 ring-gray-200 transition-opacity ${
+        className={`bg-white rounded-2xl px-3.5 py-3 shadow-sm transition-opacity ${
           isDragging ? 'opacity-40' : 'cursor-grab active:cursor-grabbing'
         }`}
         {...attributes}
@@ -65,7 +65,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
           <div className="min-w-0 flex-1">
             <a
               href={`/crm/contactos/${deal.contact.id}`}
-              className="block truncate text-sm font-semibold text-gray-900 hover:text-indigo-600"
+              className="block truncate text-[13px] font-semibold text-[#080808] hover:text-[#5a85cc] transition-colors"
               onPointerDown={(e) => e.stopPropagation()}
             >
               {deal.contact.name}
@@ -85,7 +85,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+              className="rounded-lg p-1.5 text-[#8a8a8a] hover:bg-[#f0f1f3] hover:text-[#080808] transition-colors border-none bg-transparent cursor-pointer"
               title="Editar"
             >
               <svg
@@ -101,7 +101,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
             <button
               type="button"
               onClick={handleDelete}
-              className="rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600"
+              className="rounded-lg p-1.5 text-[#8a8a8a] hover:bg-red-50 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
               title="Eliminar"
             >
               <svg
@@ -125,7 +125,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
           <select
             value={deal.stage}
             onChange={(e) => onMove(e.target.value as DealStage)}
-            className="w-full rounded border-0 bg-gray-50 py-1 text-xs text-gray-600 ring-1 ring-gray-200 focus:outline-none focus:ring-indigo-400"
+            className="w-full rounded-xl border-0 bg-[#f0f1f3] py-1 px-2 text-xs text-[#8a8a8a] focus:outline-none focus:ring-1 focus:ring-[#dfff00] cursor-pointer"
           >
             {STAGE_OPTIONS.map((s) => (
               <option key={s.value} value={s.value}>

@@ -18,8 +18,8 @@ export default async function UsuariosPage() {
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Usuarios</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#080808]">Usuarios</h1>
+          <p className="mt-1.5 text-sm text-[#8a8a8a]">
             Gestiona los usuarios del sistema y sus permisos.
           </p>
         </div>
@@ -27,7 +27,7 @@ export default async function UsuariosPage() {
       </div>
 
       {/* Table card */}
-      <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+      <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] p-6 overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

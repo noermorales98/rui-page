@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { ContactHeader } from './_components/ContactHeader'
 import { ContactInfo } from './_components/ContactInfo'
@@ -33,34 +34,32 @@ export default async function ContactDetailPage({ params }: Props) {
   if (!contact) notFound()
 
   return (
-    <div>
-      {/* Back link */}
-      <a
+    <div className="flex flex-col gap-6">
+      <Link
         href="/crm/contactos"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-          <path fillRule="evenodd" d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z" clipRule="evenodd" />
+        className="inline-flex items-center gap-1.5 text-sm text-[#8a8a8a] hover:text-[#080808] transition-colors w-fit">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         Contactos
-      </a>
+      </Link>
 
-      <div className="flex gap-6">
-        {/* Left column: contact info */}
+      <div className="flex gap-5 items-start">
+        {/* Left: info */}
         <div className="w-72 flex-shrink-0">
-          <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+          <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] overflow-hidden">
             <ContactInfo contact={contact} />
           </div>
         </div>
 
-        {/* Right column: header + activity */}
+        {/* Right: header + activity */}
         <div className="min-w-0 flex-1">
-          <div className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+          <div className="bg-[#f7f8fa] rounded-[28px] border border-white/60 shadow-[0_16px_45px_rgba(15,23,42,0.04)] overflow-hidden">
             <ContactHeader contact={contact} allTags={allTags} />
             <div className="p-6">
               <ContactDeals contactId={contact.id} contactName={contact.name} />
-              <div className="mt-6 border-t border-gray-100 pt-6">
-                <h3 className="mb-3 text-sm font-semibold text-gray-700">Actividad</h3>
+              <div className="mt-6 pt-6 border-t border-[#e5e7eb]">
+                <h3 className="mb-4 text-sm font-semibold text-[#080808] tracking-[-0.02em]">Actividad</h3>
                 <AddNoteForm contactId={contact.id} />
                 <ActivityFeed activities={contact.activities} />
               </div>
