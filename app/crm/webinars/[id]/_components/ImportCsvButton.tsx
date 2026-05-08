@@ -3,6 +3,31 @@
 import { useRef, useState } from 'react'
 import { importRegistrations } from '../../actions'
 
+function parseCsvLine(line: string): string[] {
+  const cols: string[] = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i]
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"'
+        i++
+      } else {
+        inQuotes = !inQuotes
+      }
+    } else if (ch === ',' && !inQuotes) {
+      cols.push(current.trim())
+      current = ''
+    } else {
+      current += ch
+    }
+  }
+  cols.push(current.trim())
+  return cols
+}
+
 interface Props {
   webinarId: number
 }
@@ -17,14 +42,14 @@ export function ImportCsvButton({ webinarId }: Props) {
     if (!file) return
 
     const text = await file.text()
-    const lines = text.trim().split(/\r?\n/)
+    const lines = text.replace(/^﻿/, '').trim().split(/\r?\n/)
     if (lines.length < 2) {
       alert('El CSV está vacío o no tiene datos.')
       if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
 
-    const headers = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/^"|"$/g, ''))
+    const headers = parseCsvLine(lines[0]).map((h) => h.toLowerCase())
     const nameIdx = headers.findIndex((h) => h === 'nombre' || h === 'name')
     const emailIdx = headers.findIndex((h) => h === 'email' || h === 'correo')
 
@@ -36,8 +61,9 @@ export function ImportCsvButton({ webinarId }: Props) {
 
     const rows = lines
       .slice(1)
+      .filter((line) => line.trim())
       .map((line) => {
-        const cols = line.split(',').map((c) => c.trim().replace(/^"|"$/g, ''))
+        const cols = parseCsvLine(line)
         return {
           name: nameIdx !== -1 ? (cols[nameIdx] ?? '') : (cols[emailIdx] ?? ''),
           email: cols[emailIdx] ?? '',
