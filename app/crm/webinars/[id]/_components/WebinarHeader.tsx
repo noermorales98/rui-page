@@ -37,7 +37,9 @@ export function WebinarHeader({ webinar }: Props) {
     if (!window.confirm(`¿Eliminar "${webinar.title}"? Se perderán todos los registros.`)) return
     startTransition(async () => {
       const result = await deleteWebinar(webinar.id)
-      if (!result?.error) {
+      if (result?.error) {
+        alert(result.error)
+      } else {
         router.push('/crm/webinars')
       }
     })
@@ -56,6 +58,7 @@ export function WebinarHeader({ webinar }: Props) {
                 href={webinar.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Abrir enlace del webinar${webinar.platform ? ` en ${webinar.platform}` : ''}`}
                 className="text-indigo-600 hover:underline"
               >
                 Ver enlace
@@ -68,12 +71,14 @@ export function WebinarHeader({ webinar }: Props) {
         </div>
         <div className="ml-4 flex flex-shrink-0 gap-2">
           <button
+            type="button"
             onClick={() => setEditOpen(true)}
             className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             Editar
           </button>
           <button
+            type="button"
             onClick={handleDelete}
             className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50"
           >
