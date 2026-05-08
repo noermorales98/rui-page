@@ -37,7 +37,8 @@ export function WebinarTable({ webinars }: Props) {
     e.stopPropagation()
     if (!window.confirm(`¿Eliminar "${w.title}"? Se perderán todos los registros.`)) return
     startTransition(async () => {
-      await deleteWebinar(w.id)
+      const result = await deleteWebinar(w.id)
+      if (result?.error) alert(result.error)
     })
   }
 
