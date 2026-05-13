@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "db:seed": "prisma db seed",
+    "db:migrate": "prisma migrate deploy",
+    "db:status": "prisma migrate status",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
