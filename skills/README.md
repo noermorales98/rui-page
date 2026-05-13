@@ -2,7 +2,7 @@
 
 Manuales reutilizables para agentes (Claude, Codex, humano). Carpeta neutra. `.claude/` y `.codex/` deben apuntar acá (symlink o referencia).
 
-## Índice
+## Índice (28 skills)
 
 ### Transversales (siempre cargadas)
 - `sdd-loader.md` — leer SDD antes de actuar.
@@ -38,28 +38,18 @@ Manuales reutilizables para agentes (Claude, Codex, humano). Carpeta neutra. `.c
 - `webinar-metrics.md` — atribución, conversión, asistencia.
 
 ### Calidad
-- `test-writer.md`
-- `reviewer-agent.md`
+- `test-writer.md` — patrón Vitest + Playwright.
+- `qa-runner.md` — corre suite y genera reporte de PR.
+- `reviewer-agent.md` — revisa PR y genera comentario.
 
 ## Cómo trabaja un agente
-1. Carga `sdd-loader` → lee todos los docs SDD (incluyendo deltas aplicados).
+1. Carga `sdd-loader` → lee todos los docs SDD.
 2. Carga la skill del módulo asignado.
 3. Carga transversales que aplican.
 4. Implementa siguiendo `CODE_RULES.md` + skills.
 5. Si tocó schema → `prisma-migration`.
 6. Si creó UI → `ui-component` + `rsc-patterns` + `i18n-spanish`.
 7. Si afecta performance → `performance`.
-8. Antes de PR → corre tests propios (`test-writer`).
+8. Antes de PR → `qa-runner`.
 9. Otro agente usa `reviewer-agent` para revisar.
 10. Humano aprueba/merge.
-
-## Estrategia multi-agente
-- 1 branch = 1 agente = 1 skill de módulo.
-- Módulos independientes (forms, landings, campaigns) pueden ir en paralelo.
-- Flows depende de los demás módulos (trigger sources) → último o tras los demás.
-
-## Naming de branches (libre, sugerencia)
-- `feat/landings-builder`
-- `feat/flows-engine`
-- `feat/contacts-csv-import`
-- `chore/sdd-update-data-model`

@@ -2,8 +2,13 @@
 
 import nodemailer from 'nodemailer';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs';
 import path from 'path';
+import { prisma } from '@/lib/prisma';
+
+/** Webinar público «El método de los 4 ángeles» — registros desde /webinar */
+const WEBINAR_PUBLIC_ID = 1;
 
 // SMTP Transporter configuration
 const transporter = nodemailer.createTransport({
@@ -68,6 +73,107 @@ export async function handleWebinarSubmission(
 
   if (!email) {
     return { error: 'El correo electrónico es obligatorio.' };
+  }
+
+  const normalizedEmail = email.toLowerCase();
+  const phoneTrimmed = phone ? phone : '';
+  const nameTrimmed = name?.trim() ?? '';
+  const displayName =
+    nameTrimmed ||
+    (normalizedEmail.includes('@') ? normalizedEmail.split('@')[0] : normalizedEmail) ||
+    'Participante';
+
+  try {
+    const webinarExists = await prisma.webinar.findUnique({
+      where: { id: WEBINAR_PUBLIC_ID },
+      select: { id: true, title: true },
+    });
+    if (!webinarExists) {
+      return {
+        error:
+          'No se pudo completar el registro (webinar no configurado). Contacta al equipo.',
+      };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const existingContact = await tx.contact.findUnique({
+        where: { email: normalizedEmail },
+        select: { id: true, name: true, phone: true },
+      });
+
+      let contactId: number;
+
+      if (existingContact) {
+        const updateData: { name?: string; phone?: string } = {};
+        if (!existingContact.name?.trim() && nameTrimmed) {
+          updateData.name = nameTrimmed;
+        }
+        if (phoneTrimmed && !existingContact.phone?.trim()) {
+          updateData.phone = phoneTrimmed;
+        }
+        if (Object.keys(updateData).length > 0) {
+          await tx.contact.update({
+            where: { id: existingContact.id },
+            data: updateData,
+          });
+        }
+        contactId = existingContact.id;
+      } else {
+        const created = await tx.contact.create({
+          data: {
+            name: displayName,
+            email: normalizedEmail,
+            phone: phoneTrimmed || null,
+            source: 'WEBINAR',
+          },
+          select: { id: true },
+        });
+        contactId = created.id;
+      }
+
+      const existingReg = await tx.webinarRegistration.findUnique({
+        where: {
+          webinarId_contactId: {
+            webinarId: WEBINAR_PUBLIC_ID,
+            contactId,
+          },
+        },
+      });
+
+      await tx.webinarRegistration.upsert({
+        where: {
+          webinarId_contactId: {
+            webinarId: WEBINAR_PUBLIC_ID,
+            contactId,
+          },
+        },
+        update: {},
+        create: {
+          webinarId: WEBINAR_PUBLIC_ID,
+          contactId,
+          status: 'REGISTERED',
+        },
+      });
+
+      if (!existingReg) {
+        await tx.contactActivity.create({
+          data: {
+            contactId,
+            type: 'WEBINAR_REGISTERED',
+            body: `Registro en el webinar «${webinarExists.title}».`,
+          },
+        });
+      }
+    });
+
+    revalidatePath('/crm/contactos');
+    revalidatePath('/crm/webinars');
+    revalidatePath(`/crm/webinars/${WEBINAR_PUBLIC_ID}`);
+  } catch (e) {
+    console.error('Error guardando registro de webinar en CRM:', e);
+    return {
+      error: 'No se pudo guardar tu registro. Intenta de nuevo en unos minutos.',
+    };
   }
 
   const esc = (s: string) =>
