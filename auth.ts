@@ -1,8 +1,9 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
-import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import { prisma } from '@/lib/prisma'
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -10,6 +11,7 @@ const credentialsSchema = z.object({
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
       credentials: {
@@ -24,7 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { email: parsed.data.email },
         })
 
-        if (!user || !user.active) return null
+        if (!user || !user.active || user.deletedAt) return null
 
         const passwordMatch = await bcrypt.compare(parsed.data.password, user.password)
         if (!passwordMatch) return null
@@ -47,12 +49,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token
     },
     async session({ session, token }) {
-      const validRoles = ['ADMIN', 'EDITOR'] as const
-      if (!token.id || !validRoles.includes(token.role as 'ADMIN' | 'EDITOR')) {
-        return session
-      }
-      session.user.id = token.id as string
-      session.user.role = token.role as 'ADMIN' | 'EDITOR'
+      if (token.id) session.user.id = token.id
+      if (token.role) session.user.role = token.role
       return session
     },
   },
