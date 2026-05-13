@@ -19,10 +19,10 @@
 - **VerificationToken** — identifier, token, expires.
 
 ### 2.2 Contactos
-- **Contact** — `id, name, email (required, unique), phone?, source(ContactSource), status(ContactStatus), deletedAt, createdAt, updatedAt`.
+- **Contact** — `id, name, email (required, unique), phone?, source(ContactSource), status(ContactStatus), deletedAt, createdAt, updatedAt`. Backref `flowRuns FlowRun[]` (ver §2.10).
 - **Tag** — `id, name (unique), color, deletedAt`.
 - **ContactTag** — join (contactId, tagId).
-- **ContactActivity** — log por contacto: `type(ActivityType), body?, createdById?, createdAt`.
+- **ContactActivity** — log por contacto: `type(ActivityType), body?, createdById?, createdAt`. Índice `(contactId, createdAt)` para timeline.
 
 ### 2.3 Pipeline & Ventas
 - **Deal** — `id, contactId, courseName?, stage(DealStage), notes?, deletedAt`.
@@ -30,9 +30,9 @@
 - **StripeEvent** — `id, eventId (unique), type, payload(Json), processedAt?, createdAt`. Idempotencia de webhooks.
 
 ### 2.4 Webinars
-- **Webinar** — `id, title, date, platform?, link?, description?, deletedAt`.
+- **Webinar** — `id, title, date, platform?, link?, description?, deletedAt`. Índice `(date)`.
 - **WebinarRegistration** — `webinarId, contactId, status(RegistrationStatus)`. Unique (webinarId, contactId).
-- **WebinarIntegration** — ligado a `Integration` (zoom meetingId, etc).
+- **WebinarIntegration** — `id, webinarId (unique), integrationId, externalId? (zoom meetingId, etc), config(Json)?, lastSyncAt?`. 1↔1 con `Webinar`, N↔1 con `Integration`.
 
 ### 2.5 Formularios
 - **CrmForm** — `id, name, slug (unique), status(CrmFormStatus), description?, submitLabel, successMessage, createdById?, deletedAt`.
@@ -53,6 +53,17 @@
 ### 2.8 Auditoría
 - **AuditLog** — `id, actorId?, entityType VarChar(64), entityId, action(AuditAction), changes(Json)?, metadata(Json)?, createdAt`.
 
+### 2.9 Landings
+- **Landing** — `id, name, slug (unique), status(LandingStatus), title?, description?, ogImageUrl?, faviconUrl?, customHead?, customCss?, formId? → CrmForm, ownFormConfig(Json)?, flowId? → Flow (relation "LandingFlow"), createdById?, deletedAt`.
+- **LandingBlock** — `id, landingId, type(LandingBlockType), position, config(Json), customHtml?, customCss?`. Cascade desde Landing.
+- **LandingView** — `id, landingId, ipHash VarChar(64), uaHash VarChar(64), referer?, utm(Json)?, viewedAt`. Cascade desde Landing.
+
+### 2.10 Flows (automatizaciones)
+- **Flow** — `id, name, description?, trigger(FlowTrigger), triggerConfig(Json)?, status(FlowStatus), createdById?, deletedAt`. Relación inversa con `Landing` vía "LandingFlow".
+- **FlowStep** — `id, flowId, position, action(FlowStepAction), config(Json), delayMins`. Cascade desde Flow.
+- **FlowRun** — `id, flowId, contactId?, triggerPayload(Json)?, status(FlowRunStatus), startedAt, finishedAt?, errorMessage?`. Cascade desde Flow.
+- **FlowRunStep** — `id, runId, stepId, position, status(FlowRunStatus), runAt, executedAt?, result(Json)?, errorMessage?, attempts`. Cascade desde FlowRun y FlowStep.
+
 ## 3. Enums
 - `Role`: ADMIN, VENDEDOR, ASISTENTE.
 - `ContactSource`: WEBINAR, FORM, MANUAL, IMPORT.
@@ -71,14 +82,15 @@
 - `IntegrationProvider`: ZOOM, STREAMYARD, STRIPE, WHATSAPP_CLOUD, SMTP.
 - `IntegrationStatus`: ACTIVE, DISABLED, ERROR.
 - `AuditAction`: CREATE, UPDATE, DELETE, STATUS_CHANGE, STAGE_CHANGE, LOGIN.
+- `LandingStatus`: DRAFT, PUBLISHED, ARCHIVED.
+- `LandingBlockType`: HERO, VIDEO, CTA, FORM_EMBED, TESTIMONIALS, FAQ, FOOTER, CUSTOM_HTML.
+- `FlowTrigger`: FORM_SUBMITTED, LANDING_VIEWED, LANDING_SUBMITTED, WEBINAR_REGISTERED, WEBINAR_ATTENDED, SALE_PAID.
+- `FlowStatus`: DRAFT, ACTIVE, PAUSED, ARCHIVED.
+- `FlowStepAction`: REDIRECT, ASSIGN_TAG, MOVE_DEAL, CREATE_DEAL, SEND_EMAIL, SEND_WHATSAPP, UPDATE_CONTACT_STATUS, WAIT.
+- `FlowRunStatus`: PENDING, RUNNING, COMPLETED, FAILED, CANCELED.
 
 ## 4. Índices clave
 Ya definidos por modelo. Revisión periódica al crecer volumen.
 
 ## 5. Migraciones pendientes (desde schema actual)
-1. `Role`: EDITOR → migrar a `ASISTENTE`. Crear `VENDEDOR`.
-2. Agregar `deletedAt` en entidades principales.
-3. `CrmCampaign`: agregar `channel`, `templateId`, `segmentId`, `waTemplateName`, `waLanguage`, `waVariables`. Hacer `bodyHtml` opcional.
-4. `CrmSale`: agregar campos Stripe.
-5. Crear `StripeEvent`, `Integration`, `WebinarIntegration`, `CampaignTemplate`, `Segment`, `AuditLog`.
-6. Crear modelos Auth.js: `Account`, `Session`, `VerificationToken`.
+_Ninguna. Schema completo aplicado en `20260513161133_add_full_mvp_schema` (Sprint 1)._
