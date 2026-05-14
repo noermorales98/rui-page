@@ -257,3 +257,71 @@ export async function importRegistrations(
   revalidatePath('/crm/contactos')
   return { imported, skipped }
 }
+
+export async function linkZoomWebinar(
+  webinarId: number,
+  zoomWebinarId: string,
+): Promise<{ error?: string }> {
+  const session = await auth()
+  if (!session?.user) return { error: 'No autorizado' }
+
+  const externalId = zoomWebinarId.trim()
+  if (!externalId) return { error: 'El ID de Zoom es obligatorio' }
+
+  const zoomIntegration = await prisma.integration.findUnique({ where: { provider: 'ZOOM' } })
+  if (!zoomIntegration) return { error: 'Zoom no está conectado' }
+
+  try {
+    await prisma.webinarIntegration.upsert({
+      where: { webinarId },
+      create: {
+        webinarId,
+        integrationId: zoomIntegration.id,
+        externalId,
+      },
+      update: { externalId },
+    })
+  } catch (e) {
+    console.error(e)
+    return { error: 'Error al vincular el webinar' }
+  }
+
+  revalidatePath(`/crm/webinars/${webinarId}`)
+  return {}
+}
+
+export async function unlinkZoomWebinar(webinarId: number): Promise<{ error?: string }> {
+  const session = await auth()
+  if (!session?.user) return { error: 'No autorizado' }
+
+  try {
+    await prisma.webinarIntegration.delete({ where: { webinarId } })
+  } catch (_e) {
+    // P2025: Already unlinked — ignore
+  }
+
+  revalidatePath(`/crm/webinars/${webinarId}`)
+  return {}
+}
+
+export async function updateViewerCount(
+  webinarId: number,
+  viewerCount: number,
+): Promise<{ error?: string }> {
+  const session = await auth()
+  if (!session?.user) return { error: 'No autorizado' }
+
+  if (!Number.isInteger(viewerCount) || viewerCount < 0) {
+    return { error: 'Número inválido' }
+  }
+
+  try {
+    await prisma.webinar.update({ where: { id: webinarId }, data: { viewerCount } })
+  } catch (e) {
+    console.error(e)
+    return { error: 'Error al actualizar métricas' }
+  }
+
+  revalidatePath(`/crm/webinars/${webinarId}`)
+  return {}
+}
