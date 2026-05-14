@@ -6,8 +6,8 @@ const VARIANTS: Record<Variant, string> = {
   lime: 'bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]',
   blue: 'bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed)]',
   gray: 'bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)]',
-  amber: 'bg-amber-50 text-amber-700',
-  red: 'bg-red-50 text-red-600',
+  amber: 'bg-[var(--color-secondary-fixed)] text-[var(--color-on-secondary-fixed-variant)]',
+  red: 'bg-[var(--color-error-container)] text-[var(--color-on-error-container)]',
 }
 
 interface BadgeProps {

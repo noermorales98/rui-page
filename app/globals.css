@@ -36,6 +36,7 @@
   --color-surface-container-lowest: #ffffff;
   --color-on-secondary-container: #755100;
   --color-on-error-container: #93000a;
+  --color-accent-neon: #dfff00;   /* dot notificación, avatar bg */
   --color-on-secondary: #ffffff;
   --color-inverse-surface: #32302b;
   --color-tertiary: #002a19;

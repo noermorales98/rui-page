@@ -8,10 +8,10 @@ export default async function Sidebar() {
   const role = (session?.user?.role ?? null) as Role | null
 
   return (
-    <aside className="flex h-full max-h-full flex-col gap-px overflow-hidden rounded-[28px] border border-[#e5e7eb] bg-[#f7f8fa] p-5">
+    <aside className="flex h-full max-h-full flex-col gap-px overflow-hidden rounded-[28px] border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] p-5">
       {/* Brand */}
-      <div className="px-2 pb-4 border-b border-[#e5e7eb] mb-2">
-        <span className="text-[17px] font-bold tracking-[-0.04em] text-[#080808]">CRM Digital</span>
+      <div className="px-2 pb-4 border-b border-[var(--color-outline-variant)] mb-2">
+        <span className="text-[17px] font-bold tracking-[-0.04em] text-[var(--color-on-surface)]">CRM Digital</span>
       </div>
 
       {/* Nav */}
@@ -20,7 +20,7 @@ export default async function Sidebar() {
       </div>
 
       {/* Sign out */}
-      <div className="pt-3 border-t border-[#e5e7eb]">
+      <div className="pt-3 border-t border-[var(--color-outline-variant)]">
         <SignOutButton />
       </div>
     </aside>
