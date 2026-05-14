@@ -270,6 +270,7 @@ model Webinar {
   platform      String?
   link          String?
   description   String?               @db.Text
+  viewerCount   Int?
   deletedAt     DateTime?
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
