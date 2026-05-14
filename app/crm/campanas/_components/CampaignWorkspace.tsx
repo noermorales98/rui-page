@@ -142,7 +142,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
           </div>
         </div>
 
-        <aside className="border-t border-[#e8e8e8] pt-6 mt-6 lg:border-l lg:border-t-0 lg:pt-0 lg:mt-0 lg:pl-6">
+        <aside className="border-t border-[#e8e8e8] pt-6 mt-6 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:border-l lg:border-t-0 lg:pt-0 lg:mt-0 lg:pl-6">
           <h3 className="text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider">Audiencia</h3>
           <div className="mt-4 space-y-5">
             <div className="space-y-2">

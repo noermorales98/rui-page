@@ -121,7 +121,7 @@ export function FormBuilder({ form }: Props) {
           </div>
         </Card>
 
-        <aside className="space-y-5">
+        <aside className="sticky top-4 self-start space-y-5 max-h-[calc(100vh-7rem)] overflow-y-auto">
           <Card>
             <h2 className={`mb-4 ${TOK.sectionTitle}`}>Configuracion</h2>
             <form action={settingsAction} className="space-y-4">
