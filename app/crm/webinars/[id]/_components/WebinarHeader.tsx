@@ -4,6 +4,7 @@ import { useState, startTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { deleteWebinar } from '../../actions'
 import { CreateWebinarModal } from '../../_components/CreateWebinarModal'
+import { Dialog, useToast } from '@/app/crm/_components/ui'
 
 type WebinarForHeader = {
   id: number
@@ -32,13 +33,19 @@ interface Props {
 export function WebinarHeader({ webinar }: Props) {
   const router = useRouter()
   const [editOpen, setEditOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const { error: toastError } = useToast()
 
   function handleDelete() {
-    if (!window.confirm(`¿Eliminar "${webinar.title}"? Se perderán todos los registros.`)) return
+    setConfirmOpen(true)
+  }
+
+  function doDelete() {
+    setConfirmOpen(false)
     startTransition(async () => {
       const result = await deleteWebinar(webinar.id)
       if (result?.error) {
-        alert(result.error)
+        toastError(result.error)
       } else {
         router.push('/crm/webinars')
       }
@@ -47,6 +54,15 @@ export function WebinarHeader({ webinar }: Props) {
 
   return (
     <>
+      <Dialog
+        open={confirmOpen}
+        title="¿Eliminar webinar?"
+        description={`Eliminar "${webinar.title}". Se perderán todos los registros.`}
+        variant="danger"
+        confirmLabel="Eliminar"
+        onConfirm={doDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
       <div className="flex items-start justify-between border-b border-gray-200 px-6 py-5">
         <div>
           <h1 className="text-xl font-bold text-gray-900">{webinar.title}</h1>

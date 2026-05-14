@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Link2, RefreshCw, Unlink } from 'lucide-react'
 import { linkZoomWebinar, unlinkZoomWebinar, updateViewerCount } from '../../actions'
+import { Dialog } from '@/app/crm/_components/ui'
 
 interface Props {
   webinarId: number
@@ -16,6 +17,7 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
   const [viewers, setViewers] = useState(viewerCount?.toString() ?? '')
   const [message, setMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [confirmUnlinkOpen, setConfirmUnlinkOpen] = useState(false)
 
   async function handleLink() {
     startTransition(async () => {
@@ -24,8 +26,12 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
     })
   }
 
-  async function handleUnlink() {
-    if (!confirm('¿Desvincular este webinar de Zoom?')) return
+  function handleUnlink() {
+    setConfirmUnlinkOpen(true)
+  }
+
+  function doUnlink() {
+    setConfirmUnlinkOpen(false)
     startTransition(async () => {
       const result = await unlinkZoomWebinar(webinarId)
       setMessage(result.error ?? 'Desvinculado.')
@@ -54,6 +60,16 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
   }
 
   return (
+    <>
+      <Dialog
+        open={confirmUnlinkOpen}
+        title="¿Desvincular de Zoom?"
+        description="Los datos de sincronización se perderán."
+        variant="danger"
+        confirmLabel="Desvincular"
+        onConfirm={doUnlink}
+        onCancel={() => setConfirmUnlinkOpen(false)}
+      />
     <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-5 space-y-5">
       {/* Zoom section */}
       <div>
@@ -152,5 +168,6 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
         <p className="text-sm text-gray-600">{message}</p>
       )}
     </div>
+    </>
   )
 }

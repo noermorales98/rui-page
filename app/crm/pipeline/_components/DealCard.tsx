@@ -9,6 +9,7 @@ import { ExternalLink } from 'lucide-react'
 import { deleteDeal } from '../actions'
 import { CreateDealModal } from './CreateDealModal'
 import type { DealWithContact } from './PipelineBoard'
+import { Dialog, useToast } from '@/app/crm/_components/ui'
 
 const STAGE_OPTIONS: { value: DealStage; label: string }[] = [
   { value: 'LEAD', label: 'Lead' },
@@ -39,6 +40,8 @@ interface Props {
 
 export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props) {
   const [editOpen, setEditOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const { error: toastError } = useToast()
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: deal.id, disabled: !canMutate })
@@ -47,13 +50,17 @@ export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props
   const dragProps = canMutate ? { ...attributes, ...listeners } : {}
 
   function handleDelete() {
-    if (!window.confirm(`¿Archivar esta oportunidad de ${deal.contact.name}? Se bloqueará si tiene una venta pagada.`)) return
+    setConfirmOpen(true)
+  }
+
+  function doDelete() {
+    setConfirmOpen(false)
     onDelete()
     startTransition(async () => {
       try {
         await deleteDeal(deal.id)
       } catch (err) {
-        window.alert(err instanceof Error ? err.message : 'Error al archivar.')
+        toastError(err instanceof Error ? err.message : 'Error al archivar.')
         // Server revalidate will re-pull deals.
       }
     })
@@ -61,6 +68,15 @@ export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props
 
   return (
     <>
+      <Dialog
+        open={confirmOpen}
+        title="¿Archivar oportunidad?"
+        description={`Archivar la oportunidad de ${deal.contact.name}. Se bloqueará si tiene una venta pagada.`}
+        variant="danger"
+        confirmLabel="Archivar"
+        onConfirm={doDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
       <div
         ref={setNodeRef}
         style={style}

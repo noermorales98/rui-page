@@ -5,6 +5,7 @@ import type { CrmFormField } from '@prisma/client'
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
 import { deleteField, moveField } from '../actions'
 import { FIELD_TYPE_LABELS } from '../_lib/field-types'
+import { Dialog } from '@/app/crm/_components/ui'
 
 interface Props {
   field: CrmFormField
@@ -17,6 +18,7 @@ interface Props {
 export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect }: Props) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   function run(action: () => Promise<{ error?: string }>) {
     setError(null)
@@ -27,7 +29,17 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
   }
 
   return (
-    <div
+    <>
+      <Dialog
+        open={confirmOpen}
+        title="Eliminar campo"
+        description="Esta acción no se puede deshacer."
+        variant="danger"
+        confirmLabel="Eliminar"
+        onConfirm={() => { setConfirmOpen(false); run(() => deleteField(field.id)) }}
+        onCancel={() => setConfirmOpen(false)}
+      />
+      <div
       className={`rounded-xl border p-4 transition ${
         isSelected ? 'border-indigo-300 bg-indigo-50/50' : 'border-gray-200 bg-white hover:border-gray-300'
       }`}
@@ -71,9 +83,7 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
           <button
             type="button"
             disabled={isPending}
-            onClick={() => {
-              if (window.confirm('Eliminar este campo?')) run(() => deleteField(field.id))
-            }}
+            onClick={() => setConfirmOpen(true)}
             className="rounded-lg p-2 text-gray-400 hover:bg-white hover:text-red-600 disabled:opacity-40"
             aria-label="Eliminar campo"
           >
@@ -83,5 +93,6 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
       </div>
       {error && <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p>}
     </div>
+    </>
   )
 }

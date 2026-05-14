@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { Archive, MailCheck, Send, TriangleAlert } from 'lucide-react'
 import type { CrmCampaignStatus } from '@prisma/client'
 import { archiveCampaign, sendCampaign } from '../actions'
-import { CampaignStatusBadge } from '@/app/crm/_components/ui'
+import { CampaignStatusBadge, Dialog } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type CampaignRow = {
@@ -50,39 +50,44 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [isError, setIsError] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const [pendingAction, setPendingAction] = useState<{ label: string; description: string; action: () => void } | null>(null)
 
   function handleSend(campaign: CampaignRow) {
-    const confirmed = window.confirm(
-      `¿Enviar "${campaign.name}" ahora? La audiencia se recalculará con sus filtros actuales.`,
-    )
-    if (!confirmed) return
-
-    setMessage(null)
-    setIsError(false)
-    startTransition(async () => {
-      const result = await sendCampaign(campaign.id)
-      if (result?.error) {
-        setIsError(true)
-        setMessage(result.error)
-      } else {
+    setPendingAction({
+      label: 'Enviar',
+      description: `Enviar "${campaign.name}" ahora. La audiencia se recalculará con sus filtros actuales.`,
+      action: () => {
+        setMessage(null)
         setIsError(false)
-        setMessage(`Envío terminado: ${result?.sent ?? 0} enviados, ${result?.failed ?? 0} fallidos.`)
-      }
+        startTransition(async () => {
+          const result = await sendCampaign(campaign.id)
+          if (result?.error) {
+            setIsError(true)
+            setMessage(result.error)
+          } else {
+            setIsError(false)
+            setMessage(`Envío terminado: ${result?.sent ?? 0} enviados, ${result?.failed ?? 0} fallidos.`)
+          }
+        })
+      },
     })
   }
 
   function handleArchive(campaign: CampaignRow) {
-    const confirmed = window.confirm(`¿Archivar "${campaign.name}"?`)
-    if (!confirmed) return
-
-    setMessage(null)
-    setIsError(false)
-    startTransition(async () => {
-      const result = await archiveCampaign(campaign.id)
-      if (result.error) {
-        setIsError(true)
-        setMessage(result.error)
-      }
+    setPendingAction({
+      label: 'Archivar',
+      description: `Archivar "${campaign.name}".`,
+      action: () => {
+        setMessage(null)
+        setIsError(false)
+        startTransition(async () => {
+          const result = await archiveCampaign(campaign.id)
+          if (result.error) {
+            setIsError(true)
+            setMessage(result.error)
+          }
+        })
+      },
     })
   }
 
@@ -99,7 +104,16 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
   }
 
   return (
-    <div>
+    <>
+      <Dialog
+        open={pendingAction !== null}
+        title="¿Confirmar acción?"
+        description={pendingAction?.description}
+        confirmLabel={pendingAction?.label}
+        onConfirm={() => { pendingAction?.action(); setPendingAction(null) }}
+        onCancel={() => setPendingAction(null)}
+      />
+      <div>
       {message && (
         <div
           className={
@@ -197,5 +211,6 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
         )
       })}
     </div>
+    </>
   )
 }

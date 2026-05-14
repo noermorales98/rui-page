@@ -1,10 +1,10 @@
 'use client'
 
 import { Pencil, Trash2 } from 'lucide-react'
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import type { Tag } from '@prisma/client'
 import { deleteTag, updateTag } from '../actions'
-import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
+import { Button, Dialog, Input, ModalWrapper } from '@/app/crm/_components/ui'
 
 const DEFAULT_PALETTE = [
   '#6366f1',
@@ -29,6 +29,8 @@ export function EditTagRow({
   const [editing, setEditing] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [color, setColor] = useState(tag.color)
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const deleteFormRef = useRef<HTMLFormElement>(null)
 
   const updateAction = updateTag.bind(null, tag.id)
   const deleteAction = deleteTag.bind(null, tag.id)
@@ -45,14 +47,6 @@ export function EditTagRow({
     }
   }, [isPending, state, submitted])
 
-  function confirmDelete(event: React.MouseEvent<HTMLButtonElement>) {
-    const confirmed = window.confirm(
-      `¿Archivar la etiqueta «${tag.name}»? Los contactos que la tienen no la verán más en sus filtros, pero la asignación queda en el historial.`,
-    )
-    if (!confirmed) {
-      event.preventDefault()
-    }
-  }
 
   return (
     <tr className="hover:bg-gray-50">
@@ -79,10 +73,10 @@ export function EditTagRow({
             <Pencil size={14} strokeWidth={2} />
           </button>
           {canDelete && (
-            <form action={deleteAction} className="inline">
+            <form ref={deleteFormRef} action={deleteAction} className="inline">
               <button
-                type="submit"
-                onClick={confirmDelete}
+                type="button"
+                onClick={() => setConfirmDeleteOpen(true)}
                 className="rounded-full p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
                 title="Archivar"
               >
@@ -93,6 +87,19 @@ export function EditTagRow({
         </div>
       </td>
 
+      {confirmDeleteOpen && (
+        <td className="hidden">
+          <Dialog
+            open={confirmDeleteOpen}
+            title="¿Archivar etiqueta?"
+            description={`Archivar «${tag.name}». Los contactos que la tienen no la verán más en filtros.`}
+            variant="danger"
+            confirmLabel="Archivar"
+            onConfirm={() => { setConfirmDeleteOpen(false); deleteFormRef.current?.requestSubmit() }}
+            onCancel={() => setConfirmDeleteOpen(false)}
+          />
+        </td>
+      )}
       {editing && (
         <td className="hidden">
           <ModalWrapper

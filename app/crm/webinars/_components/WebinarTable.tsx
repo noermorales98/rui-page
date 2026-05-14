@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react'
 import type { RegistrationStatus } from '@prisma/client'
 import { deleteWebinar } from '../actions'
 import { CreateWebinarModal } from './CreateWebinarModal'
-import { Button } from '@/app/crm/_components/ui'
+import { Button, Dialog, useToast } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type WebinarWithStats = {
@@ -23,15 +23,31 @@ export function WebinarTable({ webinars }: { webinars: WebinarWithStats[] }) {
   const router = useRouter()
   const [createOpen, setCreateOpen] = useState(false)
   const [editWebinar, setEditWebinar] = useState<WebinarWithStats | null>(null)
+  const [webinarToDelete, setWebinarToDelete] = useState<WebinarWithStats | null>(null)
+  const { error: toastError } = useToast()
 
   function handleDelete(e: React.MouseEvent, w: WebinarWithStats) {
     e.stopPropagation()
-    if (!window.confirm(`¿Eliminar "${w.title}"? Se perderán todos los registros.`)) return
-    startTransition(async () => { const r = await deleteWebinar(w.id); if (r?.error) alert(r.error) })
+    setWebinarToDelete(w)
+  }
+
+  function doDelete() {
+    const w = webinarToDelete
+    setWebinarToDelete(null)
+    startTransition(async () => { const r = await deleteWebinar(w!.id); if (r?.error) toastError(r.error) })
   }
 
   return (
     <>
+      <Dialog
+        open={webinarToDelete !== null}
+        title="¿Eliminar webinar?"
+        description={`Eliminar "${webinarToDelete?.title}". Se perderán todos los registros.`}
+        variant="danger"
+        confirmLabel="Eliminar"
+        onConfirm={doDelete}
+        onCancel={() => setWebinarToDelete(null)}
+      />
       <div className={`${TOK.panel} p-6`}>
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">

@@ -12,3 +12,5 @@ export {
   FormStatusBadge,
 } from './StatusBadge'
 export { ModalWrapper } from './ModalWrapper'
+export { Dialog } from './Dialog'
+export { useToast } from './Toast'

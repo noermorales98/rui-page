@@ -6,7 +6,7 @@ import type { CrmPaymentMethod, CrmSaleStatus, DealStage } from '@prisma/client'
 import { Trash2 } from 'lucide-react'
 import { deleteSale } from '../actions'
 import { formatMoneyFromCents } from '../_lib/sales-metrics'
-import { SaleStatusBadge } from '@/app/crm/_components/ui'
+import { Dialog, SaleStatusBadge } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type SaleRow = {
@@ -47,13 +47,18 @@ function formatDate(value: Date) {
 export function SalesTable({ sales }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [saleToDelete, setSaleToDelete] = useState<SaleRow | null>(null)
 
   function handleDelete(sale: SaleRow) {
-    if (!window.confirm(`¿Eliminar la venta de "${sale.productName}"?`)) return
+    setSaleToDelete(sale)
+  }
 
+  function doDelete() {
+    setSaleToDelete(null)
     setMessage(null)
     startTransition(async () => {
-      const result = await deleteSale(sale.id)
+      if (!saleToDelete) return
+      const result = await deleteSale(saleToDelete.id)
       if (result.error) setMessage(result.error)
     })
   }
@@ -65,7 +70,17 @@ export function SalesTable({ sales }: Props) {
   }
 
   return (
-    <div>
+    <>
+      <Dialog
+        open={saleToDelete !== null}
+        title="¿Eliminar venta?"
+        description={`Eliminar la venta de "${saleToDelete?.productName}".`}
+        variant="danger"
+        confirmLabel="Eliminar"
+        onConfirm={doDelete}
+        onCancel={() => setSaleToDelete(null)}
+      />
+      <div>
       {message && (
         <div className={TOK.errorBox}>{message}</div>
       )}
@@ -141,5 +156,6 @@ export function SalesTable({ sales }: Props) {
         </div>
       ))}
     </div>
+    </>
   )
 }

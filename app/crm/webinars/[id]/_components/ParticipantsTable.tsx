@@ -4,6 +4,7 @@ import { useState, startTransition } from 'react'
 import type { RegistrationStatus } from '@prisma/client'
 import { updateRegistrationStatus, removeRegistration } from '../../actions'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
+import { Dialog, useToast } from '@/app/crm/_components/ui'
 
 export type RegistrationWithContact = {
   id: number
@@ -51,6 +52,8 @@ export function ParticipantsTable({ registrations }: Props) {
   const [statuses, setStatuses] = useState<Record<number, RegistrationStatus>>(
     Object.fromEntries(registrations.map((r) => [r.id, r.status])),
   )
+  const [regToRemove, setRegToRemove] = useState<RegistrationWithContact | null>(null)
+  const { error: toastError } = useToast()
 
   function handleStatusChange(registrationId: number, status: RegistrationStatus) {
     setStatuses((prev) => ({ ...prev, [registrationId]: status }))
@@ -64,25 +67,37 @@ export function ParticipantsTable({ registrations }: Props) {
   }
 
   function handleRemove(reg: RegistrationWithContact) {
-    if (!window.confirm(`¿Quitar a ${reg.contact.name} de este webinar?`)) return
+    setRegToRemove(reg)
+  }
+
+  function doRemove() {
+    const reg = regToRemove
+    setRegToRemove(null)
     startTransition(async () => {
-      const result = await removeRegistration(reg.id)
+      const result = await removeRegistration(reg!.id)
       if (result?.error) {
-        alert(result.error)
+        toastError(result.error)
       }
     })
   }
 
-  if (registrations.length === 0) {
-    return (
+  return (
+    <>
+      <Dialog
+        open={regToRemove !== null}
+        title="¿Quitar participante?"
+        description={`Quitar a ${regToRemove?.contact.name} de este webinar.`}
+        variant="danger"
+        confirmLabel="Quitar"
+        onConfirm={doRemove}
+        onCancel={() => setRegToRemove(null)}
+      />
+      {registrations.length === 0 ? (
       <div className={`${TOK.emptyState} ${TOK.textSubtle}`}>
         No hay participantes todavía. Agrega contactos o importa un CSV.
       </div>
-    )
-  }
-
-  return (
-    <div>
+      ) : (
+      <div>
       {/* Column headers */}
       <div className={`grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}
         style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
@@ -140,5 +155,7 @@ export function ParticipantsTable({ registrations }: Props) {
         )
       })}
     </div>
+      )}
+    </>
   )
 }
