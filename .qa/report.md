@@ -1,54 +1,47 @@
-# QA Report — branch `feat/sprint-1-schema-roles` — 2026-05-13
+# QA Report — branch `feat/sprint-2-contacts-tags-activity` — 2026-05-13
 
 ## Scope
-Sprint 1 — Schema final + Auth con 3 roles. No production code paths
-exercised yet (no services, no UI flows beyond login). All deliverables are
-schema/infrastructure.
+Sprint 2 — Contactos + Tags + Activity per `docs/sdd/ROADMAP.md §Sprint 2`,
+piggybacked with a visual refresh that ports every CRM page to the new
+`app/crm/_lib/ui-tokens.ts` design tokens and refreshed UI primitives.
 
 ## Summary
-| Check        | Status                      | Notes |
-|--------------|-----------------------------|-------|
-| Lint         | ✅                          | 0 errors, 33 pre-existing warnings in landing pages (`<img>` usage). Not introduced by this sprint. |
-| TypeCheck    | ✅                          | `tsc --noEmit` exit 0. |
-| Unit tests   | ⚠️  N/A                     | Vitest is not yet installed (planned for Sprint 2+). |
-| E2E tests    | ⚠️  N/A                     | Playwright is not yet installed (planned post-MVP). |
-| Coverage     | ⚠️  N/A                     | No test runner. |
-| Prisma       | ✅                          | `migrate status` reports DB up to date, `generate` clean. |
-| Dev server   | ✅                          | Boots in ~200 ms via Turbopack. |
-| Auth E2E     | ✅                          | Login `admin@crm.local / admin1234` → `session.user.role === "ADMIN"` verified through real `/api/auth/callback/credentials` → `/api/auth/session` flow. |
+| Check        | Status | Notes |
+|--------------|--------|-------|
+| Lint         | ✅      | 0 errors, 30 pre-existing warnings in marketing landing pages (`<img>` usage). Same warnings as Sprint 1, none introduced here. |
+| TypeCheck    | ✅      | `npx tsc --noEmit` exit 0. |
+| Unit tests   | ⚠️  N/A | Vitest still not installed (Sprint 11 per ROADMAP). |
+| E2E tests    | ⚠️  N/A | Playwright still not installed. |
+| Coverage     | ⚠️  N/A | No test runner. |
+| Prisma       | ✅      | `migrate status` reports DB up to date. `lib/prisma.ts` now sets `collation: UTF8MB4_UNICODE_CI` + `charset: utf8mb4` on the adapter so `contains` LIKE queries no longer 500 with `Illegal mix of collations`. |
+| Dev server   | ✅      | Boots ~240 ms via Turbopack. |
+| Auth E2E     | ✅      | `admin@crm.local / admin1234` → `session.user.role === "ADMIN"` via real csrf → callback → session round-trip. |
+| Routes smoke | ✅      | `/`, `/crm/contactos`, `/crm/contactos?q=admin`, `/crm/contactos?status=NEW&status=QUALIFIED`, `/crm/contactos?source=MANUAL`, `/crm/contactos/nuevo`, `/crm/contactos/importar` all 200. `/crm/contactos/3` 404 (Contact table empty by design until real users come in). |
 
-## Manual smoke
-| URL                 | HTTP | Notes |
-|---------------------|------|-------|
-| `GET /`             | 200  | Root landing renders. |
-| `GET /crm-login`    | 200  | Login page renders. |
-| `GET /crm` (cookie) | 307  | Middleware redirect (expected). |
+## Sprint 2 deliverables vs ROADMAP
+- [x] **CRUD Contact con Zod** — `lib/validators/contacts.ts` + `lib/services/contacts.ts`. Server actions in `app/crm/contactos/*` are thin wrappers.
+- [x] **Soft delete activo** — `softDeleteContact` (ADMIN/VENDEDOR only). List + detail + metric queries all filter `deletedAt: null`. CSV import revives soft-deleted contacts on email match.
+- [x] **Import CSV con reporte de errores** — `/crm/contactos/importar` page + `importContactsFile` server action + `importContactsCsvFromBuffer` service using `csv-parse/sync`. Reports `{ row, message }[]` with per-row failures, in-file email dedupe, ES/EN column aliases (nombre→name, correo→email, …).
+- [x] **Tags CRUD + asignación** — `lib/services/tags.ts` (`listTags`, `createTag`, `updateTag`, `softDeleteTag`, `ensureTagsByNames`, `upsertTagByName`). `addTag`/`removeTag` for contact ↔ tag link live in the contacts service (idempotent P2002 handling).
+- [x] **Timeline de actividad en vista detalle** — `ActivityTimeline` aliases `ActivityFeed`, ordered desc, takes top 20. `addActivity` service wires through `lib/services/_activity.ts` helper from Sprint 1 T5.
+- [x] **AuditLog en mutaciones** — every contact/tag mutation calls `logAudit` with diff payload (`{ field: { from, to } }`). Import batches log a single entry with metadata counts.
 
-## Críticos cubiertos
-- [x] Auth: login + role surfaced on session (manual E2E vía curl).
-- [x] Schema migration applied without breaking existing data (2 legacy admins migrated, then replaced by seed).
-- [x] Role guard helper (`requireSession`/`requireRole`/`AuthError`) compiles and is wired to the new `Role` type.
-- [x] AuditLog and `addActivity` helpers compile (not yet wired into mutations — by design, Sprint 2 work).
-- [ ] Soft delete behavior in lists/queries — owed to Sprint 2 (services that filter `deletedAt: null`).
-- [ ] Permissions matrix end-to-end — needs services + UI to test; Sprint 2+.
+## Business rules implemented
+- BR §1 role matrix: contacts CRUD allowed for all 3 roles; soft delete + tag CRUD restricted to ADMIN/VENDEDOR. ASISTENTE cannot soft delete (UI hides the button via `canDelete` flag).
+- BR §2.1 status auto-promotion not yet auto-fired by other services (Deals/Sales) — they're future sprints. **Status degrade rule** is enforced here: only ADMIN can move status backward (NEW ← QUALIFIED ← CLIENT).
+- BR §3 dedupe: import deduplicates by email within the same CSV; also matches against existing rows (revives soft-deleted on match).
 
-## SDD vs code — discrepancies detected
-1. **Session TTL.** `BUSINESS_RULES.md §5.3` says JWT expires in 7 días; `auth.ts` still uses `maxAge: 8 * 60 * 60`. Not touched in Sprint 1 (no role-related change). Recommend bumping to `7 * 24 * 60 * 60` in a follow-up.
-2. **UI dropdown for user role.** `usuarios/actions.ts` Zod enum is updated to `[ADMIN, VENDEDOR, ASISTENTE]`, but the UI form may still expose the legacy `EDITOR` option in its `<select>`. Compiles, but a submit with that value would 422 against the new enum. Owed to a UI sprint.
-3. **PR template.** `.github/pull_request_template.md` was missing; created in this sprint with a minimal Sprint-1-aware template.
+## Discrepancias / notas para futuro
+1. **Test infrastructure** still owed (Vitest + Playwright). The contact-metrics unit test exists at `app/crm/contactos/_lib/contact-metrics.test.ts` but cannot run until Sprint 11.
+2. **`session.user.id`** is a string in the JWT but cast to `Number(...)` in services. Works for now (User.id is Int) but if we ever switch to UUID we'll need to revisit.
+3. **Tag deletion behaviour**: soft-deleted tags still appear in `ContactTag` joins. `listContacts` and `getContact` explicitly filter `tag.deletedAt: null` in the include `where`. New consumers should mirror that or they'll see ghost tags.
+4. **No dedicated tags admin UI**. Tag CRUD only happens inline through `ensureTagsByNames` when a contact form types a new tag name. Standalone tag management is a follow-up.
 
 ## Veredicto sugerido
-🟢 **APPROVED_WITH_NOTES** — schema and auth foundation land cleanly; the two notes above are cosmetic / future-sprint items.
+🟢 **APPROVED** — Sprint 2 deliverables shipped end-to-end, dev boot + login + filtered routes green, no tsc/lint errors. Visual refresh on other modules is cosmetic-only and passes type-check.
 
-## Próximos pasos
-1. Sprint 2 wires services to use `requireRole`, `logAudit`, `addActivity`.
-2. Stand up Vitest + a CI lane that runs `lint`, `typecheck`, `db:status`,
-   and a tiny smoke test of `auth.authorize()` for each canonical role.
-3. Patch the `usuarios` UI dropdown and bump session TTL to 7 days.
-
-## Commits (Sprint 1)
-- `81b82ec` feat(prisma): apply full MVP schema (T1)
-- `b4ba3d9` feat(seed): replace dev seed with 3 canonical role-coverage users (T2)
-- `e9d724f` feat(auth): add requireSession/requireRole/AuthError helper (T3)
-- `ed9c21c` feat(auth): refactor Auth.js v5 to use Role type and PrismaAdapter (T4)
-- `79d1c8f` feat(audit,activity): add logAudit and addActivity helpers (T5)
+## Commits
+- `afcbb14` chore(infra): csv-parse + `.gitignore` + prisma collation
+- `0c742fd` feat(crm): Sprint 2 contacts module + design system foundation
+- `6839b28` feat(crm): visual refresh — adopt design tokens in non-contacts modules
+- `f24a287` chore(docs): archive superseded modal-era notes, refresh specs
