@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
-import { listDealsGrouped, PIPELINE_STAGES } from '@/lib/services/deals'
+import { listDealsGrouped } from '@/lib/services/deals'
+import { PIPELINE_STAGES } from '@/lib/validators/deals'
 import { PipelineBoard } from './_components/PipelineBoard'
 import type { DealWithContact } from './_components/PipelineBoard'
 

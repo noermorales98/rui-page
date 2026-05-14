@@ -8,13 +8,11 @@ import { logAudit } from '@/lib/audit'
 import { addActivity as insertActivity } from '@/lib/services/_activity'
 import { mapError, type ApiError } from '@/lib/errors/map'
 import {
+  PIPELINE_STAGES,
   createDealSchema,
-  dealStageSchema,
   moveDealSchema,
   updateDealSchema,
 } from '@/lib/validators/deals'
-
-export const PIPELINE_STAGES: DealStage[] = ['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED']
 
 const ALL_ROLES: Role[] = ['ADMIN', 'VENDEDOR', 'ASISTENTE']
 const NON_ASISTENTE: Role[] = ['ADMIN', 'VENDEDOR']

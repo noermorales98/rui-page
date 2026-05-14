@@ -1,4 +1,7 @@
+import type { DealStage } from '@prisma/client'
 import { z } from 'zod'
+
+export const PIPELINE_STAGES: DealStage[] = ['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED']
 
 export const dealStageSchema = z.enum(['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED'])
 
