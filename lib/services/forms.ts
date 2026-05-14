@@ -1,10 +1,16 @@
 'use server'
 
+import { createHash } from 'node:crypto'
 import { Prisma, type CrmFormFieldType, type Role } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { requireRole } from '@/lib/auth/permissions'
 import { logAudit } from '@/lib/audit'
 import { mapError, type ApiError } from '@/lib/errors/map'
+import {
+  normalizeValue,
+  validateFieldValue,
+} from '@/app/crm/formularios/_lib/field-types'
+import { shouldShowField } from '@/lib/forms/conditional'
 import {
   createFieldSchema,
   createFormSchema,
@@ -457,6 +463,210 @@ export async function reorderFields(
     return {
       ok: true,
       data: { id: fid, positions: order.map((id, position) => ({ id, position })) },
+    }
+  } catch (e) {
+    return mapError(e)
+  }
+}
+
+export type SubmitFormReport = {
+  submissionId: number
+  contactId: number | null
+  contactCreated: boolean
+  successMessage: string
+}
+
+export type SubmitFormMeta = {
+  ipHash?: string | null
+  userAgent?: string | null
+}
+
+function hashIp(value: string | null | undefined): string | null {
+  if (!value) return null
+  return createHash('sha256').update(value).digest('hex').slice(0, 64)
+}
+
+/**
+ * Hash an IP address for storage (public-facing). Exposed so the REST
+ * endpoint and the server action can share the same normalization.
+ */
+export async function hashIpForSubmit(value: string | null | undefined): Promise<string | null> {
+  return hashIp(value)
+}
+
+/**
+ * Canonical submission flow used by both the server action (form action
+ * bound to the page) and the REST endpoint (`/api/forms/[slug]/submit`).
+ *
+ * Input shape is `{ [fieldKey]: string }`. Conditional logic is evaluated
+ * server-side: a hidden field's `isRequired` is not enforced. Dedupe order:
+ * email -> phone (when no email captured).
+ */
+export async function submitForm(
+  slug: string,
+  values: Record<string, string>,
+  meta: SubmitFormMeta = {},
+): Promise<FormsServiceResult<SubmitFormReport>> {
+  try {
+    const form = await prisma.crmForm.findFirst({
+      where: { slug, status: 'PUBLISHED', deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        successMessage: true,
+        fields: {
+          orderBy: { position: 'asc' },
+          select: {
+            id: true,
+            fieldKey: true,
+            type: true,
+            label: true,
+            isRequired: true,
+            contactTarget: true,
+            config: true,
+          },
+        },
+      },
+    })
+    if (!form) {
+      return { ok: false, error: { code: 'NOT_FOUND', message: 'Este formulario no está disponible.' } }
+    }
+
+    // Build the canonical value map (raw, trimmed) keyed by fieldKey
+    // so the conditional evaluator can reference any sibling field.
+    const trimmed: Record<string, string> = {}
+    for (const field of form.fields) {
+      const v = values[field.fieldKey]
+      trimmed[field.fieldKey] = typeof v === 'string' ? v.trim() : ''
+    }
+
+    type Row = { fieldId: number; rawValue: string | null; normalizedValue: string | null }
+    const rows: Row[] = []
+    const contactData: { name?: string; email?: string; phone?: string } = {}
+
+    for (const field of form.fields) {
+      const visible = shouldShowField(field, trimmed)
+      const raw = trimmed[field.fieldKey] ?? ''
+
+      // Required is only enforced when the field is actually shown.
+      const error = validateFieldValue(field.type, raw, visible && field.isRequired)
+      if (error) {
+        return {
+          ok: false,
+          error: { code: 'VALIDATION_ERROR', message: `${field.label}: ${error}` },
+        }
+      }
+
+      // A hidden field is not persisted — keeps submissions clean and
+      // avoids leaking values that the user never had a chance to fill.
+      if (!visible) continue
+
+      const normalized = raw ? normalizeValue(field.type, raw) : ''
+
+      if (field.contactTarget === 'NAME' && normalized && !contactData.name) contactData.name = raw
+      if (field.contactTarget === 'EMAIL' && normalized && !contactData.email) contactData.email = normalized
+      if (field.contactTarget === 'PHONE' && normalized && !contactData.phone) contactData.phone = normalized
+
+      rows.push({
+        fieldId: field.id,
+        rawValue: raw || null,
+        normalizedValue: normalized || null,
+      })
+    }
+
+    const ipHash = meta.ipHash ?? null
+    const userAgent = meta.userAgent ?? null
+
+    const result = await prisma.$transaction(async (tx) => {
+      let contactId: number | null = null
+      let contactCreated = false
+
+      // Dedupe order: email first (canonical identifier), phone fallback
+      // when the form doesn't capture an email at all.
+      if (contactData.email) {
+        const existing = await tx.contact.findUnique({
+          where: { email: contactData.email },
+          select: { id: true, name: true, phone: true, deletedAt: true },
+        })
+        if (existing) {
+          const update: { name?: string; phone?: string; deletedAt?: null } = {}
+          if (!existing.name && contactData.name) update.name = contactData.name
+          if (!existing.phone && contactData.phone) update.phone = contactData.phone
+          if (existing.deletedAt) update.deletedAt = null
+          if (Object.keys(update).length > 0) {
+            await tx.contact.update({ where: { id: existing.id }, data: update })
+          }
+          contactId = existing.id
+        } else {
+          const c = await tx.contact.create({
+            data: {
+              name: contactData.name || contactData.email,
+              email: contactData.email,
+              phone: contactData.phone ?? null,
+              source: 'FORM',
+            },
+            select: { id: true },
+          })
+          contactId = c.id
+          contactCreated = true
+        }
+      } else if (contactData.phone) {
+        // Phone-only dedupe: BR §2.5 says match by phone when no email is
+        // captured. We do NOT create a new contact in this branch because
+        // Contact.email is required + unique at the DB level — minting a
+        // synthetic email would pollute the table. The submission is still
+        // saved (orphan: contactId = null) so the data isn't lost.
+        const existing = await tx.contact.findFirst({
+          where: { phone: contactData.phone, deletedAt: null },
+          orderBy: { updatedAt: 'desc' },
+          select: { id: true, name: true },
+        })
+        if (existing) {
+          if (!existing.name && contactData.name) {
+            await tx.contact.update({ where: { id: existing.id }, data: { name: contactData.name } })
+          }
+          contactId = existing.id
+        }
+      }
+
+      const submission = await tx.crmFormSubmission.create({
+        data: {
+          formId: form.id,
+          contactId,
+          ipHash,
+          userAgent,
+        },
+        select: { id: true },
+      })
+
+      if (rows.length > 0) {
+        await tx.crmFormSubmissionValue.createMany({
+          data: rows.map((row) => ({
+            submissionId: submission.id,
+            ...row,
+          })),
+        })
+      }
+
+      if (contactId) {
+        await tx.contactActivity.create({
+          data: {
+            contactId,
+            type: 'FORM_SUBMITTED',
+            body: `Envío del formulario "${form.name}".`,
+          },
+        })
+      }
+
+      return { submissionId: submission.id, contactId, contactCreated }
+    })
+
+    return {
+      ok: true,
+      data: {
+        ...result,
+        successMessage: form.successMessage,
+      },
     }
   } catch (e) {
     return mapError(e)
