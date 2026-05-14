@@ -59,6 +59,13 @@ export default function RootLayout({
       className={`${inter.variable} ${newsreader.variable} ${playfairDisplay.variable} ${notoSerif.variable} h-full antialiased light scroll-smooth`}
     >
       <head>
+        {/*
+          Material Symbols Outlined uses a variable-axis URL (wght,FILL) that
+          next/font/google doesn't expose cleanly. Keep the <link> here and
+          silence the page-custom-font rule; this is the documented escape
+          hatch for icon fonts loaded once at the root layout.
+        */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-full flex flex-col font-sans selection:bg-secondary-container selection:text-on-secondary-container bg-surface text-on-surface">
@@ -78,6 +85,8 @@ export default function RootLayout({
           `}
         </Script>
         <noscript>
+          {/* 1x1 Meta Pixel — intentionally an <img>, not next/image. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=4257235341192934&ev=PageView&noscript=1" alt="" />
         </noscript>
         {/* End Meta Pixel Code */}

@@ -34,8 +34,15 @@ export default function About() {
             </div>
           </div>
           <div className="lg:col-span-5 relative">
-            <div className="aspect-[4/5] rounded-xl overflow-hidden editorial-shadow bg-surface-container-low">
-              <img className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" data-alt="Close-up portrait of Rui Machalele with a serene expression, soft natural lighting in a foggy mountain forest setting, cinematic editorial style" src="/rui2.webp" />
+            <div className="relative aspect-[4/5] rounded-xl overflow-hidden editorial-shadow bg-surface-container-low">
+              <Image
+                src="/rui2.webp"
+                alt="Retrato cercano de Rui Machalele con expresión serena, luz suave en un bosque de niebla"
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                priority
+              />
             </div>
             <div className="absolute -bottom-8 -left-8 bg-surface-container-lowest p-8 rounded-xl editorial-shadow hidden md:block max-w-[280px]">
               <p className="text-xs font-label uppercase tracking-tighter text-secondary mb-2">Filosofía de Vida</p>
@@ -50,7 +57,14 @@ export default function About() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="order-2 lg:order-1">
                 <div className="relative">
-                  <img className="rounded-xl w-full aspect-video lg:aspect-square object-cover editorial-shadow" data-alt="Wide shot of a person sitting on a cliff overlooking a vast ocean at sunrise, warm golden tones, atmospheric mist, minimalist composition" src="conferencia2.webp" />
+                  <Image
+                    src="/conferencia2.webp"
+                    alt="Persona sentada en un acantilado mirando el océano al amanecer, tonos dorados cálidos y bruma atmosférica"
+                    width={2048}
+                    height={2048}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="rounded-xl w-full aspect-video lg:aspect-square object-cover editorial-shadow"
+                  />
                   <div className="absolute inset-0 bg-primary/20 rounded-xl mix-blend-multiply"></div>
                 </div>
               </div>
@@ -105,7 +119,13 @@ export default function About() {
                 </div>
               </div>
               <div className="md:col-span-2 bg-[#ece8e0] rounded-xl overflow-hidden relative group">
-                <img className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-40" data-alt="Abstract art with flowing golden lines and deep indigo textures, representing mental connectivity and fluid thought, elegant and artistic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSxNp5dLI9aKQi1sIx7fh4hygYILVQyMlkXTym3tClnT1qjCtUBqO399IHX6sLxQay3kBhKlOELCyC4W9cfKUaO4vCCT51Vv3rq6_xEN0t_THM_WyZoB3yCLROgd6lvNRdUzuYK70WF2hMvJq8vZehuQCXD-Ugh_pDHYbotToPOcxLpfS1esplhtlk40SWHSLl5ppm1bVsai261yl8eFh3nu0k80sxhdAhgFUuJTKF9-wg27FmzRftgqaTKf9ENZ2Az_RA0vH68mHT" />
+                <Image
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSxNp5dLI9aKQi1sIx7fh4hygYILVQyMlkXTym3tClnT1qjCtUBqO399IHX6sLxQay3kBhKlOELCyC4W9cfKUaO4vCCT51Vv3rq6_xEN0t_THM_WyZoB3yCLROgd6lvNRdUzuYK70WF2hMvJq8vZehuQCXD-Ugh_pDHYbotToPOcxLpfS1esplhtlk40SWHSLl5ppm1bVsai261yl8eFh3nu0k80sxhdAhgFUuJTKF9-wg27FmzRftgqaTKf9ENZ2Az_RA0vH68mHT"
+                  alt="Arte abstracto con líneas doradas fluidas y texturas índigo, evocando conectividad mental"
+                  fill
+                  sizes="(min-width: 768px) 66vw, 100vw"
+                  className="object-cover mix-blend-multiply opacity-40"
+                />
                 <div className="relative p-12 h-full flex flex-col justify-center">
                   <h3 className="text-3xl font-headline text-primary-container mb-4 italic">El Futuro es Consciente</h3>
                   <p className="max-w-lg text-on-surface-variant leading-relaxed">Nuestra visión es crear un santuario digital donde la inteligencia no sea solo capacidad de proceso, sino profundidad de sentir.</p>

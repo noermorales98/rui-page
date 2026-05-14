@@ -42,8 +42,15 @@ export default function SalesPage() {
             </div>
             <div className="order-1 md:order-2 relative">
               <div className="absolute -top-12 -right-12 w-64 h-64 bg-tertiary-fixed-dim/20 rounded-full blur-3xl"></div>
-              <div className="relative z-10 rounded-3xl overflow-hidden editorial-shadow transform rotate-2">
-                <img alt="Expansion portrait" className="w-full aspect-[4/5] object-cover" data-alt="abstract artistic portrait of a person with eyes closed, soft golden light hitting face, ethereal atmosphere with subtle double exposure of stars" src="rui2.webp" />
+              <div className="relative z-10 rounded-3xl overflow-hidden editorial-shadow transform rotate-2 aspect-[4/5]">
+                <Image
+                  src="/rui2.webp"
+                  alt="Retrato artístico abstracto con ojos cerrados, luz dorada suave y doble exposición de estrellas"
+                  fill
+                  sizes="(min-width: 768px) 45vw, 100vw"
+                  className="object-cover"
+                  priority
+                />
               </div>
               <div className="absolute -bottom-8 -left-8 p-8 bg-surface-container-lowest editorial-shadow rounded-2xl max-w-xs transform -rotate-2">
                 <p className="font-headline text-lg italic text-primary">&quot;La expansión no es una meta, es la eliminación de lo que nos contrae.&quot;</p>
@@ -193,7 +200,14 @@ export default function SalesPage() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-20 items-center">
             <div className="w-full md:w-1/2 relative">
               <div className="absolute inset-0 bg-primary/5 rounded-full scale-110 -rotate-6"></div>
-              <img alt="Rui Machalele Portrait" className="relative z-10 w-full aspect-square object-cover rounded-2xl editorial-shadow" data-alt="sophisticated middle aged man with glasses, looking thoughtfully into the distance, soft studio lighting, high contrast black and white editorial style" src="ruisquare.webp" />
+              <Image
+                src="/ruisquare.webp"
+                alt="Retrato editorial de Rui Machalele con gafas y luz de estudio en alto contraste"
+                width={2048}
+                height={2048}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="relative z-10 w-full aspect-square object-cover rounded-2xl editorial-shadow"
+              />
             </div>
 
             <div className="w-full md:w-1/2">
