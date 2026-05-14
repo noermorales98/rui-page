@@ -17,16 +17,21 @@ const ToastContext = createContext<ToastContextValue | null>(null)
 export function ToastProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const nextId = useRef(0)
+  const timers = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map())
 
   const add = useCallback((message: string, variant: ToastItem['variant']) => {
     const id = ++nextId.current
     setToasts((prev) => [...prev, { id, message, variant }])
-    setTimeout(() => {
+    const timer = setTimeout(() => {
+      timers.current.delete(id)
       setToasts((prev) => prev.filter((t) => t.id !== id))
     }, 4000)
+    timers.current.set(id, timer)
   }, [])
 
   function dismiss(id: number) {
+    clearTimeout(timers.current.get(id))
+    timers.current.delete(id)
     setToasts((prev) => prev.filter((t) => t.id !== id))
   }
 
