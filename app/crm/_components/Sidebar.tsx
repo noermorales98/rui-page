@@ -1,10 +1,11 @@
+import type { Role } from '@prisma/client'
 import { auth } from '@/auth'
 import SignOutButton from './SignOutButton'
 import { SidebarNav } from './SidebarNav'
 
 export default async function Sidebar() {
   const session = await auth()
-  const isAdmin = session?.user?.role === 'ADMIN'
+  const role = (session?.user?.role ?? null) as Role | null
 
   return (
     <aside className="flex h-full max-h-full flex-col gap-px overflow-hidden rounded-[28px] border border-[#e5e7eb] bg-[#f7f8fa] p-5">
@@ -15,7 +16,7 @@ export default async function Sidebar() {
 
       {/* Nav */}
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <SidebarNav isAdmin={isAdmin} />
+        <SidebarNav role={role} />
       </div>
 
       {/* Sign out */}

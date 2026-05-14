@@ -54,3 +54,8 @@ declare module '@hugeicons/core-free-icons/Logout01Icon' {
   const Logout01Icon: HugeIcon
   export default Logout01Icon
 }
+
+declare module '@hugeicons/core-free-icons/TagsIcon' {
+  const TagsIcon: HugeIcon
+  export default TagsIcon
+}

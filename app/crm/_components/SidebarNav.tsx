@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import type { Role } from '@prisma/client'
 import { HugeiconsIcon } from '@hugeicons/react'
 import DashboardSquare01Icon from '@hugeicons/core-free-icons/DashboardSquare01Icon'
 import UserMultipleIcon from '@hugeicons/core-free-icons/UserMultipleIcon'
@@ -13,8 +14,16 @@ import BookOpen01Icon from '@hugeicons/core-free-icons/BookOpen01Icon'
 import ShoppingCart01Icon from '@hugeicons/core-free-icons/ShoppingCart01Icon'
 import Settings01Icon from '@hugeicons/core-free-icons/Settings01Icon'
 import UserAccountIcon from '@hugeicons/core-free-icons/UserAccountIcon'
+import TagsIcon from '@hugeicons/core-free-icons/TagsIcon'
 
-const NAV_ITEMS = [
+type NavItem = {
+  label: string
+  href: string
+  icon: typeof DashboardSquare01Icon
+  roles?: Role[]
+}
+
+const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard',   href: '/crm/dashboard',              icon: DashboardSquare01Icon },
   { label: 'Contactos',   href: '/crm/contactos',              icon: UserMultipleIcon      },
   { label: 'Pipeline',    href: '/crm/pipeline',               icon: GitBranchIcon         },
@@ -25,16 +34,22 @@ const NAV_ITEMS = [
   { label: 'Ventas',      href: '/crm/ventas',                 icon: ShoppingCart01Icon    },
 ]
 
-const CONFIG_ITEMS = [
-  { label: 'Configuración', href: '/crm/configuracion',          icon: Settings01Icon  },
-  { label: 'Usuarios',      href: '/crm/configuracion/usuarios', icon: UserAccountIcon, adminOnly: true },
+const CONFIG_ITEMS: NavItem[] = [
+  { label: 'Configuración', href: '/crm/configuracion',           icon: Settings01Icon  },
+  { label: 'Usuarios',      href: '/crm/configuracion/usuarios',  icon: UserAccountIcon, roles: ['ADMIN'] },
+  { label: 'Etiquetas',     href: '/crm/configuracion/etiquetas', icon: TagsIcon,        roles: ['ADMIN', 'VENDEDOR'] },
 ]
 
-interface SidebarNavProps {
-  isAdmin: boolean
+function isVisible(item: NavItem, role: Role | null): boolean {
+  if (!item.roles) return true
+  return role !== null && item.roles.includes(role)
 }
 
-export function SidebarNav({ isAdmin }: SidebarNavProps) {
+interface SidebarNavProps {
+  role: Role | null
+}
+
+export function SidebarNav({ role }: SidebarNavProps) {
   const pathname = usePathname()
 
   function isActive(href: string) {
@@ -71,7 +86,7 @@ export function SidebarNav({ isAdmin }: SidebarNavProps) {
 
       <div className="my-2 h-px bg-[#e5e7eb]" />
 
-      {CONFIG_ITEMS.filter((item) => !item.adminOnly || isAdmin).map(({ label, href, icon }) => {
+      {CONFIG_ITEMS.filter((item) => isVisible(item, role)).map(({ label, href, icon }) => {
         const active = isActive(href)
         return (
           <Link

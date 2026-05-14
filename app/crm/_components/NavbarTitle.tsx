@@ -48,6 +48,10 @@ const ROUTE_META: Record<string, RouteMeta> = {
     title: 'Usuarios',
     description: 'Gestiona los usuarios del sistema y sus permisos.',
   },
+  '/crm/configuracion/etiquetas': {
+    title: 'Etiquetas',
+    description: 'Administra el catálogo de etiquetas que se usa en contactos.',
+  },
   '/crm/configuracion': {
     title: 'Configuración',
     description: 'Ajustes generales del CRM',
