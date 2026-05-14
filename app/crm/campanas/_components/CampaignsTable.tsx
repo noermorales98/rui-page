@@ -5,6 +5,7 @@ import { Archive, MailCheck, Send, TriangleAlert } from 'lucide-react'
 import type { CrmCampaignStatus } from '@prisma/client'
 import { archiveCampaign, sendCampaign } from '../actions'
 import { CampaignStatusBadge } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type CampaignRow = {
   id: number
@@ -38,6 +39,12 @@ function formatDate(value: Date | null) {
 }
 
 const GRID_COLS = '2fr 1.2fr 120px 100px 160px 88px'
+
+const ROW_SURFACE =
+  'mb-1.5 grid items-center gap-3 rounded-2xl border border-[var(--color-outline-variant)]/60 bg-[var(--color-surface-container-lowest)] px-4 py-3 transition last:mb-0'
+
+const ACTION_ICON =
+  'cursor-pointer rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)] disabled:opacity-50'
 
 export function CampaignsTable({ campaigns, smtpReady }: Props) {
   const [message, setMessage] = useState<string | null>(null)
@@ -81,10 +88,10 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
 
   if (campaigns.length === 0) {
     return (
-      <div className="py-12 text-center text-sm text-[#8a8a8a]">
-        <MailCheck className="mx-auto mb-4 text-[#c8c8c8]" size={42} />
-        <p className="font-semibold text-[#080808]">Sin campañas</p>
-        <p className="mt-1 max-w-sm mx-auto">
+      <div className={TOK.emptyState}>
+        <MailCheck className="mx-auto mb-4 text-[var(--color-on-surface-variant)]/40" size={42} />
+        <p className={TOK.textStrong}>Sin campañas</p>
+        <p className={`mx-auto mt-1 max-w-sm ${TOK.textMuted}`}>
           Crea un borrador, revisa la audiencia y luego envíalo a tus contactos segmentados.
         </p>
       </div>
@@ -94,14 +101,20 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
   return (
     <div>
       {message && (
-        <div className={`mb-4 rounded-2xl px-4 py-3 text-sm ${isError ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}`}>
+        <div
+          className={
+            isError
+              ? TOK.errorBox
+              : 'mb-4 rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] px-4 py-3 text-sm text-[var(--color-on-surface)]'
+          }
+        >
           {message}
         </div>
       )}
 
       {/* Column headers */}
       <div
-        className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+        className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[var(--color-on-surface-variant)]"
         style={{ gridTemplateColumns: GRID_COLS }}
       >
         <span>Campaña</span>
@@ -118,21 +131,21 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
         return (
           <div
             key={campaign.id}
-            className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
+            className={ROW_SURFACE}
             style={{ gridTemplateColumns: GRID_COLS }}
           >
             {/* Campaña */}
             <div>
-              <p className="font-medium text-[#080808] truncate">{campaign.name}</p>
-              <p className="mt-0.5 max-w-xs truncate text-sm text-[#8a8a8a]">{campaign.subject}</p>
-              <p className="mt-0.5 text-xs text-[#b0b0b0]">
+              <p className={`truncate font-medium ${TOK.textStrong}`}>{campaign.name}</p>
+              <p className={`mt-0.5 max-w-xs truncate text-sm ${TOK.textMuted}`}>{campaign.subject}</p>
+              <p className={`mt-0.5 text-xs ${TOK.textSubtle}`}>
                 {campaign.createdBy?.name ?? 'CRM'} · #{campaign.id}
               </p>
             </div>
 
             {/* Audiencia */}
             <div>
-              <p className="text-sm text-[#555] truncate">{campaign.audienceLabel}</p>
+              <p className={`truncate text-sm ${TOK.textMuted}`}>{campaign.audienceLabel}</p>
             </div>
 
             {/* Estado */}
@@ -141,11 +154,13 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
             </div>
 
             {/* Resultados */}
-            <div className="text-sm text-[#555]">
+            <div className={`text-sm ${TOK.textMuted}`}>
               <div className="flex items-center gap-2">
-                <span>{campaign.sentCount}/{campaign.recipientCount}</span>
+                <span>
+                  {campaign.sentCount}/{campaign.recipientCount}
+                </span>
                 {campaign.failedCount > 0 && (
-                  <span className="inline-flex items-center gap-1 text-red-600">
+                  <span className="inline-flex items-center gap-1 text-[var(--color-error)]">
                     <TriangleAlert size={13} />
                     {campaign.failedCount}
                   </span>
@@ -154,7 +169,7 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
             </div>
 
             {/* Último envío */}
-            <div className="text-sm text-[#8a8a8a]">{formatDate(campaign.sentAt)}</div>
+            <div className={`text-sm ${TOK.textSubtle}`}>{formatDate(campaign.sentAt)}</div>
 
             {/* Acciones */}
             <div className="flex justify-end gap-1">
@@ -163,7 +178,7 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
                 disabled={isPending || !canSend}
                 onClick={() => handleSend(campaign)}
                 title={!smtpReady ? 'Configura SMTP para enviar' : 'Enviar campaña'}
-                className="rounded-full bg-[#080808] text-white px-3 py-1.5 text-xs font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-50"
+                className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--color-outline-variant)] bg-[var(--color-on-surface)] text-[var(--color-surface-container-lowest)] transition hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
                 aria-label="Enviar campaña"
               >
                 <Send size={13} />
@@ -172,7 +187,7 @@ export function CampaignsTable({ campaigns, smtpReady }: Props) {
                 type="button"
                 disabled={isPending || campaign.status === 'SENDING'}
                 onClick={() => handleArchive(campaign)}
-                className="rounded-lg p-1.5 text-[#8a8a8a] hover:bg-[#f0f1f3] transition-colors border-none bg-transparent cursor-pointer disabled:opacity-50"
+                className={ACTION_ICON}
                 aria-label="Archivar campaña"
               >
                 <Archive size={15} />

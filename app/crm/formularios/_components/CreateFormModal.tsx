@@ -5,8 +5,7 @@ import { Plus } from 'lucide-react'
 import { createForm } from '../actions'
 import { slugify } from '../_lib/field-types'
 import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
-
-const fieldClass = 'bg-[#f7f8fa]'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export function CreateFormModal() {
   const [open, setOpen] = useState(false)
@@ -46,15 +45,11 @@ export function CreateFormModal() {
 
       {open && (
         <ModalWrapper onClose={handleClose} title="Nuevo formulario">
-            {state?.error && (
-              <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
-                {state.error}
-              </div>
-            )}
+            {state?.error && <div className={`${TOK.errorBox}`}>{state.error}</div>}
 
             <form action={formAction} onSubmit={() => setSubmitted(true)} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
+                <label className={TOK.label}>
                   Nombre <span className="text-red-500">*</span>
                 </label>
                 <Input
@@ -67,12 +62,12 @@ export function CreateFormModal() {
                   required
                   minLength={2}
                   placeholder="Registro webinar de mayo"
-                  className={fieldClass}
+                  className={TOK.fieldBg}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
+                <label className={TOK.label}>
                   Slug publico <span className="text-red-500">*</span>
                 </label>
                 <Input
@@ -85,35 +80,35 @@ export function CreateFormModal() {
                   required
                   minLength={2}
                   placeholder="registro_webinar_mayo"
-                  className={`font-mono ${fieldClass}`}
+                  className={`font-mono ${TOK.fieldBg}`}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Descripcion</label>
+                <label className={TOK.label}>Descripcion</label>
                 <textarea
                   name="description"
                   rows={3}
                   placeholder="Texto breve para orientar al visitante."
-                  className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] resize-none"
+                  className={TOK.inputNativeMultiline}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Boton</label>
+                  <label className={TOK.label}>Boton</label>
                   <Input
                     name="submitLabel"
                     defaultValue="Enviar"
-                    className={fieldClass}
+                    className={TOK.fieldBg}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Mensaje final</label>
+                  <label className={TOK.label}>Mensaje final</label>
                   <Input
                     name="successMessage"
                     defaultValue="Gracias, recibimos tus datos."
-                    className={fieldClass}
+                    className={TOK.fieldBg}
                   />
                 </div>
               </div>

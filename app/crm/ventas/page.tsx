@@ -4,6 +4,7 @@ import { CreateSaleModal } from './_components/CreateSaleModal'
 import { SalesFilters } from './_components/SalesFilters'
 import { SalesTable } from './_components/SalesTable'
 import { MetricCard } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 import type { SaleRow } from './_components/SalesTable'
 
 const PAGE_SIZE = 50
@@ -120,12 +121,12 @@ export default async function VentasPage({ searchParams }: Props) {
 
       <SalesFilters />
 
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6">
+      <div className={`${TOK.panel} p-6`}>
         <SalesTable sales={sales as SaleRow[]} />
       </div>
 
       {total > PAGE_SIZE && (
-        <div className="flex items-center justify-between text-sm text-[#8a8a8a]">
+        <div className={`flex items-center justify-between text-sm ${TOK.textSubtle}`}>
           <span>
             Mostrando {skip + 1}–{Math.min(skip + PAGE_SIZE, total)} de {total}
           </span>
@@ -133,7 +134,7 @@ export default async function VentasPage({ searchParams }: Props) {
             {page > 1 && (
               <a
                 href={`?${new URLSearchParams({ ...params, page: String(page - 1) })}`}
-                className="bg-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f2f2f2] transition"
+                className={TOK.pagerLink}
               >
                 Anterior
               </a>
@@ -141,7 +142,7 @@ export default async function VentasPage({ searchParams }: Props) {
             {skip + PAGE_SIZE < total && (
               <a
                 href={`?${new URLSearchParams({ ...params, page: String(page + 1) })}`}
-                className="bg-white rounded-full px-4 py-2 text-sm font-medium hover:bg-[#f2f2f2] transition"
+                className={TOK.pagerLink}
               >
                 Siguiente
               </a>

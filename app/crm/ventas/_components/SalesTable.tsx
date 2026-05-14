@@ -4,9 +4,10 @@ import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import type { CrmPaymentMethod, CrmSaleStatus, DealStage } from '@prisma/client'
 import { Trash2 } from 'lucide-react'
-import { deleteSale, updateSaleStatus } from '../actions'
+import { deleteSale } from '../actions'
 import { formatMoneyFromCents } from '../_lib/sales-metrics'
 import { SaleStatusBadge } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type SaleRow = {
   id: number
@@ -24,13 +25,6 @@ export type SaleRow = {
 
 type Props = {
   sales: SaleRow[]
-}
-
-const STATUS_LABELS: Record<CrmSaleStatus, string> = {
-  PENDING: 'Pendiente',
-  PAID: 'Pagada',
-  REFUNDED: 'Reembolsada',
-  CANCELED: 'Cancelada',
 }
 
 const METHOD_LABELS: Record<CrmPaymentMethod, string> = {
@@ -54,14 +48,6 @@ export function SalesTable({ sales }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  function handleStatusChange(saleId: number, status: CrmSaleStatus) {
-    setMessage(null)
-    startTransition(async () => {
-      const result = await updateSaleStatus(saleId, status)
-      if (result.error) setMessage(result.error)
-    })
-  }
-
   function handleDelete(sale: SaleRow) {
     if (!window.confirm(`¿Eliminar la venta de "${sale.productName}"?`)) return
 
@@ -74,19 +60,19 @@ export function SalesTable({ sales }: Props) {
 
   if (sales.length === 0) {
     return (
-      <div className="py-12 text-center text-sm text-[#8a8a8a]">No hay ventas que coincidan con los filtros.</div>
+      <div className={`py-12 text-center ${TOK.textMuted}`}>No hay ventas que coincidan con los filtros.</div>
     )
   }
 
   return (
     <div>
       {message && (
-        <div className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{message}</div>
+        <div className={TOK.errorBox}>{message}</div>
       )}
 
       {/* Column headers */}
       <div
-        className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+        className={`grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}
         style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 0.5fr' }}
       >
         <span>Venta</span>
@@ -101,13 +87,13 @@ export function SalesTable({ sales }: Props) {
       {sales.map((sale) => (
         <div
           key={sale.id}
-          className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
+          className="mb-1.5 grid items-center rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0"
           style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 0.5fr' }}
         >
           {/* Venta */}
           <div>
-            <p className="text-sm font-medium text-[#080808]">{sale.productName}</p>
-            <p className="mt-0.5 text-xs text-[#8a8a8a]">
+            <p className="text-sm font-medium text-[var(--color-on-surface)]">{sale.productName}</p>
+            <p className={`mt-0.5 text-xs ${TOK.textSubtle}`}>
               #{sale.id}
               {sale.deal && ` · Pipeline #${sale.deal.id}`}
             </p>
@@ -117,15 +103,15 @@ export function SalesTable({ sales }: Props) {
           <div>
             <Link
               href={`/crm/contactos/${sale.contact.id}`}
-              className="text-sm font-medium text-[#080808] hover:text-[#5a5a5a] hover:underline"
+              className="text-sm font-medium text-[var(--color-on-surface)] transition-colors hover:text-[var(--color-primary)] hover:underline"
             >
               {sale.contact.name}
             </Link>
-            <p className="mt-0.5 text-xs text-[#8a8a8a]">{sale.contact.email}</p>
+            <p className={`mt-0.5 text-xs ${TOK.textSubtle}`}>{sale.contact.email}</p>
           </div>
 
           {/* Monto */}
-          <div className="text-sm font-semibold text-[#080808]">
+          <div className="text-sm font-semibold text-[var(--color-on-surface)]">
             {formatMoneyFromCents(sale.amountCents, sale.currency)}
           </div>
 
@@ -136,8 +122,8 @@ export function SalesTable({ sales }: Props) {
 
           {/* Método / Fecha */}
           <div>
-            <p className="text-sm text-[#5a5a5a]">{METHOD_LABELS[sale.paymentMethod]}</p>
-            <p className="mt-0.5 text-xs text-[#8a8a8a]">{formatDate(sale.soldAt)}</p>
+            <p className="text-sm text-[var(--color-on-surface-variant)]">{METHOD_LABELS[sale.paymentMethod]}</p>
+            <p className={`mt-0.5 text-xs ${TOK.textSubtle}`}>{formatDate(sale.soldAt)}</p>
           </div>
 
           {/* Acciones */}
@@ -146,7 +132,7 @@ export function SalesTable({ sales }: Props) {
               type="button"
               disabled={isPending}
               onClick={() => handleDelete(sale)}
-              className="rounded-xl p-1.5 text-[#8a8a8a] hover:bg-red-50 hover:text-red-600 disabled:opacity-50 transition-colors border-none bg-transparent cursor-pointer"
+              className="cursor-pointer rounded-xl border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)] disabled:opacity-50"
               aria-label="Eliminar venta"
             >
               <Trash2 size={16} />

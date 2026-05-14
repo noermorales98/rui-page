@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { CampaignWorkspace } from '../_components/CampaignWorkspace'
 
 export default async function NewCampaignPage() {
@@ -18,16 +19,13 @@ export default async function NewCampaignPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <Link
-          href="/crm/campanas"
-          className="inline-flex items-center gap-2 rounded-full border border-[#e5e5e5] bg-white px-5 py-2.5 text-sm font-semibold text-[#080808] hover:bg-[#f7f8fa] transition"
-        >
-          <ArrowLeft size={16} />
+        <Link href="/crm/campanas" className={TOK.linkBack}>
+          <ArrowLeft size={16} strokeWidth={2} />
           Volver
         </Link>
       </div>
 
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-8">
+      <div className={`${TOK.panel} ${TOK.panelPad}`}>
         <CampaignWorkspace forms={forms} webinars={webinars} />
       </div>
     </div>

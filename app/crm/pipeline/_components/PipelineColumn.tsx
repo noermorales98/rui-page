@@ -8,10 +8,10 @@ import { CreateDealModal } from './CreateDealModal'
 import type { DealWithContact } from './PipelineBoard'
 
 const STAGE_CONFIG: Record<DealStage, { label: string; labelColor: string; accentBg: boolean }> = {
-  LEAD:        { label: 'Lead',           labelColor: 'text-[#8a8a8a]', accentBg: false },
-  DEMO:        { label: 'Demo / Llamada', labelColor: 'text-[#5a85cc]', accentBg: false },
-  NEGOTIATION: { label: 'Negociación',    labelColor: 'text-[#c07a00]', accentBg: false },
-  ENROLLED:    { label: 'Inscrito ✓',    labelColor: 'text-[#5a6a00]', accentBg: true  },
+  LEAD:        { label: 'Lead',           labelColor: 'text-[var(--color-on-surface-variant)]', accentBg: false },
+  DEMO:        { label: 'Demo / Llamada', labelColor: 'text-[var(--color-primary)]', accentBg: false },
+  NEGOTIATION: { label: 'Negociación',    labelColor: 'text-[var(--color-secondary)]', accentBg: false },
+  ENROLLED:    { label: 'Inscrito ✓',    labelColor: 'text-[var(--color-tertiary)]', accentBg: true  },
 }
 
 interface Props {
@@ -29,22 +29,24 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
   const containerClass = [
     'flex flex-col flex-shrink-0 w-64 rounded-[22px] p-3.5 transition-colors',
     isOver
-      ? 'bg-[#9bbdf7]/15 border-2 border-[#9bbdf7]'
+      ? 'border-2 border-[var(--color-primary-fixed)] bg-[var(--color-primary-fixed)]/15'
       : config.accentBg
-        ? 'bg-[#dfff00]/10'
-        : 'bg-[#f0f1f3]',
+        ? 'bg-[var(--color-secondary-container)]/25'
+        : 'bg-[var(--color-surface-container-high)]',
   ].join(' ')
 
   const countBadgeClass = [
     'rounded-full px-2.5 py-0.5 text-[11px] font-bold',
-    config.accentBg ? 'bg-[#dfff00] text-[#080808]' : 'bg-white text-[#080808]',
+    config.accentBg
+      ? 'bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]'
+      : 'bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)]',
   ].join(' ')
 
   const addButtonClass = [
-    'flex w-full items-center justify-center gap-1 rounded-xl border-2 border-dashed py-2 text-xs text-[#8a8a8a] hover:text-[#080808] transition-colors bg-transparent cursor-pointer font-sans',
+    'flex w-full cursor-pointer items-center justify-center gap-1 rounded-xl border-2 border-dashed py-2 text-xs font-sans text-[var(--color-on-surface-variant)] transition-colors hover:text-[var(--color-on-surface)] bg-transparent',
     config.accentBg
-      ? 'border-[#9ca3af] hover:border-[#9ca3af]'
-      : 'border-[#f2f2f2] hover:border-[#9bbdf7]',
+      ? 'border-[var(--color-outline)] hover:border-[var(--color-outline)]'
+      : 'border-[var(--color-outline-variant)] hover:border-[var(--color-primary-fixed)]',
   ].join(' ')
 
   return (

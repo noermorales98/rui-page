@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { addRegistration, createAndRegister } from '../../actions'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 interface ContactOption {
   id: number
@@ -94,7 +95,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--color-on-surface)] px-3 py-1.5 text-sm font-medium text-[var(--color-surface-container-lowest)] transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
           <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
@@ -105,20 +106,20 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div
-            className="w-full max-w-sm rounded-xl bg-white p-6"
+            className="w-full max-w-sm rounded-xl bg-[var(--color-surface-container-lowest)] p-6"
             role="dialog"
             aria-modal="true"
             aria-labelledby="add-participant-title"
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 id="add-participant-title" className="text-base font-semibold text-gray-900">
+              <h2 id="add-participant-title" className="text-base font-semibold text-[var(--color-on-surface)]">
                 Agregar participante
               </h2>
               <button
                 type="button"
                 onClick={handleClose}
                 aria-label="Cerrar"
-                className="rounded p-1 text-gray-400 hover:bg-gray-100"
+                className="rounded p-1 text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-high)]"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
                   <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -142,10 +143,10 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                     onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                     placeholder="Buscar por nombre o email..."
                     autoFocus
-                    className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline-none"
+                    className={TOK.inputCompact}
                   />
                   {showDropdown && (
-                    <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1">
+                    <ul className="absolute z-10 mt-1 w-full rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] py-1">
                       {results.map((c) => {
                         const alreadyAdded = registeredContactIds.includes(c.id)
                         return (
@@ -154,12 +155,12 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                               type="button"
                               disabled={alreadyAdded || loading}
                               onMouseDown={() => handleSelect(c)}
-                              className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                              className="w-full px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)] disabled:cursor-not-allowed disabled:opacity-40"
                             >
-                              <span className="font-medium text-gray-900">{c.name}</span>
-                              <span className="ml-2 text-xs text-gray-400">{c.email}</span>
+                              <span className="font-medium text-[var(--color-on-surface)]">{c.name}</span>
+                              <span className="ml-2 text-xs text-[var(--color-on-surface-variant)]">{c.email}</span>
                               {alreadyAdded && (
-                                <span className="ml-2 text-xs text-indigo-400">ya registrado</span>
+                                <span className="ml-2 text-xs text-[var(--color-primary)]">ya registrado</span>
                               )}
                             </button>
                           </li>
@@ -171,7 +172,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                 <button
                   type="button"
                   onClick={() => setMode('create')}
-                  className="mt-3 text-sm text-indigo-600 hover:underline"
+                  className="mt-3 text-sm text-[var(--color-primary)] hover:underline"
                 >
                   ¿No está en la lista? Crear nuevo contacto
                 </button>
@@ -185,20 +186,20 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                     onChange={(e) => setNewName(e.target.value)}
                     placeholder="Nombre completo"
                     autoFocus
-                    className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline-none"
+                    className={TOK.inputCompact}
                   />
                   <input
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     placeholder="email@ejemplo.com"
-                    className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline-none"
+                    className={TOK.inputCompact}
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => setMode('search')}
-                  className="mt-2 text-sm text-gray-500 hover:underline"
+                  className="mt-2 text-sm text-[var(--color-on-surface-variant)] hover:underline"
                 >
                   ← Volver a buscar
                 </button>
@@ -206,7 +207,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-2 text-sm font-medium text-[var(--color-on-surface)] transition hover:bg-[var(--color-surface-container)]"
                   >
                     Cancelar
                   </button>
@@ -214,7 +215,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                     type="button"
                     onClick={handleCreate}
                     disabled={loading || !newName.trim() || !newEmail.trim()}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+                    className="rounded-lg bg-[var(--color-on-surface)] px-4 py-2 text-sm font-medium text-[var(--color-surface-container-lowest)] transition hover:opacity-90 disabled:opacity-60"
                   >
                     {loading ? 'Creando...' : 'Crear y agregar'}
                   </button>
@@ -222,7 +223,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
               </>
             )}
 
-            {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+            {error && <p className="mt-3 text-sm text-[var(--color-error)]">{error}</p>}
           </div>
         </div>
       )}

@@ -4,6 +4,7 @@ import { useState, useActionState, useEffect, useRef } from 'react'
 import type { DealStage } from '@prisma/client'
 import { createDeal, updateDeal } from '../actions'
 import type { DealWithContact } from './PipelineBoard'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const STAGE_OPTIONS: { value: DealStage; label: string }[] = [
   { value: 'LEAD', label: 'Lead' },
@@ -83,20 +84,20 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div
-        className="bg-white rounded-[28px] p-7 w-full max-w-md max-h-[90vh] overflow-y-auto"
+        className={TOK.modalPanel}
         role="dialog"
         aria-modal="true"
         aria-labelledby="deal-modal-title"
       >
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">
-          <h2 id="deal-modal-title" className="text-xl font-semibold tracking-[-0.03em] text-[#080808]">
+          <h2 id="deal-modal-title" className={TOK.modalTitle}>
             {deal ? 'Editar oportunidad' : 'Nueva oportunidad'}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#f0f1f3] flex items-center justify-center text-[#8a8a8a] hover:bg-[#e5e7eb] transition border-none cursor-pointer"
+            className={TOK.closeIconBtn}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -112,12 +113,12 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
         <form action={formAction} onSubmit={() => { submittedRef.current = true }}>
           {/* Contact */}
           <div className="mb-4">
-            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
+            <label className={TOK.label}>
               Contacto <span className="text-red-500">*</span>
             </label>
             <input type="hidden" name="contactId" value={selectedContact?.id ?? ''} />
             {isContactLocked ? (
-              <p className="bg-[#f7f8fa] rounded-full px-5 py-3 text-sm text-[#080808]">
+              <p className={`rounded-full px-5 py-3 text-sm text-[var(--color-on-surface)] ${TOK.fieldBg}`}>
                 {searchQuery}
               </p>
             ) : (
@@ -137,10 +138,10 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                   }}
                   onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
                   placeholder="Buscar por nombre o email..."
-                  className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
+                  className={TOK.inputNative}
                 />
                 {showDropdown && (
-                  <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white py-1">
+                  <ul className="absolute z-10 mt-1 w-full rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] py-1">
                     {searchResults.map((c) => (
                       <li key={c.id}>
                         <button
@@ -150,10 +151,10 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                             setSearchQuery(c.name)
                             setShowDropdown(false)
                           }}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50"
+                          className="w-full px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)]"
                         >
-                          <span className="font-medium text-gray-900">{c.name}</span>
-                          <span className="ml-2 text-xs text-gray-400">{c.email}</span>
+                          <span className="font-medium text-[var(--color-on-surface)]">{c.name}</span>
+                          <span className="ml-2 text-xs text-[var(--color-on-surface-variant)]">{c.email}</span>
                         </button>
                       </li>
                     ))}
@@ -165,26 +166,26 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
 
           {/* Course name */}
           <div className="mb-4">
-            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
+            <label className={TOK.label}>
               Curso{' '}
-              <span className="font-normal text-gray-400">(opcional)</span>
+              <span className="font-normal text-[var(--color-on-surface-variant)]/80">(opcional)</span>
             </label>
             <input
               type="text"
               name="courseName"
               defaultValue={deal?.courseName ?? ''}
               placeholder="ej. Presencia Escénica"
-              className="w-full bg-[#f7f8fa] rounded-full px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa]"
+              className={TOK.inputNative}
             />
           </div>
 
           {/* Stage */}
           <div className="mb-4">
-            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">Etapa</label>
+            <label className={TOK.label}>Etapa</label>
             <select
               name="stage"
               defaultValue={deal?.stage ?? initialStage ?? 'LEAD'}
-              className="bg-[#f7f8fa] rounded-full px-4 py-2.5 w-full border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af]"
+              className={TOK.selectLg}
             >
               {STAGE_OPTIONS.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -196,21 +197,21 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
 
           {/* Notes */}
           <div className="mb-5">
-            <label className="block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5">
+            <label className={TOK.label}>
               Notas{' '}
-              <span className="font-normal text-gray-400">(opcional)</span>
+              <span className="font-normal text-[var(--color-on-surface-variant)]/80">(opcional)</span>
             </label>
             <textarea
               name="notes"
               defaultValue={deal?.notes ?? ''}
               rows={3}
               placeholder="Observaciones sobre esta oportunidad..."
-              className="w-full bg-[#f7f8fa] rounded-2xl px-5 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition placeholder:text-[#aaa] resize-none"
+              className={TOK.inputNativeMultiline}
             />
           </div>
 
           {state?.error && (
-            <div className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700 mb-4">
+            <div className={TOK.errorBox}>
               {state.error}
             </div>
           )}
@@ -219,14 +220,14 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
             <button
               type="button"
               onClick={onClose}
-              className="w-full bg-[#f0f1f3] text-[#080808] rounded-full py-3 text-sm font-medium hover:bg-[#e5e7eb] transition border-none cursor-pointer font-sans"
+              className={`w-full font-sans ${TOK.actionSecondary}`}
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isPending || (!isContactLocked && !selectedContact)}
-              className="w-full bg-[#080808] text-white rounded-full py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
+              className={`w-full font-sans disabled:opacity-60 ${TOK.actionPrimary}`}
             >
               {isPending ? 'Guardando...' : deal ? 'Guardar' : 'Crear'}
             </button>

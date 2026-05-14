@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const STATUSES = [
   { value: 'PENDING', label: 'Pendiente' },
@@ -53,13 +54,13 @@ export function SalesFilters() {
         placeholder="Buscar por contacto, email o producto..."
         defaultValue={searchParams.get('q') ?? ''}
         onChange={(event) => handleSearch(event.target.value)}
-        className="min-w-72 bg-white rounded-full px-5 py-2.5 text-sm text-[#080808] outline-none border border-[#f2f2f2] focus:border-[#9ca3af] transition placeholder:text-[#aaa]"
+        className={`min-w-72 ${TOK.inputNative}`}
       />
 
       <select
         value={searchParams.get('status') ?? ''}
         onChange={(event) => updateParam('status', event.target.value)}
-        className="bg-white rounded-full px-4 py-2.5 text-sm text-[#080808] border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af] cursor-pointer"
+        className={`min-h-10 shrink-0 cursor-pointer rounded-full border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-2.5 text-sm text-[var(--color-on-surface)] outline-none transition focus:border-[var(--color-outline)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]`}
       >
         <option value="">Estado: Todos</option>
         {STATUSES.map((status) => (
@@ -72,7 +73,7 @@ export function SalesFilters() {
       <select
         value={searchParams.get('method') ?? ''}
         onChange={(event) => updateParam('method', event.target.value)}
-        className="bg-white rounded-full px-4 py-2.5 text-sm text-[#080808] border border-[#f2f2f2] outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9ca3af] cursor-pointer"
+        className={`min-h-10 shrink-0 cursor-pointer rounded-full border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-2.5 text-sm text-[var(--color-on-surface)] outline-none transition focus:border-[var(--color-outline)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]`}
       >
         <option value="">Metodo: Todos</option>
         {METHODS.map((method) => (

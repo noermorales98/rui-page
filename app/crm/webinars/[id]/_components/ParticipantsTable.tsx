@@ -3,6 +3,7 @@
 import { useState, startTransition } from 'react'
 import type { RegistrationStatus } from '@prisma/client'
 import { updateRegistrationStatus, removeRegistration } from '../../actions'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type RegistrationWithContact = {
   id: number
@@ -13,9 +14,21 @@ export type RegistrationWithContact = {
 }
 
 const STATUS_OPTIONS: { value: RegistrationStatus; label: string; colorClass: string }[] = [
-  { value: 'REGISTERED', label: 'Registrado', colorClass: 'bg-indigo-50 text-indigo-700' },
-  { value: 'ATTENDED', label: 'Asistió', colorClass: 'bg-yellow-50 text-yellow-700' },
-  { value: 'PURCHASED', label: 'Compró', colorClass: 'bg-green-50 text-green-700' },
+  {
+    value: 'REGISTERED',
+    label: 'Registrado',
+    colorClass: 'bg-[var(--color-primary-container)] text-[var(--color-on-primary-container)]',
+  },
+  {
+    value: 'ATTENDED',
+    label: 'Asistió',
+    colorClass: 'bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]',
+  },
+  {
+    value: 'PURCHASED',
+    label: 'Compró',
+    colorClass: 'bg-[var(--color-tertiary-container)] text-[var(--color-on-tertiary-container)]',
+  },
 ]
 
 function relativeTime(date: Date | string): string {
@@ -62,7 +75,7 @@ export function ParticipantsTable({ registrations }: Props) {
 
   if (registrations.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-200 py-10 text-center text-sm text-[#8a8a8a]">
+      <div className={`${TOK.emptyState} ${TOK.textSubtle}`}>
         No hay participantes todavía. Agrega contactos o importa un CSV.
       </div>
     )
@@ -71,7 +84,7 @@ export function ParticipantsTable({ registrations }: Props) {
   return (
     <div>
       {/* Column headers */}
-      <div className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
+      <div className={`grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}
         style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
         <span>Contacto</span>
         <span>Email</span>
@@ -85,15 +98,15 @@ export function ParticipantsTable({ registrations }: Props) {
         const statusConfig = STATUS_OPTIONS.find((s) => s.value === currentStatus)
         return (
           <div key={reg.id}
-            className="grid items-center bg-white rounded-2xl px-4 py-3 mb-1.5 last:mb-0"
+            className="mb-1.5 grid items-center rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0"
             style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
             <a
               href={`/crm/contactos/${reg.contact.id}`}
-              className="text-sm font-medium text-indigo-600 hover:underline"
+              className="text-sm font-medium text-[var(--color-primary)] hover:underline"
             >
               {reg.contact.name}
             </a>
-            <span className="text-sm text-[#8a8a8a]">{reg.contact.email}</span>
+            <span className={`text-sm ${TOK.textSubtle}`}>{reg.contact.email}</span>
             <div>
               <select
                 value={currentStatus}
@@ -101,7 +114,7 @@ export function ParticipantsTable({ registrations }: Props) {
                   handleStatusChange(reg.id, e.target.value as RegistrationStatus)
                 }
                 aria-label={`Estado de ${reg.contact.name}`}
-                className={`rounded-lg border border-[#f2f2f2] py-1 pl-2 pr-6 text-xs font-medium focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7] ${statusConfig?.colorClass ?? ''}`}
+                className={`rounded-lg border border-[var(--color-outline-variant)] py-1 pl-2 pr-6 text-xs font-medium focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary-fixed)] ${statusConfig?.colorClass ?? ''}`}
               >
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -110,13 +123,13 @@ export function ParticipantsTable({ registrations }: Props) {
                 ))}
               </select>
             </div>
-            <span className="text-xs text-[#8a8a8a]">{relativeTime(reg.createdAt)}</span>
+            <span className={`text-xs ${TOK.textSubtle}`}>{relativeTime(reg.createdAt)}</span>
             <div className="flex justify-end">
               <button
                 type="button"
                 onClick={() => handleRemove(reg)}
                 aria-label={`Quitar a ${reg.contact.name}`}
-                className="rounded-lg p-1.5 text-[#8a8a8a] hover:bg-red-50 hover:text-red-600 transition-colors border-none bg-transparent cursor-pointer"
+                className="cursor-pointer rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)]"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
                   <path fillRule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clipRule="evenodd" />

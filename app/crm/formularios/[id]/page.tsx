@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { FormBuilder } from '../_components/FormBuilder'
 
 interface Props {
@@ -24,12 +25,9 @@ export default async function FormularioBuilderPage({ params }: Props) {
   if (!form) notFound()
 
   return (
-    <div>
-      <Link
-        href="/crm/formularios"
-        className="mb-4 inline-flex items-center gap-1 text-sm text-[#8a8a8a] hover:text-[#080808]"
-      >
-        <ArrowLeft size={16} />
+    <div className="flex flex-col gap-6">
+      <Link href="/crm/formularios" className={TOK.linkBack}>
+        <ArrowLeft size={16} strokeWidth={2} />
         Formularios
       </Link>
 
