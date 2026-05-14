@@ -22,16 +22,16 @@ export function AddNoteForm({ contactId }: { contactId: number }) {
           name="body"
           rows={3}
           placeholder="Agregar una nota..."
-          className="w-full bg-white rounded-2xl px-4 py-3 text-sm border border-[#f2f2f2] focus:border-[#9ca3af] outline-none transition resize-none placeholder:text-[#aaa]"
+          className="w-full resize-none rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-3 text-sm text-[var(--color-on-surface)] outline-none transition placeholder:text-[var(--color-on-surface-variant)] focus:border-[var(--color-outline)]"
         />
         {state?.error && (
-          <p className="mb-2 text-xs text-red-600">{state.error}</p>
+          <p className="mb-2 text-xs text-[var(--color-error)]">{state.error}</p>
         )}
         <div className="flex justify-end">
           <button
             type="submit"
             disabled={isPending}
-            className="bg-[#080808] text-white rounded-full px-5 py-2 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-60"
+            className="cursor-pointer rounded-full border-none bg-[var(--color-on-surface)] px-5 py-2 font-sans text-sm font-semibold text-[var(--color-surface-container-lowest)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? 'Guardando...' : 'Agregar nota'}
           </button>

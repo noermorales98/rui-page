@@ -64,6 +64,25 @@ function getMeta(pathname: string): RouteMeta {
     return RESPONSES_META
   }
 
+  if (pathname === '/crm/contactos/nuevo') {
+    return {
+      title: 'Nuevo contacto',
+      description: 'Registra un contacto manualmente con email, fuente y etiquetas.',
+    }
+  }
+  if (pathname === '/crm/contactos/importar') {
+    return {
+      title: 'Importar contactos',
+      description: 'Sube un CSV con cabecera; el servidor valida e importa por email.',
+    }
+  }
+  if (/^\/crm\/contactos\/\d+\/editar$/.test(pathname)) {
+    return {
+      title: 'Editar contacto',
+      description: 'Actualiza datos, estado y etiquetas del contacto.',
+    }
+  }
+
   if (ROUTE_META[pathname]) return ROUTE_META[pathname]
   const match = Object.keys(ROUTE_META)
     .sort((a, b) => b.length - a.length)
@@ -77,11 +96,11 @@ export function NavbarTitle() {
 
   return (
     <div className="min-w-0">
-      <span className="block text-[18px] font-semibold tracking-[-0.04em] text-[#080808]">
+      <span className="block text-[18px] font-semibold tracking-[-0.04em] text-[var(--color-on-surface)]">
         {meta.title}
       </span>
       {meta.description && (
-        <p className="mt-1 max-w-[760px] truncate text-sm text-[#8a8a8a]">
+        <p className="mt-1 max-w-[760px] truncate text-sm text-[var(--color-on-surface-variant)]">
           {meta.description}
         </p>
       )}

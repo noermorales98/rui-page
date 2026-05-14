@@ -8,7 +8,7 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
   if (!session) redirect('/crm-login')
 
   return (
-    <div className="bg-[#edeef0]">
+    <div className="bg-[var(--color-surface-container-high)]">
       <div className="flex gap-4 h-screen overflow-hidden">
         {/* Sidebar */}
         <div className="hidden w-[260px] pl-3 pt-3 pb-3 shrink-0 lg:block h-screen sticky top-0 left-0">

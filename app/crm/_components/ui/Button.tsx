@@ -4,11 +4,16 @@ type Variant = 'primary' | 'secondary' | 'accent' | 'ghost' | 'danger'
 type Size = 'sm' | 'md' | 'lg'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-[#080808] text-white hover:bg-[#222]',
-  secondary: 'bg-white text-[#080808] hover:bg-[#f2f2f2]',
-  accent: 'bg-[#dfff00] text-[#080808] hover:brightness-95',
-  ghost: 'bg-transparent text-[#8a8a8a] hover:bg-white hover:text-[#080808]',
-  danger: 'bg-red-50 text-red-700 hover:bg-red-100',
+  primary:
+    'bg-[var(--color-on-surface)] text-[var(--color-surface-container-lowest)] hover:opacity-90',
+  secondary:
+    'bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container)]',
+  accent:
+    'bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)] hover:brightness-95',
+  ghost:
+    'bg-transparent text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-lowest)] hover:text-[var(--color-on-surface)]',
+  danger:
+    'bg-[var(--color-error-container)] text-[var(--color-on-error-container)] hover:brightness-95',
 }
 
 const SIZES: Record<Size, string> = {
@@ -29,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     <button
       ref={ref}
       type={type}
-      className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-[#f2f2f2] font-sans font-semibold transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7] disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center gap-2 rounded-full border border-[var(--color-outline-variant)] font-sans font-semibold transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] disabled:pointer-events-none disabled:opacity-50 ${SIZES[size]} ${VARIANTS[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
       {...props}
     >
       {children}

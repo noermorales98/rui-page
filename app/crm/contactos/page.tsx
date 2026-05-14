@@ -1,11 +1,13 @@
-import { BadgeCheck, UserCheck, UserPlus, UsersRound } from 'lucide-react'
+import { BadgeCheck, UserCheck, UserPlus, Upload, UsersRound } from 'lucide-react'
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { listContacts } from '@/lib/services/contacts'
+import { listTags } from '@/lib/services/tags'
 import { ContactsTable } from './_components/ContactsTable'
 import { ContactFilters } from './_components/ContactFilters'
-import { CreateContactModal } from './_components/CreateContactModal'
-import { ImportCsvModal } from './_components/ImportCsvModal'
 import { Card, MetricCard } from '@/app/crm/_components/ui'
 import { buildContactMetrics } from './_lib/contact-metrics'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const PAGE_SIZE = 50
 
@@ -15,31 +17,30 @@ interface Props {
 
 export default async function ContactosPage({ searchParams }: Props) {
   const params = await searchParams
-  const q = params.q?.trim() ?? ''
-  const status = params.status ?? ''
-  const source = params.source ?? ''
-  const tagId = params.tag ? Number(params.tag) : undefined
-  const page = Math.max(1, Number(params.page ?? 1))
-  const skip = (page - 1) * PAGE_SIZE
 
-  const where = {
-    ...(q ? { OR: [{ name: { contains: q } }, { email: { contains: q } }] } : {}),
-    ...(status ? { status: status as 'NEW' | 'QUALIFIED' | 'CLIENT' } : {}),
-    ...(source ? { source: source as 'WEBINAR' | 'FORM' | 'MANUAL' | 'IMPORT' } : {}),
-    ...(tagId ? { tags: { some: { tagId } } } : {}),
-  }
+  const listResult = await listContacts({
+    q: params.q,
+    status: params.status,
+    source: params.source,
+    tag: params.tag,
+    page: params.page,
+    take: String(PAGE_SIZE),
+  })
 
-  const [contacts, total, allTags, overviewTotal, overviewByStatus] = await Promise.all([
-    prisma.contact.findMany({
-      where, skip, take: PAGE_SIZE,
-      orderBy: { createdAt: 'desc' },
-      include: { tags: { include: { tag: true } } },
-    }),
-    prisma.contact.count({ where }),
-    prisma.tag.findMany({ orderBy: { name: 'asc' } }),
-    prisma.contact.count(),
+  const contacts = listResult.ok ? listResult.data.rows : []
+  const total = listResult.ok ? listResult.data.total : 0
+  const page = listResult.ok ? listResult.data.page : Math.max(1, Number(params.page ?? 1))
+  const take = listResult.ok ? listResult.data.take : PAGE_SIZE
+  const skip = (page - 1) * take
+
+  const tagsResult = await listTags()
+  const allTags = tagsResult.ok ? tagsResult.data : []
+
+  const [overviewTotal, overviewByStatus] = await Promise.all([
+    prisma.contact.count({ where: { deletedAt: null } }),
     prisma.contact.groupBy({
       by: ['status'],
+      where: { deletedAt: null },
       _count: { _all: true },
     }),
   ])
@@ -61,8 +62,14 @@ export default async function ContactosPage({ searchParams }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap justify-end gap-2">
-        <ImportCsvModal />
-        <CreateContactModal tags={allTags} />
+        <Link href="/crm/contactos/importar" className={TOK.actionSecondary}>
+          <Upload size={16} strokeWidth={2} />
+          Importar CSV
+        </Link>
+        <Link href="/crm/contactos/nuevo" className={TOK.actionPrimary}>
+          <UserPlus size={16} strokeWidth={2} />
+          Nuevo contacto
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -87,19 +94,19 @@ export default async function ContactosPage({ searchParams }: Props) {
       </Card>
 
       {/* Pagination */}
-      {total > PAGE_SIZE && (
-        <div className="flex flex-col gap-3 text-sm text-[#8a8a8a] sm:flex-row sm:items-center sm:justify-between">
-          <span>Mostrando {skip + 1}–{Math.min(skip + PAGE_SIZE, total)} de {total}</span>
+      {total > take && (
+        <div className={`flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between ${TOK.textMuted}`}>
+          <span>Mostrando {skip + 1}–{Math.min(skip + take, total)} de {total}</span>
           <div className="flex gap-2">
             {page > 1 && (
               <a href={`?${new URLSearchParams({ ...params, page: String(page - 1) })}`}
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#080808] transition hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]">
+                className={TOK.actionSecondary}>
                 Anterior
               </a>
             )}
-            {skip + PAGE_SIZE < total && (
+            {skip + take < total && (
               <a href={`?${new URLSearchParams({ ...params, page: String(page + 1) })}`}
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#080808] transition hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]">
+                className={TOK.actionSecondary}>
                 Siguiente
               </a>
             )}

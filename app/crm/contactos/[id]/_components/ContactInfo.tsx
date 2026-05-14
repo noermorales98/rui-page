@@ -1,4 +1,5 @@
 import type { Contact, ContactTag, Tag } from '@prisma/client'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type ContactWithTags = Contact & { tags: (ContactTag & { tag: Tag })[] }
 
@@ -26,14 +27,14 @@ export function ContactInfo({ contact }: { contact: ContactWithTags }) {
 
   return (
     <div className="p-5">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <p className="mb-4 block text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">
         Información
       </p>
       <dl className="space-y-4">
         {fields.map(({ label, value }) => (
           <div key={label}>
-            <dt className="mb-0.5 text-xs text-gray-400">{label}</dt>
-            <dd className="text-sm text-gray-900 break-all">{value}</dd>
+            <dt className={`mb-0.5 text-xs ${TOK.textSubtle}`}>{label}</dt>
+            <dd className={`break-all text-sm text-[var(--color-on-surface)]`}>{value}</dd>
           </div>
         ))}
       </dl>
