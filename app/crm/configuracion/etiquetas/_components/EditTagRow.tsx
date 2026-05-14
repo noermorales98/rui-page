@@ -37,8 +37,11 @@ export function EditTagRow({
 
   useEffect(() => {
     if (state === null && submitted && !isPending) {
-      setEditing(false)
-      setSubmitted(false)
+      const id = window.setTimeout(() => {
+        setEditing(false)
+        setSubmitted(false)
+      }, 0)
+      return () => window.clearTimeout(id)
     }
   }, [isPending, state, submitted])
 
