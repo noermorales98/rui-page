@@ -4,6 +4,8 @@ import { useState, startTransition } from 'react'
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import type { DealStage } from '@prisma/client'
+import Link from 'next/link'
+import { ExternalLink } from 'lucide-react'
 import { deleteDeal } from '../actions'
 import { CreateDealModal } from './CreateDealModal'
 import type { DealWithContact } from './PipelineBoard'
@@ -31,21 +33,29 @@ interface Props {
   deal: DealWithContact
   onMove: (toStage: DealStage) => void
   onDelete: () => void
+  canMutate: boolean
+  canDelete: boolean
 }
 
-export function DealCard({ deal, onMove, onDelete }: Props) {
+export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props) {
   const [editOpen, setEditOpen] = useState(false)
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({ id: deal.id })
+    useDraggable({ id: deal.id, disabled: !canMutate })
 
   const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined
+  const dragProps = canMutate ? { ...attributes, ...listeners } : {}
 
   function handleDelete() {
-    if (!window.confirm(`¿Eliminar esta oportunidad de ${deal.contact.name}?`)) return
+    if (!window.confirm(`¿Archivar esta oportunidad de ${deal.contact.name}? Se bloqueará si tiene una venta pagada.`)) return
     onDelete()
     startTransition(async () => {
-      await deleteDeal(deal.id)
+      try {
+        await deleteDeal(deal.id)
+      } catch (err) {
+        window.alert(err instanceof Error ? err.message : 'Error al archivar.')
+        // Server revalidate will re-pull deals.
+      }
     })
   }
 
@@ -55,10 +65,13 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
         ref={setNodeRef}
         style={style}
         className={`rounded-2xl bg-[var(--color-surface-container-lowest)] px-3.5 py-3 transition-opacity ${
-          isDragging ? 'opacity-40' : 'cursor-grab active:cursor-grabbing'
+          isDragging
+            ? 'opacity-40'
+            : canMutate
+              ? 'cursor-grab active:cursor-grabbing'
+              : 'cursor-default'
         }`}
-        {...attributes}
-        {...listeners}
+        {...dragProps}
       >
         {/* Contact name + course */}
         <div className="flex items-start justify-between gap-2">
@@ -77,11 +90,19 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
             )}
           </div>
 
-          {/* Edit / Delete buttons — stop drag events */}
+          {/* Detail / Edit / Delete buttons — stop drag events */}
           <div
             className="flex flex-shrink-0 items-center gap-1"
             onPointerDown={(e) => e.stopPropagation()}
           >
+            <Link
+              href={`/crm/pipeline/${deal.id}`}
+              className="rounded-lg p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)] hover:text-[var(--color-on-surface)]"
+              title="Ver detalle"
+            >
+              <ExternalLink size={14} strokeWidth={2} />
+            </Link>
+            {canMutate && (
             <button
               type="button"
               onClick={() => setEditOpen(true)}
@@ -98,11 +119,13 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
                 <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9a.75.75 0 0 1 1.5 0v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
               </svg>
             </button>
+            )}
+            {canDelete && (
             <button
               type="button"
               onClick={handleDelete}
               className="cursor-pointer rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)]"
-              title="Eliminar"
+              title="Archivar"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,10 +140,12 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
                 />
               </svg>
             </button>
+            )}
           </div>
         </div>
 
         {/* Stage selector fallback — stops drag pointer events */}
+        {canMutate && (
         <div className="mt-2" onPointerDown={(e) => e.stopPropagation()}>
           <select
             value={deal.stage}
@@ -134,6 +159,7 @@ export function DealCard({ deal, onMove, onDelete }: Props) {
             ))}
           </select>
         </div>
+        )}
 
         <p className="mt-2 text-xs text-[var(--color-on-surface-variant)]/80">{relativeTime(deal.updatedAt)}</p>
       </div>
