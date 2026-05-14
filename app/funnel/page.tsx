@@ -60,7 +60,14 @@ export default function Funnel() {
           <div className="lg:col-span-5 relative">
             {/* Image/Visual Placeholder */}
             <div className="absolute -top-12 -right-12 w-32 h-32 opacity-20 pointer-events-none">
-              <img alt="Decorative" className="w-full h-full object-contain" data-alt="Abstract translucent sphere with crystalline refractions and soft golden light beams passing through it" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHfBCnTSz88I82I0ip7r3YskoiARa21kGomA4amS54zVySGbknq86z97rpBmYD6N1qjNf6oJLKc56gWrUhtSWxrJ95VsVTNDkefGNl1kMw3mE5vlhzz1sVz0olIn8MRdI9lQ9DaTF4a2GdiBzrUTMQFoa3liS1wX63nDys5MuGVh-LEgO_gCCU-25bEUQhyQDZ-hG60cUqulubyMJcUlkiZfszlH1dI7DBgpZKb1Y3-1TwZSyz5Iyn2ToA2RcSpXLctFPbnd6gcA7S" />
+              <Image
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHfBCnTSz88I82I0ip7r3YskoiARa21kGomA4amS54zVySGbknq86z97rpBmYD6N1qjNf6oJLKc56gWrUhtSWxrJ95VsVTNDkefGNl1kMw3mE5vlhzz1sVz0olIn8MRdI9lQ9DaTF4a2GdiBzrUTMQFoa3liS1wX63nDys5MuGVh-LEgO_gCCU-25bEUQhyQDZ-hG60cUqulubyMJcUlkiZfszlH1dI7DBgpZKb1Y3-1TwZSyz5Iyn2ToA2RcSpXLctFPbnd6gcA7S"
+                alt=""
+                aria-hidden
+                fill
+                sizes="128px"
+                className="object-contain"
+              />
             </div>
 
             {/* Opt-in Card */}
@@ -89,8 +96,14 @@ export default function Funnel() {
             </div>
 
             {/* Floating Accent Decoration */}
-            <div className="mt-12 overflow-hidden rounded-2xl aspect-[16/9] lg:aspect-square editorial-shadow">
-              <img className="w-full h-full object-cover grayscale-[0.3] sepia-[0.1]" data-alt="Atmospheric abstract art showing layered silhouettes of faces in ethereal light with golden geometric arcs and grain texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyaB72PgEeMl4EnUf_6PxWJSHD2gk0ro3Ha78xvhTdBlB7I5rb-45CbOnImHT2Rl9pLpY9kUFXi4ZMibwXTFfnkpuI82SuZ9utZbX4OYJTjDZ8JyKdoq3qTZSLSszSIBPLXskZEID1yv-gYzpzuZ1c2qO-IeQjNK79XWZR7Q-0pEfmNnnproDAaQcKiRtDGeKT3eNMT1Rp5dPuNAVA1Qlqgn9IPaltIRLee968bc5z2IUuNarWHLSdK8NEkFB0CQ9jdEwYV8qzHwKl" />
+            <div className="relative mt-12 overflow-hidden rounded-2xl aspect-[16/9] lg:aspect-square editorial-shadow">
+              <Image
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyaB72PgEeMl4EnUf_6PxWJSHD2gk0ro3Ha78xvhTdBlB7I5rb-45CbOnImHT2Rl9pLpY9kUFXi4ZMibwXTFfnkpuI82SuZ9utZbX4OYJTjDZ8JyKdoq3qTZSLSszSIBPLXskZEID1yv-gYzpzuZ1c2qO-IeQjNK79XWZR7Q-0pEfmNnnproDAaQcKiRtDGeKT3eNMT1Rp5dPuNAVA1Qlqgn9IPaltIRLee968bc5z2IUuNarWHLSdK8NEkFB0CQ9jdEwYV8qzHwKl"
+                alt="Arte abstracto con siluetas de rostros y arcos geométricos dorados"
+                fill
+                sizes="(min-width: 1024px) 40vw, 100vw"
+                className="object-cover grayscale-[0.3] sepia-[0.1]"
+              />
             </div>
           </div>
         </div>

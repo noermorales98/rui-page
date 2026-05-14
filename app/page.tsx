@@ -39,7 +39,14 @@ export default function Home() {
             </div>
             <div className="md:col-span-5 relative">
               <div className="aspect-[4/5] rounded-[2rem] overflow-hidden bg-surface-container-high relative group">
-                <img alt="Abstract Transformation Image" className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-700" data-alt="abstract architectural geometry with light and shadow interplay on minimalist concrete surfaces creating a sense of transcendence and space" src="/rui.webp" />
+                <Image
+                  src="/rui.webp"
+                  alt="Geometría arquitectónica abstracta con juego de luces y sombras sobre superficies minimalistas"
+                  fill
+                  sizes="(min-width: 768px) 42vw, 100vw"
+                  className="object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-700"
+                  priority
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
                 <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
               </div>
@@ -128,7 +135,13 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Featured Article */}
               <a href="https://youtu.be/cq_aE4kIwAM" target="_blank" className="md:col-span-2 group relative h-96 rounded-3xl overflow-hidden bg-primary">
-                <img alt="Blog background" className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="misty forest at dawn with golden sunlight filtering through old trees creating a mystical and contemplative atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqiSWBO51FHvE7Mtnd6RkMYyOkREV732EIdz98_Cip6qMFjFyFqcD8NMfSG_wpwFrUs-VcUTwtJrm4iDUUrvfzQQwdOcibIFMTJIvIds58lrgtLLQrCBUlVOAsgqJK4BKKcRIo8qMzs2teZywA6glMItHxkLNmMfpBdbebvt0F992z6EMQC9-rppAZRAOr0wDLZeHIya2I4YxDaInDsFprWT5FGlxFyDyLQOH3w1rJmsCy-lcXCOgM1VY1swQA-xVKNUK3ckRJF3zu" />
+                <Image
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqiSWBO51FHvE7Mtnd6RkMYyOkREV732EIdz98_Cip6qMFjFyFqcD8NMfSG_wpwFrUs-VcUTwtJrm4iDUUrvfzQQwdOcibIFMTJIvIds58lrgtLLQrCBUlVOAsgqJK4BKKcRIo8qMzs2teZywA6glMItHxkLNmMfpBdbebvt0F992z6EMQC9-rppAZRAOr0wDLZeHIya2I4YxDaInDsFprWT5FGlxFyDyLQOH3w1rJmsCy-lcXCOgM1VY1swQA-xVKNUK3ckRJF3zu"
+                  alt="Bosque brumoso al amanecer con luz dorada filtrándose entre los árboles"
+                  fill
+                  sizes="(min-width: 768px) 66vw, 100vw"
+                  className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/20 to-transparent p-12 flex flex-col justify-end">
                   <span className="text-secondary-fixed text-xs font-bold uppercase tracking-widest mb-4">Mi historia de vida</span>
                   <h3 className="text-3xl font-serif font-bold text-white mb-4">El africano que supo ganarle al mundo</h3>
@@ -175,8 +188,8 @@ export default function Home() {
                     &quot;Trabajar con Rui no fue solo una terapia o un curso; fue una reestructuración completa de cómo entendía mi propósito. Los 4 pilares me dieron un mapa donde antes solo había confusión.&quot;
                   </p>
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden">
-                      <img alt="Elena" className="w-full h-full object-cover" data-alt="portrait of a professional woman with a calm and confident expression in soft natural lighting" src="avatar.png" />
+                    <div className="relative w-12 h-12 rounded-full bg-surface-container-high overflow-hidden">
+                      <Image src="/avatar.png" alt="Elena Rivas" fill sizes="48px" className="object-cover" />
                     </div>
                     <div>
                       <p className="font-bold">Elena Rivas</p>

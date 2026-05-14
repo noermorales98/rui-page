@@ -45,7 +45,14 @@ export default function LandingPage() {
 
             <div className="relative">
               <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative transform rotate-2">
-                <img alt="Abstract concept of light" className="w-full h-full object-cover" data-alt="Abstract composition of soft golden light refractions through crystal glass with ethereal glowing atmosphere and warm film grain" src="rui2.webp" />
+                <Image
+                  src="/rui2.webp"
+                  alt="Composición abstracta de refracciones doradas a través de cristal con atmósfera etérea"
+                  fill
+                  sizes="(min-width: 768px) 40vw, 100vw"
+                  className="object-cover"
+                  priority
+                />
               </div>
               <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-secondary-container rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
             </div>
@@ -88,7 +95,14 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row items-center gap-16">
               <div className="w-full md:w-1/2 relative">
                 <div className="bg-primary-container w-[80%] aspect-square rounded-full absolute -top-10 -left-10 opacity-10"></div>
-                <img alt="Rui Machalele" className="rounded-xl w-full relative z-10 shadow-xl" data-alt="Professional portrait of a mature man with a serene expression, warm cinematic lighting, and soft natural background" src="ruisquare.webp" />
+                <Image
+                  src="/ruisquare.webp"
+                  alt="Retrato profesional de Rui Machalele con expresión serena y luz cinematográfica cálida"
+                  width={2048}
+                  height={2048}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="rounded-xl w-full relative z-10 shadow-xl"
+                />
               </div>
               <div className="w-full md:w-1/2 space-y-8">
                 <span className="label-md text-secondary tracking-widest uppercase">El Guía</span>
@@ -262,8 +276,8 @@ export default function LandingPage() {
               <div className="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
                 <p className="italic text-on-surface-variant leading-relaxed">&quot;Había hecho muchos cursos de &apos;mindfulness&apos;, pero con Rui fue la primera vez que realmente sentí que las piezas del rompecabezas encajaban. Mi negocio y mi vida personal cambiaron por completo.&quot;</p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden">
-                    <img alt="User 1" data-alt="Portrait of a smiling professional woman with bright eyes and natural lighting" src="avatar.png" />
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                    <Image src="/avatar.png" alt="Elena G." fill sizes="48px" className="object-cover" />
                   </div>
                   <div>
                     <p className="font-bold text-primary">Elena G.</p>
@@ -275,8 +289,8 @@ export default function LandingPage() {
               <div className="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
                 <p className="italic text-on-surface-variant leading-relaxed">&quot;El módulo de los Ángeles Caídos fue confrontador pero necesario. Entender mis bloqueos me dio la libertad que busqué por años. Gracias, Rui.&quot;</p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden">
-                    <img alt="User 2" data-alt="Portrait of a middle-aged man with kind eyes and serene demeanor, outdoors in soft light" src="avatar.png" />
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                    <Image src="/avatar.png" alt="Marc V." fill sizes="48px" className="object-cover" />
                   </div>
                   <div>
                     <p className="font-bold text-primary">Marc V.</p>
@@ -288,8 +302,8 @@ export default function LandingPage() {
               <div className="bg-surface-container-low p-10 rounded-xl space-y-6 flex flex-col justify-between">
                 <p className="italic text-on-surface-variant leading-relaxed">&quot;Lo que más valoro es que no es nada religioso. Es un proceso mental y emocional muy sólido que te aterriza mientras te expande.&quot;</p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden">
-                    <img alt="User 3" data-alt="Portrait of an empowered woman with a confident smile, clean office environment in background" src="avatar.png" />
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                    <Image src="/avatar.png" alt="Sandra L." fill sizes="48px" className="object-cover" />
                   </div>
                   <div>
                     <p className="font-bold text-primary">Sandra L.</p>

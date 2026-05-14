@@ -34,7 +34,8 @@ export async function updateTag(
   return null
 }
 
-export async function deleteTag(id: number, _formData?: FormData): Promise<void> {
+export async function deleteTag(id: number, formData?: FormData): Promise<void> {
+  void formData
   const result = await softDeleteTagService(id)
   if (!result.ok && result.error.code !== 'NOT_FOUND') {
     throw new Error(result.error.message)

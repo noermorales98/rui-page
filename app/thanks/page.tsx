@@ -51,7 +51,13 @@ export default function ThanksPage() {
               {/* Video Placeholder */}
               <div className="relative group">
                 <div className="aspect-video bg-primary-container rounded-xl overflow-hidden editorial-shadow flex items-center justify-center relative">
-                  <img alt="Video placeholder" className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay" data-alt="atmospheric cinematic shot of a person meditating in a library with dust motes dancing in shafts of morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6Dfjtcvc0RvX2mJkIE2OtHbgY6ErrTY_jcjFklybL-YIroDJKZeyok3pPjozk_KAOaL7SzpFLkN5X4CpLPt61iOKPYa8KRDHLo0WAvcRj73XhE86z02ugj0wXTN0RedIgr3Hkoe5E1OaidnXaBgOnIQfhF8UtSpuAypKgksrvUqJrPCrK77j20Cj00Gb08-BwWdUeCaX29Avoh9w__PK3ZOV51-hSfgLZi1OXTNod2QzTg47ZOH8u2kUv-Qw8etz9uR8YuIprCzmG" />
+                  <Image
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6Dfjtcvc0RvX2mJkIE2OtHbgY6ErrTY_jcjFklybL-YIroDJKZeyok3pPjozk_KAOaL7SzpFLkN5X4CpLPt61iOKPYa8KRDHLo0WAvcRj73XhE86z02ugj0wXTN0RedIgr3Hkoe5E1OaidnXaBgOnIQfhF8UtSpuAypKgksrvUqJrPCrK77j20Cj00Gb08-BwWdUeCaX29Avoh9w__PK3ZOV51-hSfgLZi1OXTNod2QzTg47ZOH8u2kUv-Qw8etz9uR8YuIprCzmG"
+                    alt="Persona meditando en una biblioteca con haces de luz matinal"
+                    fill
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover opacity-40 mix-blend-overlay"
+                  />
                   <button className="w-20 h-20 bg-surface text-primary rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300 z-10 relative">
                     <span className="material-symbols-outlined text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>play_arrow</span>
                   </button>
@@ -118,8 +124,20 @@ export default function ThanksPage() {
                 </div>
 
                 <div className="mt-8 flex justify-center gap-6">
-                  <img alt="Payment method" className="h-8 grayscale opacity-50" data-alt="monochrome line icon of a credit card and secure lock symbol on a light cream background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVnqY4FVaQ6kDmJXBREmNVgXi_kcw3BMZgYWz4cvkHJcY-ICaotqtbe8EM9ykmt_fFSr_coA1Mx8Qkp2nS_0-kOjPVeUMnNRSun_063lt4fmcbaaLMN5YelIP2bj07GM15IL2gi36p7lGPigmkN_sk08cHgFnFowxHOJdCst4oUez7F6WUc1oi7i3eKXS_PkLHdYpHasN_6xj-Q0WTsYqF5-Ci5TNH5mzoMcKTB8IZu4YhWt8srnY3J_CedW3_9fBOxLliQeP4Gu8s" />
-                  <img alt="Secure payment" className="h-8 grayscale opacity-50" data-alt="monochrome badge with text saying secure encrypted payment in a professional minimalist style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRRNQxhbN3vSJ8RfmgyORPoDDUYQ5XBY-EBTba8Y1WjCuhrwBOcwsmA6qH2xkJd0JU48xTcuHdNajCy3ytZmvJ5AB2p8PkiD3v9SfvqGMEAwvXjJXASEc8XrDgLZhw11fynitBq4jpGOhCrcuUv_9r8ZjfvP9HPOIA3QIyI2kKjJb6XGn9uoO05erSJaItGeTYJ3x_6eks4lIo8htok4XkxjXus_DNGlS_P8dt6DXx33qLX2057qsyNer71RW9CrAZ_IIfNwLgkY8s" />
+                  <Image
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVnqY4FVaQ6kDmJXBREmNVgXi_kcw3BMZgYWz4cvkHJcY-ICaotqtbe8EM9ykmt_fFSr_coA1Mx8Qkp2nS_0-kOjPVeUMnNRSun_063lt4fmcbaaLMN5YelIP2bj07GM15IL2gi36p7lGPigmkN_sk08cHgFnFowxHOJdCst4oUez7F6WUc1oi7i3eKXS_PkLHdYpHasN_6xj-Q0WTsYqF5-Ci5TNH5mzoMcKTB8IZu4YhWt8srnY3J_CedW3_9fBOxLliQeP4Gu8s"
+                    alt="Métodos de pago aceptados"
+                    width={120}
+                    height={32}
+                    className="h-8 w-auto grayscale opacity-50"
+                  />
+                  <Image
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRRNQxhbN3vSJ8RfmgyORPoDDUYQ5XBY-EBTba8Y1WjCuhrwBOcwsmA6qH2xkJd0JU48xTcuHdNajCy3ytZmvJ5AB2p8PkiD3v9SfvqGMEAwvXjJXASEc8XrDgLZhw11fynitBq4jpGOhCrcuUv_9r8ZjfvP9HPOIA3QIyI2kKjJb6XGn9uoO05erSJaItGeTYJ3x_6eks4lIo8htok4XkxjXus_DNGlS_P8dt6DXx33qLX2057qsyNer71RW9CrAZ_IIfNwLgkY8s"
+                    alt="Pago seguro y encriptado"
+                    width={120}
+                    height={32}
+                    className="h-8 w-auto grayscale opacity-50"
+                  />
                 </div>
               </div>
             </div>
