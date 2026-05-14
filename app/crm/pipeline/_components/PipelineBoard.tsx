@@ -18,15 +18,19 @@ export type DealWithContact = Deal & {
   contact: Pick<Contact, 'id' | 'name' | 'email'>
 }
 
-type GroupedDeals = Record<DealStage, DealWithContact[]>
+type GroupedDeals = Record<string, DealWithContact[]>
 
-const STAGES: DealStage[] = ['LEAD', 'DEMO', 'NEGOTIATION', 'ENROLLED']
+interface Props {
+  initialDeals: GroupedDeals
+  canMutate: boolean
+  canDelete: boolean
+  stages: DealStage[]
+}
 
-export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) {
+export function PipelineBoard({ initialDeals, canMutate, canDelete, stages }: Props) {
   const [deals, setDeals] = useState<GroupedDeals>(initialDeals)
   const [activeId, setActiveId] = useState<number | null>(null)
 
-  // Sync when server re-renders with new data (after revalidatePath)
   useEffect(() => {
     setDeals(initialDeals)
   }, [initialDeals])
@@ -36,33 +40,29 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
   )
 
   function handleDragStart(event: DragStartEvent) {
+    if (!canMutate) return
     setActiveId(Number(event.active.id))
   }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     setActiveId(null)
-
-    if (!over) return
+    if (!canMutate || !over) return
 
     const dealId = Number(active.id)
     const newStage = over.id as DealStage
-
-    // Only accept drops onto stage columns (string IDs), not other cards
-    if (!STAGES.includes(newStage)) return
+    if (!stages.includes(newStage)) return
 
     let currentStage: DealStage | null = null
     let deal: DealWithContact | null = null
-
-    for (const stage of STAGES) {
-      const found = deals[stage].find((d) => d.id === dealId)
+    for (const stage of stages) {
+      const found = deals[stage]?.find((d) => d.id === dealId)
       if (found) {
         currentStage = stage
         deal = found
         break
       }
     }
-
     if (!deal || !currentStage || currentStage === newStage) return
 
     const snapshot = deals
@@ -70,7 +70,7 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
     setDeals((d) => ({
       ...d,
       [currentStage!]: d[currentStage!].filter((x) => x.id !== dealId),
-      [newStage]: [{ ...deal!, stage: newStage }, ...d[newStage]],
+      [newStage]: [{ ...deal!, stage: newStage }, ...(d[newStage] ?? [])],
     }))
 
     startTransition(async () => {
@@ -83,7 +83,8 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
   }
 
   function handleMoveCard(dealId: number, fromStage: DealStage, toStage: DealStage) {
-    const deal = deals[fromStage].find((d) => d.id === dealId)
+    if (!canMutate) return
+    const deal = deals[fromStage]?.find((d) => d.id === dealId)
     if (!deal || fromStage === toStage) return
 
     const snapshot = deals
@@ -91,7 +92,7 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
     setDeals((d) => ({
       ...d,
       [fromStage]: d[fromStage].filter((x) => x.id !== dealId),
-      [toStage]: [{ ...deal, stage: toStage }, ...d[toStage]],
+      [toStage]: [{ ...deal, stage: toStage }, ...(d[toStage] ?? [])],
     }))
 
     startTransition(async () => {
@@ -111,7 +112,7 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
   }
 
   const activeDeal = activeId
-    ? STAGES.flatMap((s) => deals[s]).find((d) => d.id === activeId) ?? null
+    ? stages.flatMap((s) => deals[s] ?? []).find((d) => d.id === activeId) ?? null
     : null
 
   return (
@@ -122,13 +123,15 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
       onDragCancel={() => setActiveId(null)}
     >
       <div className="flex gap-3 overflow-x-auto pb-6">
-        {STAGES.map((stage) => (
+        {stages.map((stage) => (
           <PipelineColumn
             key={stage}
             stage={stage}
-            deals={deals[stage]}
+            deals={deals[stage] ?? []}
             onMove={handleMoveCard}
             onDelete={handleDeleteCard}
+            canMutate={canMutate}
+            canDelete={canDelete}
           />
         ))}
       </div>

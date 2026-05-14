@@ -19,9 +19,11 @@ interface Props {
   deals: DealWithContact[]
   onMove: (dealId: number, fromStage: DealStage, toStage: DealStage) => void
   onDelete: (dealId: number, stage: DealStage) => void
+  canMutate: boolean
+  canDelete: boolean
 }
 
-export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
+export function PipelineColumn({ stage, deals, onMove, onDelete, canMutate, canDelete }: Props) {
   const [modalOpen, setModalOpen] = useState(false)
   const { setNodeRef, isOver } = useDroppable({ id: stage })
   const config = STAGE_CONFIG[stage]
@@ -69,11 +71,14 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
             deal={deal}
             onMove={(toStage: DealStage) => onMove(deal.id, stage, toStage)}
             onDelete={() => onDelete(deal.id, stage)}
+            canMutate={canMutate}
+            canDelete={canDelete}
           />
         ))}
       </div>
 
-      {/* Add button */}
+      {/* Add button (hidden for read-only roles) */}
+      {canMutate && (
       <div className="mt-3">
         <button
           onClick={() => setModalOpen(true)}
@@ -90,6 +95,7 @@ export function PipelineColumn({ stage, deals, onMove, onDelete }: Props) {
           Añadir
         </button>
       </div>
+      )}
 
       {modalOpen && (
         <CreateDealModal
