@@ -3,7 +3,8 @@ import { calculateSalesSummary, formatMoneyFromCents } from './_lib/sales-metric
 import { CreateSaleModal } from './_components/CreateSaleModal'
 import { SalesFilters } from './_components/SalesFilters'
 import { SalesTable } from './_components/SalesTable'
-import { MetricCard } from '@/app/crm/_components/ui'
+import { SalesGrid } from './_components/SalesGrid'
+import { MetricCard, ViewToggle } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import type { SaleRow } from './_components/SalesTable'
 
@@ -17,6 +18,7 @@ interface Props {
     status?: string
     method?: string
     page?: string
+    view?: string
   }>
 }
 
@@ -71,7 +73,8 @@ export default async function VentasPage({ searchParams }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-2">
+        <ViewToggle current={params.view === 'cards' ? 'cards' : 'list'} searchParams={params} />
         <CreateSaleModal deals={deals} />
       </div>
 
@@ -121,9 +124,13 @@ export default async function VentasPage({ searchParams }: Props) {
 
       <SalesFilters />
 
-      <div className={`${TOK.panel} p-6`}>
-        <SalesTable sales={sales as SaleRow[]} />
-      </div>
+      {params.view === 'cards' ? (
+        <SalesGrid sales={sales as SaleRow[]} />
+      ) : (
+        <div className={`${TOK.panel} p-6`}>
+          <SalesTable sales={sales as SaleRow[]} />
+        </div>
+      )}
 
       {total > PAGE_SIZE && (
         <div className={`flex items-center justify-between text-sm ${TOK.textSubtle}`}>

@@ -14,3 +14,4 @@ export {
 export { ModalWrapper } from './ModalWrapper'
 export { Dialog } from './Dialog'
 export { useToast } from './Toast'
+export { ViewToggle } from './ViewToggle'

@@ -2,8 +2,15 @@ import { prisma } from '@/lib/prisma'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { CreateFormModal } from './_components/CreateFormModal'
 import { FormulariosTable } from './_components/FormulariosTable'
+import { FormulariosGrid } from './_components/FormulariosGrid'
+import { ViewToggle } from '@/app/crm/_components/ui'
 
-export default async function FormulariosPage() {
+interface Props {
+  searchParams: Promise<{ view?: string }>
+}
+
+export default async function FormulariosPage({ searchParams }: Props) {
+  const params = await searchParams
   const forms = await prisma.crmForm.findMany({
     orderBy: { updatedAt: 'desc' },
     select: {
@@ -30,12 +37,19 @@ export default async function FormulariosPage() {
             Formularios publicos, campos personalizados y respuestas enlazadas a contactos.
           </p>
         </div>
-        <CreateFormModal />
+        <div className="flex items-center gap-2">
+          <ViewToggle current={params.view === 'cards' ? 'cards' : 'list'} searchParams={params} />
+          <CreateFormModal />
+        </div>
       </div>
 
-      <div className={`${TOK.panel} ${TOK.panelPad}`}>
-        <FormulariosTable forms={forms} />
-      </div>
+      {params.view === 'cards' ? (
+        <FormulariosGrid forms={forms} />
+      ) : (
+        <div className={`${TOK.panel} ${TOK.panelPad}`}>
+          <FormulariosTable forms={forms} />
+        </div>
+      )}
     </div>
   )
 }

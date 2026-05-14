@@ -4,9 +4,16 @@ import { prisma } from '@/lib/prisma'
 import { getMissingSmtpConfig } from '@/lib/mailer'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { CampaignsTable } from './_components/CampaignsTable'
+import { CampaignsGrid } from './_components/CampaignsGrid'
+import { ViewToggle } from '@/app/crm/_components/ui'
 import type { CampaignRow } from './_components/CampaignsTable'
 
-export default async function CampanasPage() {
+interface Props {
+  searchParams: Promise<{ view?: string }>
+}
+
+export default async function CampanasPage({ searchParams }: Props) {
+  const params = await searchParams
   const campaigns = await prisma.crmCampaign.findMany({
     where: { status: { not: 'ARCHIVED' } },
     orderBy: { updatedAt: 'desc' },
@@ -38,10 +45,13 @@ export default async function CampanasPage() {
             Email marketing segmentado por contactos, leads, webinars y formularios.
           </p>
         </div>
-        <Link href="/crm/campanas/new" className={TOK.actionPrimary}>
-          <Plus size={16} strokeWidth={2} />
-          Crear campaña
-        </Link>
+        <div className="flex items-center gap-2">
+          <ViewToggle current={params.view === 'cards' ? 'cards' : 'list'} searchParams={params} />
+          <Link href="/crm/campanas/new" className={TOK.actionPrimary}>
+            <Plus size={16} strokeWidth={2} />
+            Crear campaña
+          </Link>
+        </div>
       </div>
 
       {missingSmtpConfig.length > 0 && (
@@ -50,9 +60,13 @@ export default async function CampanasPage() {
         </div>
       )}
 
-      <div className={`${TOK.panel} ${TOK.panelPad}`}>
-        <CampaignsTable campaigns={campaigns as CampaignRow[]} smtpReady={missingSmtpConfig.length === 0} />
-      </div>
+      {params.view === 'cards' ? (
+        <CampaignsGrid campaigns={campaigns as CampaignRow[]} />
+      ) : (
+        <div className={`${TOK.panel} ${TOK.panelPad}`}>
+          <CampaignsTable campaigns={campaigns as CampaignRow[]} smtpReady={missingSmtpConfig.length === 0} />
+        </div>
+      )}
     </div>
   )
 }
