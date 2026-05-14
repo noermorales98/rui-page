@@ -13,7 +13,7 @@ export async function disconnectIntegration(
 
   try {
     await prisma.integration.delete({ where: { provider } })
-  } catch (_e) {
+  } catch {
     // P2025 = not found — already disconnected, ignore
   }
 

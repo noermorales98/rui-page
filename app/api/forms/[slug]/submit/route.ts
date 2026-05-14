@@ -49,7 +49,7 @@ export async function POST(req: Request, ctx: Ctx): Promise<NextResponse> {
 
   // Accept both JSON and form-encoded bodies so the endpoint works for
   // browser fetch() AND traditional <form action="..."> embeds.
-  let values: Record<string, string> = {}
+  const values: Record<string, string> = {}
   const contentType = (req.headers.get('content-type') ?? '').toLowerCase()
   try {
     if (contentType.includes('application/json')) {

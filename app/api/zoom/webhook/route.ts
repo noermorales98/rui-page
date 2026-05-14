@@ -29,7 +29,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   let body: ZoomEvent
   try {
     body = (await req.json()) as ZoomEvent
-  } catch (_e) {
+  } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 

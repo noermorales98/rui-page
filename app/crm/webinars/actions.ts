@@ -296,7 +296,7 @@ export async function unlinkZoomWebinar(webinarId: number): Promise<{ error?: st
 
   try {
     await prisma.webinarIntegration.delete({ where: { webinarId } })
-  } catch (_e) {
+  } catch {
     // P2025: Already unlinked — ignore
   }
 

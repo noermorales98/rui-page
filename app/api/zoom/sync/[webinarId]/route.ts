@@ -57,7 +57,7 @@ export async function POST(
       })
 
       imported++
-    } catch (_e) {
+    } catch {
       skipped++
     }
   }
