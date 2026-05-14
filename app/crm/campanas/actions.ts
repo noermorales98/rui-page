@@ -214,7 +214,7 @@ export async function sendCampaign(campaignId: number): Promise<SendState> {
     const email = renderCampaignEmail({
       subject: campaign.subject,
       previewText: campaign.previewText,
-      bodyText: campaign.bodyText ?? campaign.bodyHtml,
+      bodyText: campaign.bodyText ?? campaign.bodyHtml ?? '',
       contact: {
         name: contact.name,
         email: contact.email,
