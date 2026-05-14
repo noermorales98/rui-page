@@ -12,6 +12,7 @@ import {
   updateForm as updateFormSvc,
 } from '@/lib/services/forms'
 import type { ApiError } from '@/lib/errors/map'
+import { createFieldSchema } from '@/lib/validators/forms'
 import { DEFAULT_FIELD_TEMPLATES, slugify } from './_lib/field-types'
 import { prisma } from '@/lib/prisma'
 
@@ -35,7 +36,10 @@ function revalidateFormPaths(formId: number, slug?: string) {
   revalidatePath('/crm/formularios')
   revalidatePath(`/crm/formularios/${formId}`)
   revalidatePath(`/crm/formularios/${formId}/respuestas`)
-  if (slug) revalidatePath(`/formularios/${slug}`)
+  if (slug) {
+    revalidatePath(`/formularios/${slug}`)
+    revalidatePath(`/embed/formularios/${slug}`)
+  }
 }
 
 export async function createForm(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -97,21 +101,18 @@ export async function updateFormSettings(
   return null
 }
 
-export async function addField(
-  formId: number,
-  type: CrmFormFieldType,
-): Promise<{ error?: string }> {
-  const template = DEFAULT_FIELD_TEMPLATES.find((field) => field.type === type)
-  if (!template) return { error: 'Tipo de campo invalido' }
+export async function addField(formId: number, raw: unknown): Promise<{ error?: string }> {
+  const parsed = createFieldSchema.safeParse(raw)
+  if (!parsed.success) {
+    const flat = parsed.error.flatten()
+    const msg =
+      Object.values(flat.fieldErrors).flat()[0] ??
+      flat.formErrors[0] ??
+      'Datos del campo inválidos'
+    return { error: msg }
+  }
 
-  const result = await addFieldSvc(formId, {
-    type: template.type,
-    label: template.label,
-    fieldKey: template.fieldKey,
-    placeholder: template.placeholder,
-    isRequired: template.isRequired,
-    contactTarget: template.contactTarget,
-  })
+  const result = await addFieldSvc(formId, parsed.data)
   if (!result.ok) return { error: messageFor(result.error) }
 
   const form = await prisma.crmForm.findUnique({ where: { id: formId }, select: { slug: true } })
@@ -124,6 +125,16 @@ export async function updateField(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const fieldConfigRaw = nullableText(formData.get('fieldConfig'))
+  let config: unknown = undefined
+  if (fieldConfigRaw !== undefined) {
+    try {
+      config = JSON.parse(fieldConfigRaw) as unknown
+    } catch {
+      return { error: 'La configuración JSON del campo no es válida' }
+    }
+  }
+
   const result = await updateFieldSvc(fieldId, {
     type: formData.get('type') as CrmFormFieldType,
     label: nullableText(formData.get('label')) ?? '',
@@ -132,6 +143,7 @@ export async function updateField(
     helpText: nullableText(formData.get('helpText')),
     isRequired: formData.get('isRequired') === 'on',
     contactTarget: (formData.get('contactTarget') as string) || 'NONE',
+    ...(config !== undefined ? { config } : {}),
   })
   if (!result.ok) {
     if (result.error.code === 'CONFLICT') return { error: 'Ya existe un campo con esa clave interna' }

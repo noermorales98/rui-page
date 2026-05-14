@@ -1,4 +1,5 @@
 import type { CrmFormContactTarget, CrmFormFieldType } from '@prisma/client'
+import { mergeHtmlFieldSettings, normalizeHtmlControl, validateHtmlControl } from '@/lib/forms/html-field'
 
 export type FieldTemplate = {
   type: CrmFormFieldType
@@ -77,7 +78,7 @@ export const DEFAULT_FIELD_TEMPLATES: FieldTemplate[] = [
 ]
 
 export const FIELD_TYPE_LABELS: Record<CrmFormFieldType, string> = {
-  SHORT_TEXT: 'Nombre',
+  SHORT_TEXT: 'Texto corto',
   FULL_NAME: 'Nombre completo',
   PHONE: 'Telefono',
   PHONE_WITH_COUNTRY: 'Telefono con lada',
@@ -85,6 +86,7 @@ export const FIELD_TYPE_LABELS: Record<CrmFormFieldType, string> = {
   CUSTOM_DATE: 'Fecha',
   CUSTOM_TIME: 'Hora',
   CUSTOM_DATETIME: 'Fecha y hora',
+  HTML_INPUT: 'HTML personalizado',
 }
 
 export function slugify(value: string) {
@@ -98,8 +100,12 @@ export function slugify(value: string) {
     .slice(0, 80)
 }
 
-export function normalizeValue(type: CrmFormFieldType, rawValue: string) {
+export function normalizeValue(type: CrmFormFieldType, rawValue: string, config?: unknown) {
   const value = rawValue.trim()
+
+  if (type === 'HTML_INPUT') {
+    return normalizeHtmlControl(mergeHtmlFieldSettings(config), rawValue)
+  }
 
   if (type === 'EMAIL') return value.toLowerCase()
   if (type === 'PHONE' || type === 'PHONE_WITH_COUNTRY') return value.replace(/[^\d+]/g, '')
@@ -108,7 +114,16 @@ export function normalizeValue(type: CrmFormFieldType, rawValue: string) {
   return value.slice(0, 191)
 }
 
-export function validateFieldValue(type: CrmFormFieldType, rawValue: string, isRequired: boolean) {
+export function validateFieldValue(
+  type: CrmFormFieldType,
+  rawValue: string,
+  isRequired: boolean,
+  config?: unknown,
+) {
+  if (type === 'HTML_INPUT') {
+    return validateHtmlControl(mergeHtmlFieldSettings(config), rawValue, isRequired)
+  }
+
   const value = rawValue.trim()
 
   if (isRequired && !value) return 'Este campo es obligatorio'

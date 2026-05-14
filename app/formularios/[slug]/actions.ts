@@ -20,8 +20,16 @@ export async function submitPublicForm(
   formData: FormData,
 ): Promise<PublicFormState> {
   const values: Record<string, string> = {}
-  for (const [key, value] of formData.entries()) {
-    if (typeof value === 'string') values[key] = value
+  const keys = new Set<string>()
+  for (const key of formData.keys()) keys.add(key)
+  for (const key of keys) {
+    const parts = formData.getAll(key)
+    const merged: string[] = []
+    for (const value of parts) {
+      if (typeof value === 'string') merged.push(value)
+      else if (value instanceof File) merged.push(value.name || '')
+    }
+    values[key] = merged.join(', ')
   }
 
   const headerStore = await headers()

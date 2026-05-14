@@ -32,11 +32,11 @@
 ## Sprint 4 — Formularios (3–4 días)
 - [ ] Builder drag & drop de campos.
 - [ ] Lógica condicional (`config.showWhen`) en builder y render.
-- [ ] Página pública `/formularios/[slug]`.
-- [ ] Embed iframe `/embed/formularios/[slug]`.
-- [ ] Endpoint `/api/forms/[slug]/submit` con rate limit.
-- [ ] Dedupe contact por email/teléfono.
-- [ ] Listado de submissions por form.
+- [x] Página pública `/formularios/[slug]`.
+- [x] Embed iframe `/embed/formularios/[slug]`.
+- [x] Endpoint `/api/forms/[slug]/submit` con rate limit.
+- [x] Dedupe contact por email/teléfono.
+- [x] Listado de submissions por form.
 
 ## Sprint 5 — Webinars + Zoom (3 días)
 - [ ] CRUD Webinar.

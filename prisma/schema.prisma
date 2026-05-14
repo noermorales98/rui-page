@@ -331,6 +331,8 @@ enum CrmFormFieldType {
   CUSTOM_DATE
   CUSTOM_TIME
   CUSTOM_DATETIME
+  /// Controles HTML genéricos (input/textarea/select) vía `config.html`
+  HTML_INPUT
 }
 
 enum CrmFormContactTarget {

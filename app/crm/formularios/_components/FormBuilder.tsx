@@ -61,6 +61,14 @@ export function FormBuilder({ form }: Props) {
               Abrir
               <ExternalLink size={14} />
             </Link>
+            <Link
+              href={`/embed/formularios/${form.slug}`}
+              target="_blank"
+              className={`inline-flex items-center gap-1 ${TOK.linkAccent}`}
+            >
+              Embed
+              <ExternalLink size={14} />
+            </Link>
             <Link href={`/crm/formularios/${form.id}/respuestas`} className={TOK.linkAccent}>
               {form._count.submissions} respuestas
             </Link>

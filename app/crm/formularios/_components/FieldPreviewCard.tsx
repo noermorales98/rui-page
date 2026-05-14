@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import type { CrmFormField } from '@prisma/client'
+import { mergeHtmlFieldSettings } from '@/lib/forms/html-field'
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
 import { deleteField, moveField } from '../actions'
 import { FIELD_TYPE_LABELS } from '../_lib/field-types'
@@ -17,6 +18,13 @@ interface Props {
 export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect }: Props) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const htmlHint =
+    field.type === 'HTML_INPUT'
+      ? (() => {
+          const h = mergeHtmlFieldSettings(field.config)
+          return h.element === 'input' ? `${h.element} · ${h.inputType ?? 'text'}` : h.element
+        })()
+      : null
 
   function run(action: () => Promise<{ error?: string }>) {
     setError(null)
@@ -43,7 +51,7 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
             )}
           </div>
           <div className="rounded-lg border border-[#f2f2f2] bg-gray-50 px-3 py-2 text-sm text-gray-400">
-            {field.placeholder || FIELD_TYPE_LABELS[field.type]}
+            {field.placeholder || htmlHint || FIELD_TYPE_LABELS[field.type]}
           </div>
           {field.helpText && <p className="mt-2 text-xs text-gray-500">{field.helpText}</p>}
           <p className="mt-2 font-mono text-[11px] text-gray-400">{field.fieldKey}</p>

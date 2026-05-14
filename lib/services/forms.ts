@@ -549,7 +549,7 @@ export async function submitForm(
       const raw = trimmed[field.fieldKey] ?? ''
 
       // Required is only enforced when the field is actually shown.
-      const error = validateFieldValue(field.type, raw, visible && field.isRequired)
+      const error = validateFieldValue(field.type, raw, visible && field.isRequired, field.config)
       if (error) {
         return {
           ok: false,
@@ -561,7 +561,7 @@ export async function submitForm(
       // avoids leaking values that the user never had a chance to fill.
       if (!visible) continue
 
-      const normalized = raw ? normalizeValue(field.type, raw) : ''
+      const normalized = raw ? normalizeValue(field.type, raw, field.config) : ''
 
       if (field.contactTarget === 'NAME' && normalized && !contactData.name) contactData.name = raw
       if (field.contactTarget === 'EMAIL' && normalized && !contactData.email) contactData.email = normalized
@@ -680,11 +680,12 @@ export async function submitForm(
  */
 async function uniqueFieldKey(formId: number, base: string, selfId?: number): Promise<string> {
   const trimmed = base.toLowerCase().replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '') || 'campo'
-  const existing = await prisma.crmFormField.findMany({
-    where: { formId, fieldKey: { startsWith: trimmed }, ...(selfId ? { id: { not: selfId } } : {}) },
+  // Evita `startsWith` en SQL (LIKE + mezcla utf8mb4_unicode_ci / utf8mb4_bin en algunos hosts).
+  const rows = await prisma.crmFormField.findMany({
+    where: { formId, ...(selfId ? { id: { not: selfId } } : {}) },
     select: { fieldKey: true },
   })
-  const taken = new Set(existing.map((f) => f.fieldKey))
+  const taken = new Set(rows.map((r) => r.fieldKey).filter((k) => k.startsWith(trimmed)))
   if (!taken.has(trimmed)) return trimmed
   let n = 2
   while (taken.has(`${trimmed}_${n}`)) n++

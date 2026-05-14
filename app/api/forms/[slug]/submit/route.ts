@@ -62,8 +62,16 @@ export async function POST(req: Request, ctx: Ctx): Promise<NextResponse> {
       }
     } else {
       const formData = await req.formData()
-      for (const [k, v] of formData.entries()) {
-        if (typeof v === 'string') values[k] = v
+      const keys = new Set<string>()
+      for (const k of formData.keys()) keys.add(k)
+      for (const k of keys) {
+        const parts = formData.getAll(k)
+        const merged: string[] = []
+        for (const v of parts) {
+          if (typeof v === 'string') merged.push(v)
+          else if (v instanceof File) merged.push(v.name || '')
+        }
+        values[k] = merged.join(', ')
       }
     }
   } catch {

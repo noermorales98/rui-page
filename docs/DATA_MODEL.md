@@ -65,7 +65,7 @@
 - `CrmCampaignChannel`: EMAIL, WHATSAPP.
 - `CrmCampaignRecipientStatus`: PENDING, SENT, FAILED, SKIPPED.
 - `CrmFormStatus`: DRAFT, PUBLISHED, ARCHIVED.
-- `CrmFormFieldType`: SHORT_TEXT, FULL_NAME, PHONE, PHONE_WITH_COUNTRY, EMAIL, CUSTOM_DATE, CUSTOM_TIME, CUSTOM_DATETIME.
+- `CrmFormFieldType`: SHORT_TEXT, FULL_NAME, PHONE, PHONE_WITH_COUNTRY, EMAIL, CUSTOM_DATE, CUSTOM_TIME, CUSTOM_DATETIME, **HTML_INPUT** (controles genéricos vía `config.html`: `input`/`textarea`/`select`, tipos HTML5, opciones, min/max, etc.).
 - `CrmFormContactTarget`: NONE, NAME, EMAIL, PHONE.
 - `RegistrationStatus`: REGISTERED, ATTENDED, PURCHASED.
 - `IntegrationProvider`: ZOOM, STREAMYARD, STRIPE, WHATSAPP_CLOUD, SMTP.

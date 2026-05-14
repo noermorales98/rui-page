@@ -2,6 +2,7 @@
 
 import { useActionState } from 'react'
 import type { CrmFormFieldType } from '@prisma/client'
+import { mergeHtmlFieldSettings } from '@/lib/forms/html-field'
 import { CustomDateInput, CustomDateTimeInput, CustomTimeInput } from './CustomTemporalInputs'
 
 export type RenderField = {
@@ -12,6 +13,7 @@ export type RenderField = {
   placeholder: string | null
   helpText: string | null
   isRequired: boolean
+  config?: unknown | null
 }
 
 export type PublicFormState = {
@@ -83,9 +85,13 @@ export function FormRenderer({
   )
 }
 
+const commonClass =
+  'w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]'
+
 function FieldControl({ field }: { field: RenderField }) {
-  const commonClass =
-    'w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]'
+  if (field.type === 'HTML_INPUT') {
+    return <HtmlFieldControl field={field} />
+  }
 
   return (
     <div>
@@ -118,7 +124,13 @@ function FieldControl({ field }: { field: RenderField }) {
       ) : (
         <input
           name={field.fieldKey}
-          type={field.type === 'EMAIL' ? 'email' : field.type === 'PHONE' || field.type === 'PHONE_WITH_COUNTRY' ? 'tel' : 'text'}
+          type={
+            field.type === 'EMAIL'
+              ? 'email'
+              : field.type === 'PHONE' || field.type === 'PHONE_WITH_COUNTRY'
+                ? 'tel'
+                : 'text'
+          }
           required={field.isRequired}
           placeholder={field.placeholder ?? undefined}
           className={commonClass}
@@ -126,6 +138,161 @@ function FieldControl({ field }: { field: RenderField }) {
       )}
 
       {field.helpText && <p className="mt-1 text-xs text-gray-500">{field.helpText}</p>}
+    </div>
+  )
+}
+
+function HtmlFieldControl({ field }: { field: RenderField }) {
+  const html = mergeHtmlFieldSettings(field.config)
+  const help = field.helpText && <p className="mt-1 text-xs text-gray-500">{field.helpText}</p>
+
+  if (html.element === 'textarea') {
+    return (
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          {field.label}
+          {field.isRequired && <span className="text-red-500"> *</span>}
+        </label>
+        <textarea
+          name={field.fieldKey}
+          required={field.isRequired}
+          placeholder={field.placeholder ?? undefined}
+          rows={html.rows ?? 4}
+          minLength={html.minLength}
+          maxLength={html.maxLength}
+          autoComplete={html.autocomplete}
+          className={commonClass}
+        />
+        {help}
+      </div>
+    )
+  }
+
+  if (html.element === 'select') {
+    const opts = html.options ?? []
+    return (
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          {field.label}
+          {field.isRequired && <span className="text-red-500"> *</span>}
+        </label>
+        <select
+          name={field.fieldKey}
+          required={field.isRequired}
+          multiple={html.multiple}
+          autoComplete={html.autocomplete}
+          className={commonClass}
+          defaultValue={html.multiple ? [] : !field.isRequired ? '' : undefined}
+        >
+          {!field.isRequired && !html.multiple && <option value="">—</option>}
+          {opts.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        {help}
+      </div>
+    )
+  }
+
+  const inputType = html.inputType ?? 'text'
+
+  if (inputType === 'hidden') {
+    return (
+      <div>
+        <span className="sr-only">{field.label}</span>
+        <input
+          type="hidden"
+          name={field.fieldKey}
+          defaultValue={html.defaultValue ?? ''}
+          required={field.isRequired}
+        />
+        {help}
+      </div>
+    )
+  }
+
+  if (inputType === 'checkbox') {
+    const opts = html.options ?? []
+    const caption = opts[0] ?? field.label
+    return (
+      <div>
+        <label className="flex items-start gap-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            name={field.fieldKey}
+            value="true"
+            required={field.isRequired}
+            className="mt-1 h-4 w-4 rounded border-gray-300 accent-indigo-600"
+          />
+          <span>
+            {caption}
+            {field.isRequired && <span className="text-red-500"> *</span>}
+          </span>
+        </label>
+        {help}
+      </div>
+    )
+  }
+
+  if (inputType === 'radio') {
+    const opts = html.options ?? []
+    return (
+      <fieldset>
+        <legend className="mb-2 text-sm font-medium text-gray-700">
+          {field.label}
+          {field.isRequired && <span className="text-red-500"> *</span>}
+        </legend>
+        <div className="space-y-2">
+          {opts.map((opt, i) => (
+            <label key={opt} className="flex items-center gap-2 text-sm text-gray-700">
+              <input
+                type="radio"
+                name={field.fieldKey}
+                value={opt}
+                required={field.isRequired && i === 0}
+                className="h-4 w-4 border-gray-300 accent-indigo-600"
+              />
+              {opt}
+            </label>
+          ))}
+        </div>
+        {help}
+      </fieldset>
+    )
+  }
+
+  return (
+    <div>
+      <label className="mb-1 block text-sm font-medium text-gray-700">
+        {field.label}
+        {field.isRequired && <span className="text-red-500"> *</span>}
+      </label>
+      <input
+        name={field.fieldKey}
+        type={inputType}
+        required={field.isRequired}
+        placeholder={field.placeholder ?? undefined}
+        min={html.min}
+        max={html.max}
+        step={html.step as string | number | undefined}
+        minLength={html.minLength}
+        maxLength={html.maxLength}
+        pattern={html.pattern}
+        accept={html.accept}
+        multiple={html.multiple}
+        autoComplete={html.autocomplete}
+        defaultValue={
+          inputType === 'color'
+            ? '#000000'
+            : inputType === 'range' && html.min != null && html.max != null
+              ? String(Math.round((html.min + html.max) / 2))
+              : undefined
+        }
+        className={commonClass}
+      />
+      {help}
     </div>
   )
 }

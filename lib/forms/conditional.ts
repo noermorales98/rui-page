@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { htmlFieldSettingsSchema } from '@/lib/forms/html-field'
 
 export const conditionalOpSchema = z.enum(['eq', 'neq', 'in', 'notIn', 'empty', 'notEmpty'])
 export type ConditionalOp = z.infer<typeof conditionalOpSchema>
@@ -13,6 +14,7 @@ export type ConditionalShowWhen = z.infer<typeof conditionalShowWhenSchema>
 export const fieldConfigSchema = z
   .object({
     showWhen: conditionalShowWhenSchema.optional(),
+    html: htmlFieldSettingsSchema.optional(),
   })
   .partial()
 export type FieldConfig = z.infer<typeof fieldConfigSchema>
