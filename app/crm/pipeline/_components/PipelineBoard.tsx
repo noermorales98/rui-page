@@ -134,14 +134,14 @@ export function PipelineBoard({ initialDeals }: { initialDeals: GroupedDeals }) 
       </div>
       <DragOverlay>
         {activeDeal ? (
-          <div className="w-64 cursor-grabbing rounded-2xl bg-white px-3.5 py-3 border-2 border-[#9bbdf7] opacity-90">
-            <p className="truncate text-sm font-semibold text-gray-900">
+          <div className="w-64 cursor-grabbing rounded-2xl border-2 border-[var(--color-primary-fixed)] bg-[var(--color-surface-container-lowest)] px-3.5 py-3 opacity-90">
+            <p className="truncate text-sm font-semibold text-[var(--color-on-surface)]">
               {activeDeal.contact.name}
             </p>
             {activeDeal.courseName ? (
-              <p className="mt-0.5 truncate text-xs text-gray-500">{activeDeal.courseName}</p>
+              <p className="mt-0.5 truncate text-xs text-[var(--color-on-surface-variant)]">{activeDeal.courseName}</p>
             ) : (
-              <p className="mt-0.5 text-xs italic text-gray-400">sin curso</p>
+              <p className="mt-0.5 text-xs italic text-[var(--color-on-surface-variant)]/70">sin curso</p>
             )}
           </div>
         ) : null}

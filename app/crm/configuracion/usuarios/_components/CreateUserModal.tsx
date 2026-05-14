@@ -3,6 +3,7 @@
 import { Plus } from 'lucide-react'
 import { useState, useActionState, useEffect } from 'react'
 import { createUser } from '../actions'
+import { CRM_USER_ROLES } from '../role-options'
 import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
 
 const fieldClass = 'bg-[#f7f8fa]'
@@ -119,11 +120,14 @@ export function CreateUserModal() {
                 <select
                   id="role"
                   name="role"
-                  defaultValue="EDITOR"
+                  defaultValue="ASISTENTE"
                   className={selectClass}
                 >
-                  <option value="EDITOR">Editor</option>
-                  <option value="ADMIN">Administrador</option>
+                  {CRM_USER_ROLES.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
                 </select>
               </div>
 

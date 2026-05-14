@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { Card, MetricCard } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { formatMoneyFromCents } from '../ventas/_lib/sales-metrics'
 
 const CONTACT_STATUS_LABELS = {
@@ -71,22 +72,22 @@ function MiniBarChart({ data, formatter = compactNumber }: { data: ChartPoint[];
   const max = Math.max(...data.map((item) => item.value), 1)
 
   return (
-    <div className="flex h-64 items-end gap-2 border-t border-[#e5e7eb] pt-6">
+    <div className="flex h-64 items-end gap-2 border-t border-[var(--color-outline-variant)] pt-6">
       {data.map((item) => {
         const height = Math.max(8, Math.round((item.value / max) * 100))
 
         return (
           <div key={item.label} className="flex min-w-0 flex-1 flex-col items-center gap-2">
-            <div className="flex h-44 w-full items-end rounded-full bg-white">
+            <div className="flex h-44 w-full items-end rounded-full bg-[var(--color-surface-container-lowest)]">
               <div
-                className="w-full rounded-full bg-[#dfff00]"
+                className="w-full rounded-full bg-[var(--color-secondary-container)]"
                 style={{ height: `${height}%` }}
                 aria-label={`${item.label}: ${formatter(item.value)}`}
               />
             </div>
             <div className="text-center">
-              <p className="text-[11px] font-semibold uppercase text-[#8a8a8a]">{item.label}</p>
-              <p className="mt-0.5 text-xs font-semibold text-[#080808]">{formatter(item.value)}</p>
+              <p className="text-[11px] font-semibold uppercase text-[var(--color-on-surface-variant)]">{item.label}</p>
+              <p className="mt-0.5 text-xs font-semibold text-[var(--color-on-surface)]">{formatter(item.value)}</p>
             </div>
           </div>
         )
@@ -103,12 +104,12 @@ function HorizontalBars({ data }: { data: ChartPoint[] }) {
       {data.map((item) => (
         <div key={item.label}>
           <div className="mb-1.5 flex items-center justify-between gap-2">
-            <span className="text-sm font-semibold text-[#080808]">{item.label}</span>
-            <span className="text-xs font-medium text-[#8a8a8a]">{item.detail ?? item.value}</span>
+            <span className="text-sm font-semibold text-[var(--color-on-surface)]">{item.label}</span>
+            <span className="text-xs font-medium text-[var(--color-on-surface-variant)]">{item.detail ?? item.value}</span>
           </div>
-          <div className="h-2.5 overflow-hidden rounded-full bg-white">
+          <div className="h-2.5 overflow-hidden rounded-full bg-[var(--color-surface-container-lowest)]">
             <div
-              className="h-full rounded-full bg-[#9bbdf7]"
+              className="h-full rounded-full bg-[var(--color-primary-fixed)]"
               style={{ width: `${Math.max(4, (item.value / max) * 100)}%` }}
               aria-label={`${item.label}: ${item.value}`}
             />
@@ -135,18 +136,18 @@ function SectionSummaryCard({
   return (
     <Link
       href={href}
-      className="group flex min-h-[132px] flex-col justify-between rounded-[24px] border border-[#e5e7eb] bg-white p-4 transition hover:bg-[#f7f8fa] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]"
+      className="group flex min-h-[132px] flex-col justify-between rounded-[24px] border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] p-4 transition hover:bg-[var(--color-surface-container-low)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
     >
       <div className="flex items-start justify-between gap-2">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f7f8fa] text-[#080808]">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)]">
           {icon}
         </span>
-        <ArrowRight size={16} className="text-[#8a8a8a] transition group-hover:translate-x-0.5 group-hover:text-[#080808]" />
+        <ArrowRight size={16} className="text-[var(--color-on-surface-variant)] transition group-hover:translate-x-0.5 group-hover:text-[var(--color-on-surface)]" />
       </div>
       <div>
-        <p className="text-lg font-semibold text-[#080808]">{value}</p>
-        <p className="mt-1 text-sm font-semibold text-[#080808]">{title}</p>
-        <p className="mt-1 text-xs leading-5 text-[#8a8a8a]">{description}</p>
+        <p className="text-lg font-semibold text-[var(--color-on-surface)]">{value}</p>
+        <p className="mt-1 text-sm font-semibold text-[var(--color-on-surface)]">{title}</p>
+        <p className="mt-1 text-xs leading-5 text-[var(--color-on-surface-variant)]">{description}</p>
       </div>
     </Link>
   )
@@ -318,10 +319,10 @@ export default async function DashboardPage() {
         <Card>
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-[#080808]">Ingresos pagados</h2>
-              <p className="text-sm text-[#8a8a8a]">Ventas pagadas de los ultimos 6 meses.</p>
+              <h2 className={TOK.sectionTitle}>Ingresos pagados</h2>
+              <p className={TOK.sectionSubtitle}>Ventas pagadas de los ultimos 6 meses.</p>
             </div>
-            <span className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-[#080808]">
+            <span className="rounded-full bg-[var(--color-surface-container-lowest)] px-3 py-1.5 text-xs font-semibold text-[var(--color-on-surface)]">
               Pendiente: {formatMoneyFromCents(pendingRevenueCents)}
             </span>
           </div>
@@ -330,12 +331,12 @@ export default async function DashboardPage() {
 
         <Card>
           <div className="mb-5 flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)]">
               <BarChart3 size={18} strokeWidth={1.8} />
             </span>
             <div>
-              <h2 className="text-lg font-semibold text-[#080808]">Pipeline</h2>
-              <p className="text-sm text-[#8a8a8a]">Distribucion por etapa.</p>
+              <h2 className={TOK.sectionTitle}>Pipeline</h2>
+              <p className={TOK.sectionSubtitle}>Distribucion por etapa.</p>
             </div>
           </div>
           <HorizontalBars data={pipelineData} />
@@ -345,12 +346,12 @@ export default async function DashboardPage() {
       <div className="grid gap-2 xl:grid-cols-2">
         <Card>
           <div className="mb-5 flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)]">
               <UsersRound size={18} strokeWidth={1.8} />
             </span>
             <div>
-              <h2 className="text-lg font-semibold text-[#080808]">Estado de contactos</h2>
-              <p className="text-sm text-[#8a8a8a]">De lead nuevo a cliente.</p>
+              <h2 className={TOK.sectionTitle}>Estado de contactos</h2>
+              <p className={TOK.sectionSubtitle}>De lead nuevo a cliente.</p>
             </div>
           </div>
           <HorizontalBars data={contactData} />
@@ -358,12 +359,12 @@ export default async function DashboardPage() {
 
         <Card>
           <div className="mb-5 flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)]">
               <Activity size={18} strokeWidth={1.8} />
             </span>
             <div>
-              <h2 className="text-lg font-semibold text-[#080808]">Origen de contactos</h2>
-              <p className="text-sm text-[#8a8a8a]">Canales que alimentan la base.</p>
+              <h2 className={TOK.sectionTitle}>Origen de contactos</h2>
+              <p className={TOK.sectionSubtitle}>Canales que alimentan la base.</p>
             </div>
           </div>
           <HorizontalBars data={sourceData} />
@@ -374,8 +375,8 @@ export default async function DashboardPage() {
         <Card>
           <div className="mb-5 flex items-center justify-between gap-2">
             <div>
-              <h2 className="text-lg font-semibold text-[#080808]">Resumen por seccion</h2>
-              <p className="text-sm text-[#8a8a8a]">Accesos rapidos a las areas principales.</p>
+              <h2 className={TOK.sectionTitle}>Resumen por seccion</h2>
+              <p className={TOK.sectionSubtitle}>Accesos rapidos a las areas principales.</p>
             </div>
           </div>
           <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
@@ -426,17 +427,17 @@ export default async function DashboardPage() {
 
         <Card>
           <div className="mb-5 flex items-center gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)]">
               <Activity size={18} strokeWidth={1.8} />
             </span>
             <div>
-              <h2 className="text-lg font-semibold text-[#080808]">Actividad reciente</h2>
-              <p className="text-sm text-[#8a8a8a]">Ultimos movimientos registrados.</p>
+              <h2 className={TOK.sectionTitle}>Actividad reciente</h2>
+              <p className={TOK.sectionSubtitle}>Ultimos movimientos registrados.</p>
             </div>
           </div>
           <div className="space-y-px">
             {recentActivities.length === 0 ? (
-              <p className="rounded-2xl bg-white px-4 py-6 text-center text-sm text-[#8a8a8a]">
+              <p className={`rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-6 text-center ${TOK.textMuted}`}>
                 Todavia no hay actividad registrada.
               </p>
             ) : (
@@ -444,10 +445,10 @@ export default async function DashboardPage() {
                 <Link
                   key={activity.id}
                   href={`/crm/contactos/${activity.contactId}`}
-                  className="block rounded-2xl bg-white px-4 py-3 transition hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]"
+                  className="block rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 transition hover:bg-[var(--color-surface-container-high)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
                 >
-                  <p className="text-sm font-semibold text-[#080808]">{activity.contact.name}</p>
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#8a8a8a]">
+                  <p className="text-sm font-semibold text-[var(--color-on-surface)]">{activity.contact.name}</p>
+                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--color-on-surface-variant)]">
                     {activity.body || activity.type.replace(/_/g, ' ').toLowerCase()}
                   </p>
                 </Link>

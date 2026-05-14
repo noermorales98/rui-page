@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { deactivateUser } from './actions'
 import { CreateUserModal } from './_components/CreateUserModal'
+import { labelForUserRole } from './role-options'
 
 export default async function UsuariosPage() {
   const session = await auth()
@@ -55,15 +56,17 @@ export default async function UsuariosPage() {
                     {user.email}
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
-                    {user.role === 'ADMIN' ? (
-                      <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 border border-[#9bbdf7]/30">
-                        Admin
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 border border-gray-200">
-                        Editor
-                      </span>
-                    )}
+                    <span
+                      className={
+                        user.role === 'ADMIN'
+                          ? 'inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 border border-[#9bbdf7]/30'
+                          : user.role === 'VENDEDOR'
+                            ? 'inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800 border border-amber-200/80'
+                            : 'inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 border border-gray-200'
+                      }
+                    >
+                      {labelForUserRole(user.role)}
+                    </span>
                   </td>
                   <td className="whitespace-nowrap px-6 py-4 text-sm">
                     {user.active ? (

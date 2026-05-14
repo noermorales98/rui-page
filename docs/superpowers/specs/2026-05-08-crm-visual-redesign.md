@@ -169,23 +169,17 @@ Los links y acciones dentro de cada fila se mantienen idénticos, solo cambia el
 
 ## 8. Pipeline (`PipelineColumn`, `DealCard`)
 
-- Columnas: `bg-[#f0f1f3] rounded-[22px] p-3.5`
-- Drop active: `bg-[#9bbdf7]/10 ring-2 ring-[#9bbdf7]` (en vez de indigo)
-- Columna ENROLLED: `bg-[#dfff00]/10` con count badge en `bg-[#dfff00]`
-- Deal cards: `bg-white rounded-2xl px-3.5 py-3 shadow-sm`
-- Botón añadir: `border-dashed border-[#f2f2f2] rounded-xl` (mismo estilo)
-- DragOverlay card: `ring-[#9bbdf7]`
+> **Actualización:** las columnas y cards del pipeline usan variables de tema (`var(--color-*)`) y `TOK` donde aplica; ver código en `app/crm/pipeline/_components/`.
+
+- Columnas con fondo `surface-container-high`, drop con borde `primary-fixed`, etapa ENROLLED con acentos `secondary-container`, cards en `surface-container-lowest`, etc.
 
 ---
 
-## 9. Modales
+## 9. Modales y formularios en página
 
-Los modales existentes (`CreateContactModal`, `CreateSaleModal`, `CreateWebinarModal`, etc.) reciben:
-- Overlay: `bg-black/40 backdrop-blur-sm`
-- Panel: `bg-white rounded-[28px] shadow-2xl p-7 max-w-md w-full`
-- Título: `text-xl font-semibold tracking-[-0.03em]`
-- Botones: usar componente `Button`
-- Inputs: usar componente `Input`
+Los modales de ventas, deals, webinars y formularios siguen el patrón overlay + panel (idealmente con `TOK.modalPanel`, `TOK.modalTitle`, `TOK.closeIconBtn`).
+
+**Contactos:** ya no usan modales para crear/editar/importar; usan rutas dedicadas y `ContactForm` / `CsvImporter` (véase spec de contactos actualizado). Otros módulos (`CreateSaleModal`, `CreateDealModal`, …) mantienen modal.
 
 ---
 
@@ -241,10 +235,10 @@ Ambos ya instalados con `--legacy-peer-deps`.
 | `app/crm/_components/Sidebar.tsx` | Nueva estética + Hugeicons + activo via usePathname |
 | `app/crm/_components/SignOutButton.tsx` | Usar Button secondary |
 | `app/crm/contactos/page.tsx` | Header + Card wrapper |
+| `app/crm/contactos/nuevo/page.tsx` · `app/crm/contactos/[id]/editar/page.tsx` · `app/crm/contactos/importar/page.tsx` | Rutas de formulario / import (reemplazan modales) |
+| `app/crm/contactos/_components/ContactForm.tsx` · `app/crm/contactos/_components/CsvImporter.tsx` | Formulario e importación |
 | `app/crm/contactos/_components/ContactsTable.tsx` | Table → card-rows |
 | `app/crm/contactos/_components/ContactFilters.tsx` | Input + Button |
-| `app/crm/contactos/_components/CreateContactModal.tsx` | Modal estilo nuevo |
-| `app/crm/contactos/_components/ImportCsvModal.tsx` | Modal estilo nuevo |
 | `app/crm/contactos/[id]/page.tsx` | Layout + Card |
 | `app/crm/contactos/[id]/_components/*.tsx` | Estilo en detalle |
 | `app/crm/pipeline/page.tsx` | Header + Card wrapper |

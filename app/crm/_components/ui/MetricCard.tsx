@@ -15,16 +15,34 @@ export function MetricCard({ icon, value, label, detail, accent = false, classNa
   return (
     <Card accent={accent} className={`flex min-h-[168px] flex-col justify-between ${className}`}>
       <div className="flex items-start justify-between gap-4">
-        <IconCircle className={accent ? 'bg-white/85' : ''}>{icon}</IconCircle>
-        <span className={`h-2.5 w-2.5 rounded-full ${accent ? 'bg-[#080808]' : 'bg-[#dfff00]'}`} />
+        <IconCircle className={accent ? 'bg-[var(--color-surface-container-lowest)]/90' : ''}>{icon}</IconCircle>
+        <span
+          className={`h-2.5 w-2.5 rounded-full ${
+            accent ? 'bg-[var(--color-on-secondary-container)]' : 'bg-[var(--color-secondary)]'
+          }`}
+        />
       </div>
       <div>
-        <p className="text-[34px] font-semibold leading-none tracking-[-0.04em] text-[#080808]">{value}</p>
-        <p className={`mt-2 text-sm font-semibold tracking-[-0.02em] ${accent ? 'text-[#080808]' : 'text-[#080808]'}`}>
+        <p
+          className={`text-[34px] font-semibold leading-none tracking-[-0.04em] ${
+            accent ? 'text-[var(--color-on-secondary-container)]' : 'text-[var(--color-on-surface)]'
+          }`}
+        >
+          {value}
+        </p>
+        <p
+          className={`mt-2 text-sm font-semibold tracking-[-0.02em] ${
+            accent ? 'text-[var(--color-on-secondary-container)]' : 'text-[var(--color-on-surface)]'
+          }`}
+        >
           {label}
         </p>
         {detail && (
-          <p className={`mt-1 text-xs font-medium ${accent ? 'text-[#080808]/65' : 'text-[#8a8a8a]'}`}>
+          <p
+            className={`mt-1 text-xs font-medium ${
+              accent ? 'text-[var(--color-on-secondary-container)]/75' : 'text-[var(--color-on-surface-variant)]'
+            }`}
+          >
             {detail}
           </p>
         )}

@@ -1,4 +1,8 @@
 import type { RegistrationStatus } from '@prisma/client'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
+
+const statCard =
+  'rounded-[24px] border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] p-5 text-center'
 
 interface Props {
   registrations: { status: RegistrationStatus }[]
@@ -14,21 +18,21 @@ export function WebinarStats({ registrations }: Props) {
 
   return (
     <div className="flex flex-wrap gap-4">
-      <div className="bg-[#f7f8fa] rounded-[24px] border border-[#e5e7eb] p-5 text-center">
-        <div className="text-2xl font-bold text-indigo-600">{total}</div>
-        <div className="text-xs text-gray-500">Registrados</div>
+      <div className={statCard}>
+        <div className="text-2xl font-bold text-[var(--color-primary)]">{total}</div>
+        <div className={`text-xs ${TOK.textSubtle}`}>Registrados</div>
       </div>
-      <div className="bg-[#f7f8fa] rounded-[24px] border border-[#e5e7eb] p-5 text-center">
-        <div className="text-2xl font-bold text-yellow-600">{attended}</div>
-        <div className="text-xs text-gray-500">Asistieron</div>
+      <div className={statCard}>
+        <div className="text-2xl font-bold text-[var(--color-secondary)]">{attended}</div>
+        <div className={`text-xs ${TOK.textSubtle}`}>Asistieron</div>
       </div>
-      <div className="bg-[#f7f8fa] rounded-[24px] border border-[#e5e7eb] p-5 text-center">
-        <div className="text-2xl font-bold text-green-600">{purchased}</div>
-        <div className="text-xs text-gray-500">Compraron</div>
+      <div className={statCard}>
+        <div className="text-2xl font-bold text-[var(--color-tertiary)]">{purchased}</div>
+        <div className={`text-xs ${TOK.textSubtle}`}>Compraron</div>
       </div>
-      <div className="bg-[#f7f8fa] rounded-[24px] border border-[#e5e7eb] p-5 text-center">
-        <div className="text-2xl font-bold text-gray-500">{attendancePct}%</div>
-        <div className="text-xs text-gray-500">Asistencia</div>
+      <div className={statCard}>
+        <div className={`text-2xl font-bold ${TOK.textSubtle}`}>{attendancePct}%</div>
+        <div className={`text-xs ${TOK.textSubtle}`}>Asistencia</div>
       </div>
     </div>
   )

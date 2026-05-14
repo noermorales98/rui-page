@@ -1,23 +1,21 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { prisma } from '@/lib/prisma'
-import { auth } from '@/auth'
 import {
-  updateContact as _updateContact,
-  deleteContact as _deleteContact,
+  updateContact as updateContactSvc,
+  deleteContact as deleteContactAction,
 } from '@/app/crm/contactos/actions'
+import { addActivity } from '@/lib/services/contacts'
 
 export async function updateContact(
-  ...args: Parameters<typeof _updateContact>
+  ...args: Parameters<typeof updateContactSvc>
 ) {
-  return _updateContact(...args)
+  return updateContactSvc(...args)
 }
 
 export async function deleteContact(
-  ...args: Parameters<typeof _deleteContact>
+  ...args: Parameters<typeof deleteContactAction>
 ) {
-  return _deleteContact(...args)
+  return deleteContactAction(...args)
 }
 
 type NoteState = { error: string } | null
@@ -27,21 +25,12 @@ export async function addNote(
   prevState: NoteState,
   formData: FormData,
 ): Promise<NoteState> {
-  const session = await auth()
-  if (!session?.user) return { error: 'No autorizado' }
-
   const body = (formData.get('body') as string)?.trim()
   if (!body) return { error: 'La nota no puede estar vacía' }
 
-  await prisma.contactActivity.create({
-    data: {
-      contactId,
-      type: 'NOTE',
-      body,
-      createdById: Number(session.user.id),
-    },
-  })
-
-  revalidatePath(`/crm/contactos/${contactId}`)
+  const r = await addActivity(contactId, 'NOTE', body)
+  if (!r.ok) {
+    return { error: r.error.message }
+  }
   return null
 }

@@ -4,6 +4,8 @@
 
 Build a fully functional Contacts module at `/crm/contactos` for managing webinar leads and CRM contacts. Includes a paginated filterable list, a full detail page per contact, CSV import, and an extensible activity feed.
 
+> **Actualización (mayo 2026):** Alta y edición de contactos viven en rutas dedicadas (`/crm/contactos/nuevo`, `/crm/contactos/[id]/editar`) con `ContactForm.tsx`. La importación CSV usa `/crm/contactos/importar` con `CsvImporter.tsx` y el flujo servidor (`lib/utils/csv.ts`, acción de importación desde archivo). En el detalle, el timeline puede importarse como `ActivityTimeline` (reexporta `ActivityFeed`). Estilos CRM compartidos: `app/crm/_lib/ui-tokens.ts` (`TOK`).
+
 ## Tech Stack
 
 - Next.js 16 App Router — server components + server actions + URL search params
@@ -95,20 +97,23 @@ activities ContactActivity[]
 ```
 app/crm/contactos/
 ├── page.tsx                          ← server component: fetches contacts with filters
+├── nuevo/page.tsx                    ← server + ContactForm: crear contacto
+├── importar/page.tsx                 ← server + CsvImporter: importar CSV
 ├── _components/
 │   ├── ContactsTable.tsx             ← client component: renders table rows
 │   ├── ContactFilters.tsx            ← client component: search + status/source/tag selects
-│   ├── CreateContactModal.tsx        ← client component: modal to create/edit a contact
-│   └── ImportCsvModal.tsx            ← client component: modal to import CSV
-├── actions.ts                        ← 'use server': createContact, updateContact,
-│                                        deleteContact, importContacts, upsertTag
+│   ├── ContactForm.tsx               ← client component: create/edit (useActionState)
+│   └── CsvImporter.tsx               ← client component: file upload → server import
+├── actions.ts                        ← 'use server': mutations + import desde archivo
 └── [id]/
     ├── page.tsx                      ← server component: fetches contact + activities
+    ├── editar/page.tsx               ← server + ContactForm: editar contacto
     ├── _components/
     │   ├── ContactHeader.tsx         ← server component: name, status badge, tags
-    │   ├── EditDeleteButtons.tsx     ← client component: edit modal + delete confirmation
+    │   ├── EditDeleteButtons.tsx     ← client component: links a editar + delete
     │   ├── ContactInfo.tsx           ← server component: email, phone, source, date
     │   ├── ActivityFeed.tsx          ← server component: chronological activity list
+    │   ├── ActivityTimeline.tsx      ← reexport alias → ActivityFeed
     │   └── AddNoteForm.tsx           ← client component: add note form
     └── actions.ts                    ← 'use server': addNote (imports updateContact,
                                          deleteContact from parent actions.ts)
@@ -132,8 +137,8 @@ Prisma query uses `where` with all active filters combined. Renders:
 - Page heading "Contactos" with total count
 - `<ContactFilters>` — syncs with URL params
 - `<ContactsTable>` — receives contacts array as prop
-- "Nuevo contacto" button → opens `<CreateContactModal>`
-- "Importar CSV" button → opens `<ImportCsvModal>`
+- "Nuevo contacto" → enlace a `/crm/contactos/nuevo` (`ContactForm`)
+- "Importar CSV" → enlace a `/crm/contactos/importar` (`CsvImporter`)
 
 ### ContactsTable
 
@@ -161,7 +166,7 @@ Layout: two-column flex row.
 
 **Left column (fixed 280px):** `<ContactInfo>` — displays email, phone, source, creation date as labeled fields.
 
-**Right column (flex-1):** `<ContactHeader>` at top (name, status badge, tags, Edit/Delete buttons), then `<AddNoteForm>`, then `<ActivityFeed>`.
+**Right column (flex-1):** `<ContactHeader>` at top (name, status badge, tags, Edit/Delete buttons), then `<AddNoteForm>`, then `<ActivityTimeline>` o `<ActivityFeed>` (mismo componente).
 
 ### ContactHeader
 
@@ -170,7 +175,7 @@ Server component. Renders name with avatar initials (first letter of first + las
 ### EditDeleteButtons
 
 Client component. Receives the full contact object and all available tags as props. Renders:
-- "Editar" button → opens `<CreateContactModal>` pre-filled with the contact's data
+- "Editar" → navegación a `/crm/contactos/[id]/editar` con `ContactForm` precargado
 - "Eliminar" button → shows inline confirmation (`window.confirm`), then calls `deleteContact(id)`
 
 ### ActivityFeed
@@ -227,12 +232,7 @@ Client component. Textarea + "Agregar nota" button. Uses `useActionState` with `
 
 ## CSV Import
 
-`ImportCsvModal` is a client component that:
-1. Accepts a `.csv` file via `<input type="file">`
-2. Reads it with `FileReader`, parses lines manually (split by comma/semicolon, handle quoted fields)
-3. Shows a preview table of the first 5 rows with column mapping (auto-detects: `nombre/name`, `email`, `telefono/phone`)
-4. On confirm, serializes rows to JSON and calls `importContacts` server action
-5. Shows result: "Importados: 42, Omitidos: 3"
+Flujo actual: página `/crm/contactos/importar` con `CsvImporter` (cliente) que envía el archivo al servidor; allí `lib/utils/csv.ts` parsea el CSV (delimitador `,` / `;` / tab, UTF-8 con fallback) y el servicio valida filas e importa. Resultado tipo "Importados: 42, Omitidos: 3". (El diseño original con modal + `FileReader` en cliente quedó sustituido.)
 
 CSV format expected (header row required):
 ```

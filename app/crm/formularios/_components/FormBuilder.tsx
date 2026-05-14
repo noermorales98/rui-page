@@ -9,6 +9,8 @@ import { FieldEditor } from './FieldEditor'
 import { FieldPalette } from './FieldPalette'
 import { FieldPreviewCard } from './FieldPreviewCard'
 import { slugify } from '../_lib/field-types'
+import { Button, Card, FormStatusBadge } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type FormWithFields = CrmForm & {
   fields: CrmFormField[]
@@ -17,18 +19,6 @@ type FormWithFields = CrmForm & {
 
 interface Props {
   form: FormWithFields
-}
-
-const STATUS_LABELS: Record<CrmFormStatus, string> = {
-  DRAFT: 'Borrador',
-  PUBLISHED: 'Publicado',
-  ARCHIVED: 'Archivado',
-}
-
-const STATUS_CLASSES: Record<CrmFormStatus, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  PUBLISHED: 'bg-green-100 text-green-700',
-  ARCHIVED: 'bg-amber-100 text-amber-700',
 }
 
 export function FormBuilder({ form }: Props) {
@@ -53,41 +43,36 @@ export function FormBuilder({ form }: Props) {
 
   return (
     <div>
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
-          <div className="mb-2 flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{form.name}</h1>
-            <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${STATUS_CLASSES[form.status]}`}>
-              {STATUS_LABELS[form.status]}
-            </span>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <div className="mb-2 flex flex-wrap items-center gap-3">
+            <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[var(--color-on-surface)]">{form.name}</h1>
+            <FormStatusBadge status={form.status} />
           </div>
-          <div className="flex items-center gap-3 text-sm text-gray-500">
-            <code className="rounded bg-white px-2 py-1 font-mono border border-gray-200">
+          <div className={`flex flex-wrap items-center gap-3 text-sm ${TOK.textMuted}`}>
+            <code className="rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-high)] px-2 py-1 font-mono text-xs">
               /formularios/{form.slug}
             </code>
             <Link
               href={`/formularios/${form.slug}`}
               target="_blank"
-              className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800"
+              className={`inline-flex items-center gap-1 ${TOK.linkAccent}`}
             >
               Abrir
               <ExternalLink size={14} />
             </Link>
-            <Link
-              href={`/crm/formularios/${form.id}/respuestas`}
-              className="text-indigo-600 hover:text-indigo-800"
-            >
+            <Link href={`/crm/formularios/${form.id}/respuestas`} className={TOK.linkAccent}>
               {form._count.submissions} respuestas
             </Link>
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             disabled={isStatusPending || form.status === 'DRAFT'}
             onClick={() => changeStatus('DRAFT')}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-white disabled:opacity-50"
+            className={TOK.actionSecondary}
           >
             Borrador
           </button>
@@ -95,7 +80,7 @@ export function FormBuilder({ form }: Props) {
             type="button"
             disabled={isStatusPending || form.status === 'PUBLISHED'}
             onClick={() => changeStatus('PUBLISHED')}
-            className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+            className={TOK.actionAccent}
           >
             Publicar
           </button>
@@ -103,19 +88,17 @@ export function FormBuilder({ form }: Props) {
       </div>
 
       {(statusMessage || settingsState?.error) && (
-        <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
-          {statusMessage ?? settingsState?.error}
-        </div>
+        <div className={`mb-4 ${TOK.errorBox}`}>{statusMessage ?? settingsState?.error}</div>
       )}
 
       <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)_340px]">
         <FieldPalette formId={form.id} />
 
-        <section className="min-h-[560px] rounded-xl bg-white p-5 border border-gray-200">
+        <Card className="min-h-[560px]">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-gray-900">Vista del formulario</h2>
-              <p className="mt-1 text-sm text-gray-500">{form.fields.length} campos configurados</p>
+              <h2 className={TOK.sectionTitle}>Vista del formulario</h2>
+              <p className={`mt-1 ${TOK.sectionSubtitle}`}>{form.fields.length} campos configurados</p>
             </div>
           </div>
 
@@ -131,65 +114,61 @@ export function FormBuilder({ form }: Props) {
               />
             ))}
             {form.fields.length === 0 && (
-              <div className="rounded-xl border border-dashed border-gray-300 px-6 py-16 text-center text-sm text-gray-400">
-                Agrega un campo desde la paleta.
+              <div className={TOK.emptyState}>
+                <p className={TOK.textMuted}>Agrega un campo desde la paleta.</p>
               </div>
             )}
           </div>
-        </section>
+        </Card>
 
         <aside className="space-y-5">
-          <section className="rounded-xl bg-white p-5 border border-gray-200">
-            <h2 className="mb-4 text-base font-semibold text-gray-900">Configuracion</h2>
+          <Card>
+            <h2 className={`mb-4 ${TOK.sectionTitle}`}>Configuracion</h2>
             <form action={settingsAction} className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Nombre</label>
+                <label className={TOK.label}>Nombre</label>
                 <input
                   name="name"
                   defaultValue={form.name}
-                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
+                  className={TOK.inputNative}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Slug</label>
+                <label className={TOK.label}>Slug</label>
                 <SlugInput defaultValue={form.slug} />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Descripcion</label>
+                <label className={TOK.label}>Descripcion</label>
                 <textarea
                   name="description"
                   defaultValue={form.description ?? ''}
                   rows={3}
-                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
+                  className={TOK.inputNativeMultiline}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Boton</label>
+                <label className={TOK.label}>Boton</label>
                 <input
                   name="submitLabel"
                   defaultValue={form.submitLabel}
-                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
+                  className={TOK.inputNative}
                 />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">Mensaje final</label>
+                <label className={TOK.label}>Mensaje final</label>
                 <textarea
                   name="successMessage"
                   defaultValue={form.successMessage}
                   rows={2}
-                  className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
+                  className={TOK.inputNativeMultiline}
                 />
               </div>
-              <button
-                type="submit"
-                disabled={isSavingSettings}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
-              >
+              <Button type="submit" disabled={isSavingSettings} className="w-full justify-center">
                 <Save size={16} />
                 {isSavingSettings ? 'Guardando...' : 'Guardar ajustes'}
-              </button>
+              </Button>
             </form>
-          </section>
+          </Card>
 
           {selectedField && <FieldEditor key={selectedField.id} field={selectedField} />}
         </aside>
@@ -206,7 +185,7 @@ function SlugInput({ defaultValue }: { defaultValue: string }) {
       name="slug"
       value={value}
       onChange={(event) => setValue(slugify(event.target.value))}
-      className="w-full rounded-lg border border-[#f2f2f2] px-3 py-2 font-mono text-sm focus:border-[#9ca3af] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[#9bbdf7]"
+      className={`${TOK.inputNative} font-mono text-sm`}
     />
   )
 }

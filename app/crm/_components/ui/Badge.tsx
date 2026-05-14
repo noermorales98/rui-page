@@ -3,11 +3,11 @@ import type { ReactNode } from 'react'
 type Variant = 'lime' | 'blue' | 'gray' | 'amber' | 'red'
 
 const VARIANTS: Record<Variant, string> = {
-  lime:  'bg-[#dfff00] text-[#080808]',
-  blue:  'bg-[#9bbdf7] text-[#080808]',
-  gray:  'bg-[#f0f1f3] text-[#8a8a8a]',
+  lime: 'bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]',
+  blue: 'bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed)]',
+  gray: 'bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)]',
   amber: 'bg-amber-50 text-amber-700',
-  red:   'bg-red-50 text-red-600',
+  red: 'bg-red-50 text-red-600',
 }
 
 interface BadgeProps {

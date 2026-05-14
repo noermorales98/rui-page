@@ -14,6 +14,11 @@ function createPrismaClient() {
     password: decodeURIComponent(parsed.password),
     database: parsed.pathname.replace(/^\//, ''),
     connectionLimit: 1,
+    // Match the column collation (utf8mb4_unicode_ci, set by the Prisma
+    // migrations) so LIKE comparisons in `contains` queries don't crash
+    // with `Illegal mix of collations` against utf8mb4_bin parameters.
+    collation: 'UTF8MB4_UNICODE_CI',
+    charset: 'utf8mb4',
   })
 
   return new PrismaClient({ adapter, log: ['error'] })

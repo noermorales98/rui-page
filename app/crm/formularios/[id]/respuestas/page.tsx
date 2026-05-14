@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const PAGE_SIZE = 50
 
@@ -59,28 +60,37 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
 
   if (!form) notFound()
 
+  const gridTemplateColumns = `1fr 1.5fr ${form.fields.map(() => '1fr').join(' ')}`
+  const rowSurface =
+    'grid items-center gap-3 rounded-2xl border border-[var(--color-outline-variant)]/60 bg-[var(--color-surface-container-lowest)] px-4 py-3'
+
   return (
-    <div>
-      <Link
-        href={`/crm/formularios/${form.id}`}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-[#8a8a8a] hover:text-[#080808]"
-      >
-        <ArrowLeft size={16} />
+    <div className="flex flex-col gap-6">
+      <Link href={`/crm/formularios/${form.id}`} className={TOK.linkBack}>
+        <ArrowLeft size={16} strokeWidth={2} />
         {form.name}
       </Link>
 
-      <div className="bg-[#f7f8fa] rounded-[28px] border border-[#e5e7eb] p-6">
+      <div>
+        <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[var(--color-on-surface)]">Respuestas</h1>
+        <p className={`mt-1.5 ${TOK.sectionSubtitle}`}>
+          {total === 0
+            ? 'Aun no hay envios registrados.'
+            : `${total} envio${total === 1 ? '' : 's'} registrado${total === 1 ? '' : 's'}`}
+        </p>
+      </div>
+
+      <div className={`${TOK.panel} ${TOK.panelPad}`}>
         {submissions.length === 0 ? (
-          <div className="px-4 py-12 text-center text-sm text-gray-500">
-            No hay respuestas registradas.
+          <div className={TOK.emptyState}>
+            <p className={TOK.textStrong}>Sin respuestas</p>
+            <p className={`mt-1 ${TOK.textMuted}`}>No hay respuestas registradas para este formulario.</p>
           </div>
         ) : (
           <>
             <div
-              className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[#8a8a8a]"
-              style={{
-                gridTemplateColumns: `1fr 1.5fr ${form.fields.map(() => '1fr').join(' ')}`,
-              }}
+              className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[var(--color-on-surface-variant)]"
+              style={{ gridTemplateColumns }}
             >
               <div>Fecha</div>
               <div>Contacto</div>
@@ -94,31 +104,26 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
                 return (
                   <div
                     key={submission.id}
-                    className="grid items-center bg-white rounded-2xl px-4 py-3"
-                    style={{
-                      gridTemplateColumns: `1fr 1.5fr ${form.fields.map(() => '1fr').join(' ')}`,
-                    }}
+                    className={rowSurface}
+                    style={{ gridTemplateColumns }}
                   >
-                    <div className="text-sm text-gray-500">
+                    <div className={`text-sm ${TOK.textSubtle}`}>
                       {formatDate(submission.submittedAt)}
                     </div>
                     <div className="text-sm">
                       {submission.contact ? (
-                        <Link
-                          href={`/crm/contactos/${submission.contact.id}`}
-                          className="font-medium text-indigo-600 hover:text-indigo-800"
-                        >
+                        <Link href={`/crm/contactos/${submission.contact.id}`} className={TOK.linkAccent}>
                           {submission.contact.name}
-                          <span className="block text-xs font-normal text-gray-400">
+                          <span className={`mt-0.5 block text-xs font-normal ${TOK.textSubtle}`}>
                             {submission.contact.email}
                           </span>
                         </Link>
                       ) : (
-                        <span className="text-gray-400">Sin contacto</span>
+                        <span className={TOK.textSubtle}>Sin contacto</span>
                       )}
                     </div>
                     {form.fields.map((field) => (
-                      <div key={field.id} className="max-w-[260px] text-sm text-gray-700">
+                      <div key={field.id} className={`max-w-[260px] text-sm ${TOK.textMuted}`}>
                         <span className="line-clamp-2">{values.get(field.id) || '-'}</span>
                       </div>
                     ))}
@@ -131,15 +136,15 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
       </div>
 
       {total > PAGE_SIZE && (
-        <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+        <div className={`flex flex-wrap items-center justify-between gap-3 text-sm ${TOK.textMuted}`}>
           <span>
             Mostrando {skip + 1}-{Math.min(skip + PAGE_SIZE, total)} de {total}
           </span>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {page > 1 && (
               <Link
                 href={`/crm/formularios/${form.id}/respuestas?page=${page - 1}`}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-white"
+                className={TOK.pagerLink}
               >
                 Anterior
               </Link>
@@ -147,7 +152,7 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
             {skip + PAGE_SIZE < total && (
               <Link
                 href={`/crm/formularios/${form.id}/respuestas?page=${page + 1}`}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-white"
+                className={TOK.pagerLink}
               >
                 Siguiente
               </Link>
