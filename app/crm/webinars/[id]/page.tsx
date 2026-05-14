@@ -7,6 +7,7 @@ import { ParticipantsTable } from './_components/ParticipantsTable'
 import { AddParticipantButton } from './_components/AddParticipantButton'
 import { ImportCsvButton } from './_components/ImportCsvButton'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
+import { ZoomLinkPanel } from './_components/ZoomLinkPanel'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -26,10 +27,18 @@ export default async function WebinarDetailPage({ params }: Props) {
         },
         orderBy: { createdAt: 'asc' },
       },
+      integration: true,
     },
   })
 
   if (!webinar) notFound()
+
+  const zoomIntegration = await prisma.integration.findUnique({
+    where: { provider: 'ZOOM' },
+    select: { status: true },
+  })
+  const zoomConnected = zoomIntegration?.status === 'ACTIVE'
+  const zoomWebinarId = webinar.integration?.externalId ?? null
 
   const registeredContactIds = webinar.registrations.map((r) => r.contactId)
 
@@ -66,6 +75,12 @@ export default async function WebinarDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
+      <ZoomLinkPanel
+        webinarId={webinar.id}
+        zoomWebinarId={zoomWebinarId}
+        viewerCount={webinar.viewerCount}
+        zoomConnected={zoomConnected}
+      />
     </div>
   )
 }
