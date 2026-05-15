@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { defaultTheme, defaultWebinarPages } from './defaults'
+import { defaultTheme, defaultWebinarPages, defaultConfigByType } from './defaults'
 import { sanitizeCss, sanitizeHtml } from './sanitize'
 import { resolveFunnelPagePath, slugifyFunnel } from './slug'
 
@@ -36,4 +36,20 @@ test('sanitizeHtml and sanitizeCss strip unsafe author content', () => {
     sanitizeCss('body{color:red;behavior:url(x);width:expression(alert(1))}'),
     'body{color:red;width:)}',
   )
+})
+
+test('defaultConfigByType covers all FunnelBlockType values', () => {
+  const requiredTypes = ['HERO', 'TEXT', 'VIDEO', 'FORM', 'CTA', 'FAQ', 'TESTIMONIALS', 'WEBINAR_ROOM', 'CUSTOM_HTML', 'FOOTER']
+  for (const type of requiredTypes) {
+    assert.ok(type in defaultConfigByType, `Missing defaultConfig for ${type}`)
+    assert.equal(typeof defaultConfigByType[type as keyof typeof defaultConfigByType], 'object')
+  }
+})
+
+test('defaultConfigByType HERO has title field', () => {
+  assert.ok('title' in defaultConfigByType.HERO)
+})
+
+test('defaultConfigByType FAQ has items array', () => {
+  assert.deepEqual(defaultConfigByType.FAQ.items, [])
 })
