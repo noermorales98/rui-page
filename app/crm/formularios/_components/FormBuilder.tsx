@@ -2,6 +2,15 @@
 
 import Link from 'next/link'
 import { useActionState, useMemo, useState, useTransition } from 'react'
+
+type FormTab = 'campos' | 'vista' | 'config'
+
+const tabBtn = (active: boolean) =>
+  `-mb-px border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+    active
+      ? 'border-[var(--color-on-surface)] text-[var(--color-on-surface)]'
+      : 'border-transparent text-[var(--color-on-surface-variant)] hover:border-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)]'
+  }`
 import type { CrmForm, CrmFormField, CrmFormStatus } from '@prisma/client'
 import { ExternalLink, Save } from 'lucide-react'
 import { setFormStatus, updateFormSettings } from '../actions'
@@ -22,6 +31,7 @@ interface Props {
 }
 
 export function FormBuilder({ form }: Props) {
+  const [activeTab, setActiveTab] = useState<FormTab>('campos')
   const [selectedFieldId, setSelectedFieldId] = useState<number | null>(form.fields[0]?.id ?? null)
   const [isStatusPending, startStatusTransition] = useTransition()
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
@@ -91,8 +101,29 @@ export function FormBuilder({ form }: Props) {
         <div className={`mb-4 ${TOK.errorBox}`}>{statusMessage ?? settingsState?.error}</div>
       )}
 
+      {/* Mobile tab nav — hidden on xl */}
+      <nav
+        role="tablist"
+        className="mb-5 flex gap-0 border-b border-[var(--color-outline-variant)] xl:hidden"
+      >
+        {(['campos', 'vista', 'config'] as FormTab[]).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab}
+            onClick={() => setActiveTab(tab)}
+            className={tabBtn(activeTab === tab)}
+          >
+            {tab === 'campos' ? 'Campos' : tab === 'vista' ? 'Vista previa' : 'Configuración'}
+          </button>
+        ))}
+      </nav>
+
       <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)_340px]">
-        <FieldPalette formId={form.id} />
+        <div className={activeTab === 'campos' ? '' : 'hidden xl:block'}>
+          <FieldPalette formId={form.id} />
+        </div>
 
         <Card className="min-h-[560px]">
           <div className="mb-4 flex items-center justify-between">

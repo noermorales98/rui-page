@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useState, useActionState } from 'react'
 import { Eye, MailPlus, Send } from 'lucide-react'
 import { createCampaign, previewCampaignRecipients } from '../actions'
 
@@ -48,24 +48,58 @@ const textareaClass =
   'w-full rounded-2xl px-5 py-2.5 border border-[#f2f2f2] bg-white focus:border-[#9ca3af] outline-none transition text-sm leading-6'
 const labelClass = 'block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5'
 
+const tabBtn = (active: boolean) =>
+  `-mb-px border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+    active
+      ? 'border-[var(--color-on-surface)] text-[var(--color-on-surface)]'
+      : 'border-transparent text-[var(--color-on-surface-variant)] hover:border-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)]'
+  }`
+
 export function CampaignWorkspace({ forms, webinars }: Props) {
+  const [activeTab, setActiveTab] = useState<'mensaje' | 'audiencia'>('mensaje')
   const [createState, createAction, createPending] = useActionState(createCampaign, null)
   const [previewState, previewAction, previewPending] = useActionState(previewCampaignRecipients, null)
 
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <span className="rounded-xl bg-[#080808] p-2 text-white">
+        <span className="rounded-xl bg-[var(--color-on-surface)] p-2 text-[var(--color-surface-container-lowest)]">
           <MailPlus size={18} />
         </span>
         <div>
-          <h2 className="text-base font-semibold text-[#080808]">Nueva campaña</h2>
-          <p className="text-sm text-[#8a8a8a]">Define mensaje, audiencia y guarda un borrador antes de enviarlo.</p>
+          <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Nueva campaña</h2>
+          <p className="text-sm text-[var(--color-on-surface-variant)]">Define mensaje, audiencia y guarda un borrador antes de enviarlo.</p>
         </div>
       </div>
 
+      {/* Mobile tab nav — hidden on lg */}
+      <nav
+        role="tablist"
+        className="mb-6 flex gap-0 border-b border-[var(--color-outline-variant)] lg:hidden"
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'mensaje'}
+          onClick={() => setActiveTab('mensaje')}
+          className={tabBtn(activeTab === 'mensaje')}
+        >
+          Mensaje
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'audiencia'}
+          onClick={() => setActiveTab('audiencia')}
+          className={tabBtn(activeTab === 'audiencia')}
+        >
+          Audiencia
+        </button>
+      </nav>
+
       <form className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="space-y-5 pr-0 lg:pr-6">
+        {/* Mensaje panel — hidden on mobile when audiencia tab active */}
+        <div className={`space-y-5 pr-0 lg:block lg:pr-6 ${activeTab === 'audiencia' ? 'hidden' : ''}`}>
           {createState?.error && (
             <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{createState.error}</p>
           )}
@@ -142,7 +176,8 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
           </div>
         </div>
 
-        <aside className="border-t border-[#e8e8e8] pt-6 mt-6 lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:border-l lg:border-t-0 lg:pt-0 lg:mt-0 lg:pl-6">
+        {/* Audiencia panel */}
+        <aside className={`border-[#e8e8e8] lg:sticky lg:top-4 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:border-l lg:pl-6 ${activeTab === 'mensaje' ? 'hidden lg:block' : ''}`}>
           <h3 className="text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider">Audiencia</h3>
           <div className="mt-4 space-y-5">
             <div className="space-y-2">
@@ -181,9 +216,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
             </div>
 
             <div>
-              <label className={labelClass}>
-                Proyecto o curso
-              </label>
+              <label className={labelClass}>Proyecto o curso</label>
               <input
                 name="projectQuery"
                 placeholder="Nombre del proyecto"
@@ -259,7 +292,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               type="submit"
               formAction={createAction}
               disabled={createPending}
-              className="bg-[#080808] text-white rounded-full px-6 py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-50 inline-flex items-center justify-center gap-2"
+              className="bg-[var(--color-on-surface)] text-[var(--color-surface-container-lowest)] rounded-full px-6 py-3 text-sm font-semibold hover:opacity-90 transition border-none cursor-pointer font-sans disabled:opacity-50 inline-flex items-center justify-center gap-2"
             >
               <Send size={15} />
               {createPending ? 'Guardando...' : 'Guardar'}
