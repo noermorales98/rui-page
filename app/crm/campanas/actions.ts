@@ -230,6 +230,10 @@ export async function sendCampaign(campaignId: number): Promise<SendState> {
         subject: email.subject,
         text: email.text,
         html: email.html,
+        headers: {
+          'List-Unsubscribe': `<${process.env.NEXTAUTH_URL ?? 'http://localhost:3000'}/unsubscribe?email=${encodeURIComponent(contact.email)}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
       })
 
       sent++
@@ -271,6 +275,7 @@ export async function sendCampaign(campaignId: number): Promise<SendState> {
   })
 
   revalidatePath('/crm/campanas')
+  revalidatePath(`/crm/campanas/${campaignId}`)
   return { sent, failed, recipients: contacts.length }
 }
 
@@ -523,4 +528,58 @@ export async function previewSegmentRecipients(
   ])
 
   return { count, sample }
+}
+
+// ── updateCampaign ───────────────────────────────────────────
+
+export async function updateCampaign(
+  campaignId: number,
+  _prevState: CampaignState,
+  formData: FormData,
+): Promise<CampaignState> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const campaign = await prisma.crmCampaign.findUnique({
+    where: { id: campaignId },
+    select: { status: true },
+  })
+  if (!campaign) return { error: 'Campaña no encontrada' }
+  if (campaign.status !== 'DRAFT') return { error: 'Solo se pueden editar campañas en borrador' }
+
+  const parsed = campaignSchema.safeParse({
+    name: formData.get('name'),
+    subject: formData.get('subject'),
+    previewText: nullableText(formData.get('previewText')),
+    fromName: nullableText(formData.get('fromName')),
+    fromEmail: nullableText(formData.get('fromEmail')),
+    bodyText: formData.get('bodyText'),
+  })
+
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
+
+  const filters = normalizeCampaignFilters(formData)
+  const audienceLabel = formatCampaignAudience(filters)
+
+  try {
+    await prisma.crmCampaign.update({
+      where: { id: campaignId },
+      data: {
+        name: parsed.data.name,
+        subject: parsed.data.subject,
+        previewText: parsed.data.previewText ?? null,
+        fromName: parsed.data.fromName ?? null,
+        fromEmail: parsed.data.fromEmail ?? null,
+        bodyText: parsed.data.bodyText,
+        filters: filtersToJson(filters),
+        audienceLabel,
+      },
+    })
+  } catch {
+    return { error: 'Error al actualizar la campaña' }
+  }
+
+  revalidatePath('/crm/campanas')
+  revalidatePath(`/crm/campanas/${campaignId}`)
+  return { message: 'Campaña actualizada' }
 }
