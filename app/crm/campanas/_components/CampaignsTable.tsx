@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import { Archive, MailCheck, Send, TriangleAlert } from 'lucide-react'
 import type { CrmCampaignStatus } from '@prisma/client'
 import { archiveCampaign, sendCampaign } from '../actions'
@@ -149,7 +150,7 @@ export function CampaignsTable({ campaigns, smtpReady, view = 'table' }: Props) 
                 <div className="min-w-0">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className={`truncate font-medium ${TOK.textStrong}`}>{campaign.name}</p>
+                      <Link href={`/crm/campanas/${campaign.id}`} className={`truncate font-medium hover:underline ${TOK.linkAccent}`}>{campaign.name}</Link>
                       <p className={`mt-1 line-clamp-2 text-sm ${TOK.textMuted}`}>{campaign.subject}</p>
                     </div>
                     <CampaignStatusBadge status={campaign.status} />
@@ -212,7 +213,7 @@ export function CampaignsTable({ campaigns, smtpReady, view = 'table' }: Props) 
           >
             {/* Campaña */}
             <div>
-              <p className={`truncate font-medium ${TOK.textStrong}`}>{campaign.name}</p>
+              <Link href={`/crm/campanas/${campaign.id}`} className={`truncate font-medium hover:underline ${TOK.linkAccent}`}>{campaign.name}</Link>
               <p className={`mt-0.5 max-w-xs truncate text-sm ${TOK.textMuted}`}>{campaign.subject}</p>
               <p className={`mt-0.5 text-xs ${TOK.textSubtle}`}>
                 {campaign.createdBy?.name ?? 'CRM'} · #{campaign.id}

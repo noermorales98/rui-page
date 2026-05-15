@@ -36,9 +36,10 @@ export function CampaignsGrid({ campaigns }: { campaigns: CampaignRow[] }) {
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {campaigns.map((campaign) => (
-        <div
+        <Link
           key={campaign.id}
-          className="flex flex-col gap-3 rounded-2xl border border-[var(--color-outline-variant)]/60 bg-[var(--color-surface-container-lowest)] p-4"
+          href={`/crm/campanas/${campaign.id}`}
+          className="flex flex-col gap-3 rounded-2xl border border-[var(--color-outline-variant)]/60 bg-[var(--color-surface-container-lowest)] p-4 transition hover:bg-[var(--color-surface-container-low)]"
         >
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
@@ -62,7 +63,7 @@ export function CampaignsGrid({ campaigns }: { campaigns: CampaignRow[] }) {
               ? `Enviado ${formatDate(campaign.sentAt)}`
               : `Creado ${formatDate(campaign.createdAt)}`}
           </p>
-        </div>
+        </Link>
       ))}
     </div>
   )
