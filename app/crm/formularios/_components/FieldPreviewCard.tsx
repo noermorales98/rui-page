@@ -7,7 +7,6 @@ import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
 import { deleteField, moveField } from '../actions'
 import { Dialog } from '@/app/crm/_components/ui'
 import { FIELD_TYPE_LABELS } from '../_lib/field-types'
-import { Dialog } from '@/app/crm/_components/ui'
 
 interface Props {
   field: CrmFormField

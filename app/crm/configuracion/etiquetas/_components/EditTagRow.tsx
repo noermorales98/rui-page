@@ -106,19 +106,6 @@ export function EditTagRow({
         </div>
       </td>
 
-      {confirmDeleteOpen && (
-        <td className="hidden">
-          <Dialog
-            open={confirmDeleteOpen}
-            title="¿Archivar etiqueta?"
-            description={`Archivar «${tag.name}». Los contactos que la tienen no la verán más en filtros.`}
-            variant="danger"
-            confirmLabel="Archivar"
-            onConfirm={() => { setConfirmDeleteOpen(false); deleteFormRef.current?.requestSubmit() }}
-            onCancel={() => setConfirmDeleteOpen(false)}
-          />
-        </td>
-      )}
       {editing && (
         <td className="hidden">
           <ModalWrapper

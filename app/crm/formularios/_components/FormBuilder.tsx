@@ -2,15 +2,6 @@
 
 import Link from 'next/link'
 import { useActionState, useMemo, useState, useTransition } from 'react'
-
-type FormTab = 'campos' | 'vista' | 'config'
-
-const tabBtn = (active: boolean) =>
-  `-mb-px border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-    active
-      ? 'border-[var(--color-on-surface)] text-[var(--color-on-surface)]'
-      : 'border-transparent text-[var(--color-on-surface-variant)] hover:border-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)]'
-  }`
 import type { CrmForm, CrmFormField, CrmFormStatus } from '@prisma/client'
 import { ExternalLink, Save } from 'lucide-react'
 import { setFormStatus, updateFormSettings } from '../actions'
@@ -30,10 +21,11 @@ interface Props {
   form: FormWithFields
 }
 
+type BuilderTab = 'fields' | 'preview' | 'settings'
+
 export function FormBuilder({ form }: Props) {
-  const [activeTab, setActiveTab] = useState<FormTab>('campos')
+  const [activeTab, setActiveTab] = useState<BuilderTab>('fields')
   const [selectedFieldId, setSelectedFieldId] = useState<number | null>(form.fields[0]?.id ?? null)
-  const [activeTab, setActiveTab] = useState('fields')
   const [isStatusPending, startStatusTransition] = useTransition()
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
   const selectedField = useMemo(
@@ -115,7 +107,7 @@ export function FormBuilder({ form }: Props) {
         <div className={`mb-4 ${TOK.errorBox}`}>{statusMessage ?? settingsState?.error}</div>
       )}
 
-      <Tabs tabs={formTabs} active={activeTab} onChange={setActiveTab} className="mb-5" />
+      <Tabs tabs={formTabs} active={activeTab} onChange={(id) => setActiveTab(id as BuilderTab)} className="mb-5" />
 
       {activeTab === 'fields' && (
         <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)_340px]">
