@@ -107,7 +107,7 @@ export function CreateUserModal() {
               </select>
             </div>
 
-            <div className="flex gap-3 pt-2">
+            <div className="sticky bottom-0 -mx-5 mt-2 grid grid-cols-2 gap-3 bg-[var(--color-surface-container-lowest)] px-5 pb-1 pt-4 sm:-mx-7 sm:px-7">
               <Button type="button" onClick={handleClose} variant="secondary" fullWidth size="lg">
                 Cancelar
               </Button>
