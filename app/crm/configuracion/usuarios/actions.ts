@@ -6,6 +6,11 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 
+const VALID_AVATARS = new Set(
+  ['avr1', 'avr2', 'avr3', 'avr4', 'avr5', 'avr6'].map((n) => `/avatar/${n}.webp`),
+)
+const DEFAULT_AVATAR = '/avatar/avr5.webp'
+
 const createUserSchema = z.object({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   email: z.string().email('Correo electrónico inválido'),
@@ -38,9 +43,12 @@ export async function createUser(
   const { name, email, password, role } = parsed.data
   const hash = await bcrypt.hash(password, 12)
 
+  const rawImage = formData.get('image') as string | null
+  const image = rawImage && VALID_AVATARS.has(rawImage) ? rawImage : DEFAULT_AVATAR
+
   try {
     await prisma.user.create({
-      data: { name, email, password: hash, role },
+      data: { name, email, password: hash, role, image },
     })
   } catch (err: unknown) {
     if (
