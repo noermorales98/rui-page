@@ -142,7 +142,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: Funne
         })
       }
     }
-  }, [blocks])
+  }, [blocks, formsCache])
 
   const selectedBlock = blocks.find((b) => b.id === selectedId) ?? null
   const activePaletteType = activeDragId?.startsWith('palette-')
