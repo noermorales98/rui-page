@@ -76,3 +76,21 @@ export async function changePassword(
 
   return { message: 'Contraseña cambiada correctamente' }
 }
+
+const VALID_AVATARS = new Set(
+  ['avr1', 'avr2', 'avr3', 'avr4', 'avr5', 'avr6'].map((n) => `/avatar/${n}.webp`),
+)
+
+export async function updateAvatar(imagePath: string): Promise<ProfileState> {
+  const session = await auth()
+  if (!session?.user?.id) return { error: 'No autorizado' }
+  if (!VALID_AVATARS.has(imagePath)) return { error: 'Avatar inválido' }
+
+  await prisma.user.update({
+    where: { id: Number(session.user.id) },
+    data: { image: imagePath },
+  })
+
+  revalidatePath('/crm', 'layout')
+  return { message: 'Avatar actualizado' }
+}

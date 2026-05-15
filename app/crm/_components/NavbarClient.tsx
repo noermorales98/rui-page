@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Bell, Search } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -14,12 +15,34 @@ type Props = {
   name: string
   initials: string
   isAdmin: boolean
+  image: string | null
 }
 
 const menuItemCls =
   'flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-high)] hover:text-[var(--color-on-surface)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed-dim)]'
 
-export function NavbarClient({ name, initials, isAdmin }: Props) {
+function Avatar({ image, initials, size }: { image: string | null; initials: string; size: number }) {
+  if (image) {
+    return (
+      <div
+        style={{ width: size, height: size }}
+        className="relative flex-shrink-0 overflow-hidden rounded-full"
+      >
+        <Image src={image} alt="Avatar" fill sizes={`${size}px`} className="object-cover" />
+      </div>
+    )
+  }
+  return (
+    <div
+      style={{ width: size, height: size, fontSize: size * 0.35 }}
+      className="flex flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-neon)] font-bold text-[var(--color-on-surface)]"
+    >
+      {initials}
+    </div>
+  )
+}
+
+export function NavbarClient({ name, initials, isAdmin, image }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -105,22 +128,23 @@ export function NavbarClient({ name, initials, isAdmin }: Props) {
             <span className="rounded-full bg-[var(--color-primary-fixed-dim)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-on-surface)]">
               {isAdmin ? 'Admin' : 'Editor'}
             </span>
-            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-neon)] text-[11px] font-bold text-[var(--color-on-surface)]">
-              {initials}
-            </div>
+            <Avatar image={image} initials={initials} size={32} />
           </button>
 
           {open && (
             <div
               role="menu"
-              className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] shadow-lg ring-1 ring-[var(--color-surface-container-high)]"
+              className="absolute right-0 top-full z-50 mt-2 w-56 overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] shadow-lg ring-1 ring-[var(--color-surface-container-high)]"
             >
-              {/* Header */}
-              <div className="border-b border-[var(--color-surface-container-high)] px-3 py-2.5">
-                <p className="truncate text-[12px] font-semibold text-[var(--color-on-surface)]">{name}</p>
-                <p className="text-[11px] text-[var(--color-on-surface-variant)]">
-                  {isAdmin ? 'Administrador' : 'Editor'}
-                </p>
+              {/* Header con avatar */}
+              <div className="flex items-center gap-3 border-b border-[var(--color-surface-container-high)] px-3 py-3">
+                <Avatar image={image} initials={initials} size={36} />
+                <div className="min-w-0">
+                  <p className="truncate text-[12px] font-semibold text-[var(--color-on-surface)]">{name}</p>
+                  <p className="text-[11px] text-[var(--color-on-surface-variant)]">
+                    {isAdmin ? 'Administrador' : 'Editor'}
+                  </p>
+                </div>
               </div>
 
               {/* Items */}

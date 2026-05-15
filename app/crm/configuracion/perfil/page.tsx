@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
@@ -5,6 +6,7 @@ import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { Card } from '@/app/crm/_components/ui'
 import { ProfileForm } from './_components/ProfileForm'
 import { PasswordForm } from './_components/PasswordForm'
+import { AvatarPicker } from './_components/AvatarPicker'
 
 const ROLE_LABEL: Record<string, string> = {
   ADMIN: 'Administrador',
@@ -18,7 +20,7 @@ export default async function PerfilPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: Number(session.user.id) },
-    select: { name: true, email: true, role: true },
+    select: { name: true, email: true, role: true, image: true },
   })
   if (!user) redirect('/auth/login')
 
@@ -35,9 +37,16 @@ export default async function PerfilPage() {
       {/* ── Columna izquierda: info de cuenta ── */}
       <Card className="lg:sticky lg:top-[96px]">
         <div className="flex flex-col items-center gap-4 py-4 text-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-accent-neon)] text-2xl font-bold text-[var(--color-on-surface)]">
-            {initials}
-          </div>
+          {/* Avatar */}
+          {user.image ? (
+            <div className="relative h-20 w-20 overflow-hidden rounded-full ring-2 ring-[var(--color-accent-neon)] ring-offset-2">
+              <Image src={user.image} alt={user.name ?? 'Avatar'} fill sizes="80px" className="object-cover" />
+            </div>
+          ) : (
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-accent-neon)] text-2xl font-bold text-[var(--color-on-surface)]">
+              {initials}
+            </div>
+          )}
 
           <div>
             <p className="text-[17px] font-semibold text-[var(--color-on-surface)]">{user.name}</p>
@@ -65,6 +74,11 @@ export default async function PerfilPage() {
 
       {/* ── Columna derecha: formularios ── */}
       <div className="flex flex-col gap-6">
+        <Card>
+          <h2 className={`mb-5 ${TOK.sectionTitle}`}>Foto de perfil</h2>
+          <AvatarPicker currentImage={user.image ?? null} />
+        </Card>
+
         <Card>
           <h2 className={`mb-5 ${TOK.sectionTitle}`}>Información personal</h2>
           <ProfileForm currentName={user.name ?? ''} />
