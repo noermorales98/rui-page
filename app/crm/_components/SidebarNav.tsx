@@ -30,6 +30,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Webinars',    href: '/crm/webinars',               icon: Video01Icon           },
   { label: 'Formularios', href: '/crm/formularios',            icon: File01Icon            },
   { label: 'Campañas',    href: '/crm/campanas',               icon: Mail01Icon            },
+  { label: 'Plantillas',  href: '/crm/campanas/templates',     icon: File01Icon            },
+  { label: 'Segmentos',   href: '/crm/campanas/segmentos',     icon: TagsIcon              },
   { label: 'Cursos',      href: '/crm/cursos',                 icon: BookOpen01Icon        },
   { label: 'Ventas',      href: '/crm/ventas',                 icon: ShoppingCart01Icon    },
 ]
