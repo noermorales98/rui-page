@@ -1,0 +1,19 @@
+{
+  "crons": [
+    {
+      "path": "/api/jobs/campaigns",
+      "schedule": "*/5 * * * *"
+    }
+  ],
+  "functions": {
+    "app/api/jobs/campaigns/route.ts": {
+      "maxDuration": 55
+    },
+    "app/api/jobs/campaign/[id]/route.ts": {
+      "maxDuration": 55
+    },
+    "app/api/stripe/webhook/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}
