@@ -11,6 +11,8 @@ import {
   updateFunnelTheme,
 } from '@/lib/services/funnels'
 import { defaultTheme } from '@/lib/funnels/defaults'
+import { listForms, getForm } from '@/lib/services/forms'
+import type { FormCacheEntry } from '@/lib/funnels/types'
 
 type ActionState = { error: string } | null
 
@@ -106,5 +108,41 @@ export async function saveAutomationAction(
     return result.ok ? null : { error: result.error.message }
   } catch {
     return { error: 'El JSON de pasos no es válido' }
+  }
+}
+
+export async function listPublishedFormsAction(): Promise<
+  { id: number; name: string; slug: string; fieldCount: number }[]
+> {
+  const result = await listForms()
+  if (!result.ok) return []
+  return result.data
+    .filter((f) => f.status === 'PUBLISHED')
+    .map((f) => ({
+      id: f.id,
+      name: f.name,
+      slug: f.slug,
+      fieldCount: f._count.fields,
+    }))
+}
+
+export async function getFormDetailAction(formId: number): Promise<FormCacheEntry | null> {
+  const result = await getForm(formId)
+  if (!result.ok) return null
+  const f = result.data
+  return {
+    id: f.id,
+    name: f.name,
+    slug: f.slug,
+    submitLabel: f.submitLabel,
+    successMessage: f.successMessage,
+    fields: f.fields.map((field) => ({
+      id: field.id,
+      label: field.label,
+      fieldKey: field.fieldKey,
+      type: field.type,
+      placeholder: field.placeholder,
+      isRequired: field.isRequired,
+    })),
   }
 }
