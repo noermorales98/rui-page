@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Flow, FlowStep, FunnelPage } from '@prisma/client'
+import type { FunnelTheme } from '@/lib/funnels/types'
 import { normalizeStudioTab, publicPageUrl, type StudioTab } from '../_lib/view-model'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { LandingBuilder } from './LandingBuilder'
@@ -101,7 +102,7 @@ export function FunnelStudio({
       )}
 
       {activeTab === 'contenido' && selectedPage && (
-        <LandingBuilder page={selectedPage} theme={funnel.theme as import('@/lib/funnels/types').FunnelTheme | null | undefined} />
+        <LandingBuilder page={selectedPage} theme={funnel.theme as FunnelTheme | null | undefined} />
       )}
       {activeTab === 'tema' && <FunnelThemeForm funnelId={funnel.id} theme={funnel.theme} />}
       {activeTab === 'html' && selectedPage && <FunnelHtmlEditor page={selectedPage} />}
