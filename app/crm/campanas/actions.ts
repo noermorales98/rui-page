@@ -273,3 +273,112 @@ export async function sendCampaign(campaignId: number): Promise<SendState> {
   revalidatePath('/crm/campanas')
   return { sent, failed, recipients: contacts.length }
 }
+
+// ── CampaignTemplate ────────────────────────────────────────
+
+type TemplateState = { error?: string; message?: string; id?: number } | null
+
+const templateSchema = z.object({
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  channel: z.enum(['EMAIL', 'WHATSAPP']),
+  subject: z.string().optional(),
+  previewText: z.string().optional(),
+  bodyText: z.string().optional(),
+  bodyHtml: z.string().optional(),
+  waTemplate: z.string().optional(),
+})
+
+export async function createTemplate(
+  _prevState: TemplateState,
+  formData: FormData,
+): Promise<TemplateState> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const parsed = templateSchema.safeParse({
+    name: formData.get('name'),
+    channel: formData.get('channel'),
+    subject: nullableText(formData.get('subject')),
+    previewText: nullableText(formData.get('previewText')),
+    bodyText: nullableText(formData.get('bodyText')),
+    bodyHtml: nullableText(formData.get('bodyHtml')),
+    waTemplate: nullableText(formData.get('waTemplate')),
+  })
+
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
+
+  try {
+    const tmpl = await prisma.campaignTemplate.create({
+      data: {
+        ...parsed.data,
+        subject: parsed.data.subject ?? null,
+        previewText: parsed.data.previewText ?? null,
+        bodyText: parsed.data.bodyText ?? null,
+        bodyHtml: parsed.data.bodyHtml ?? null,
+        waTemplate: parsed.data.waTemplate ?? null,
+        createdById: Number(session.user.id),
+      },
+      select: { id: true },
+    })
+    revalidatePath('/crm/campanas/templates')
+    return { message: 'Plantilla creada', id: tmpl.id }
+  } catch {
+    return { error: 'Error al crear la plantilla' }
+  }
+}
+
+export async function updateTemplate(
+  templateId: number,
+  _prevState: TemplateState,
+  formData: FormData,
+): Promise<TemplateState> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const parsed = templateSchema.safeParse({
+    name: formData.get('name'),
+    channel: formData.get('channel'),
+    subject: nullableText(formData.get('subject')),
+    previewText: nullableText(formData.get('previewText')),
+    bodyText: nullableText(formData.get('bodyText')),
+    bodyHtml: nullableText(formData.get('bodyHtml')),
+    waTemplate: nullableText(formData.get('waTemplate')),
+  })
+
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
+
+  try {
+    await prisma.campaignTemplate.update({
+      where: { id: templateId },
+      data: {
+        ...parsed.data,
+        subject: parsed.data.subject ?? null,
+        previewText: parsed.data.previewText ?? null,
+        bodyText: parsed.data.bodyText ?? null,
+        bodyHtml: parsed.data.bodyHtml ?? null,
+        waTemplate: parsed.data.waTemplate ?? null,
+      },
+    })
+    revalidatePath('/crm/campanas/templates')
+    revalidatePath(`/crm/campanas/templates/${templateId}`)
+    return { message: 'Plantilla actualizada' }
+  } catch {
+    return { error: 'Error al actualizar la plantilla' }
+  }
+}
+
+export async function deleteTemplate(templateId: number): Promise<{ error?: string }> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  try {
+    await prisma.campaignTemplate.update({
+      where: { id: templateId },
+      data: { deletedAt: new Date() },
+    })
+    revalidatePath('/crm/campanas/templates')
+  } catch {
+    return { error: 'Error al eliminar la plantilla' }
+  }
+  return {}
+}
