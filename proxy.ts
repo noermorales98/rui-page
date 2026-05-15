@@ -1,30 +1,20 @@
-import { getToken } from 'next-auth/jwt'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-
-export async function proxy(request: NextRequest) {
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET ?? '',
-  })
-
-  const isLoggedIn = !!token
-  const isLoginPage = request.nextUrl.pathname === '/crm-login'
-  const isCrmRoute = !isLoginPage && request.nextUrl.pathname.startsWith('/crm')
-
-  if (isCrmRoute && !isLoggedIn) {
-    const loginUrl = new URL('/crm-login', request.nextUrl.origin)
-    loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname + request.nextUrl.search)
-    return NextResponse.redirect(loginUrl)
-  }
-
-  if (isLoginPage && isLoggedIn) {
-    return NextResponse.redirect(new URL('/crm/dashboard', request.nextUrl.origin))
-  }
-
-  return NextResponse.next()
-}
+// proxy.ts - Edge auth protection for /crm and /api/crm routes
+export { auth as proxy } from '@/auth'
 
 export const config = {
-  matcher: ['/crm/:path*', '/crm-login'],
+  matcher: [
+    /*
+     * Match all /crm routes and /api/crm routes.
+     * Exclude:
+     *  - /api/auth/* (Auth.js own endpoints)
+     *  - /api/stripe/webhook (raw body, signature-verified)
+     *  - /api/zoom/webhook  (token-verified)
+     *  - /api/forms/*      (public form submissions)
+     *  - /api/jobs/*       (JOBS_SECRET-verified)
+     *  - /embed/*          (public iframe embed)
+     *  - static assets
+     */
+    '/crm/:path*',
+    '/api/crm/:path*',
+  ],
 }
