@@ -186,3 +186,58 @@ export async function deleteSale(saleId: number): Promise<{ error?: string }> {
   revalidateSalesPaths(contactId)
   return {}
 }
+
+export async function markRefund(saleId: number): Promise<{ error?: string }> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  try {
+    const sale = await prisma.crmSale.update({
+      where: { id: saleId },
+      data: { status: 'REFUNDED' },
+      select: { contactId: true },
+    })
+
+    await prisma.contactActivity.create({
+      data: {
+        contactId: sale.contactId,
+        type: 'NOTE',
+        body: `Reembolso registrado · Venta #${saleId}`,
+        createdById: Number(session.user.id),
+      },
+    })
+
+    revalidateSalesPaths(sale.contactId)
+  } catch {
+    return { error: 'Error al registrar el reembolso' }
+  }
+
+  return {}
+}
+
+export async function createCheckoutSessionAction(
+  _prevState: SaleState,
+  formData: FormData,
+): Promise<SaleState & { url?: string }> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const contactId = Number(formData.get('contactId'))
+  const dealId = Number(formData.get('dealId')) || undefined
+  const productName = (formData.get('productName') as string | null)?.trim()
+  const rawAmount = formData.get('amount') as string | null
+  const amountCents = normalizeMoneyInput(rawAmount ?? '')
+
+  if (!contactId || contactId < 1) return { error: 'Contacto inválido' }
+  if (!productName || productName.length < 2) return { error: 'Nombre de producto inválido' }
+  if (!amountCents || amountCents < 1) return { error: 'Monto inválido' }
+
+  try {
+    const { createCheckoutSession } = await import('@/lib/services/sales')
+    const url = await createCheckoutSession({ productName, amountCents, contactId, dealId })
+    return { url }
+  } catch (err) {
+    console.error('[checkout] error creating session', err)
+    return { error: 'Error al crear la sesión de pago' }
+  }
+}
