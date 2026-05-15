@@ -1,7 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { Bell, Search } from 'lucide-react'
+import { signOut } from 'next-auth/react'
+import { HugeiconsIcon } from '@hugeicons/react'
+import UserAccountIcon from '@hugeicons/core-free-icons/UserAccountIcon'
+import Settings01Icon from '@hugeicons/core-free-icons/Settings01Icon'
+import Logout01Icon from '@hugeicons/core-free-icons/Logout01Icon'
 import { NavbarTitle } from './NavbarTitle'
 
 type Props = {
@@ -10,8 +16,13 @@ type Props = {
   isAdmin: boolean
 }
 
+const menuItemCls =
+  'flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-high)] hover:text-[var(--color-on-surface)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed-dim)]'
+
 export function NavbarClient({ name, initials, isAdmin }: Props) {
   const [scrolled, setScrolled] = useState(false)
+  const [open, setOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -19,6 +30,24 @@ export function NavbarClient({ name, initials, isAdmin }: Props) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  useEffect(() => {
+    if (!open) return
+    function handleOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', handleOutside)
+    document.addEventListener('keydown', handleEsc)
+    return () => {
+      document.removeEventListener('mousedown', handleOutside)
+      document.removeEventListener('keydown', handleEsc)
+    }
+  }, [open])
 
   return (
     <header
@@ -63,15 +92,72 @@ export function NavbarClient({ name, initials, isAdmin }: Props) {
         {/* Divider */}
         <div className="mx-1 h-7 w-px bg-[var(--color-surface-container-high)]" />
 
-        {/* User pill */}
-        <div className="flex items-center gap-2.5 rounded-full bg-[var(--color-surface-container-lowest)] py-1.5 pl-3 pr-1.5">
-          <span className="text-[13px] font-semibold text-[var(--color-on-surface)]">{name}</span>
-          <span className="rounded-full bg-[var(--color-primary-fixed-dim)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-on-surface)]">
-            {isAdmin ? 'Admin' : 'Editor'}
-          </span>
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-neon)] text-[11px] font-bold text-[var(--color-on-surface)]">
-            {initials}
-          </div>
+        {/* User pill + dropdown */}
+        <div ref={dropdownRef} className="relative">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-haspopup="menu"
+            className="flex cursor-pointer items-center gap-2.5 rounded-full border-none bg-[var(--color-surface-container-lowest)] py-1.5 pl-3 pr-1.5 transition hover:bg-[var(--color-surface-container-low)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)]"
+          >
+            <span className="text-[13px] font-semibold text-[var(--color-on-surface)]">{name}</span>
+            <span className="rounded-full bg-[var(--color-primary-fixed-dim)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-on-surface)]">
+              {isAdmin ? 'Admin' : 'Editor'}
+            </span>
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-neon)] text-[11px] font-bold text-[var(--color-on-surface)]">
+              {initials}
+            </div>
+          </button>
+
+          {open && (
+            <div
+              role="menu"
+              className="absolute right-0 top-full z-50 mt-2 w-52 overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] shadow-lg ring-1 ring-[var(--color-surface-container-high)]"
+            >
+              {/* Header */}
+              <div className="border-b border-[var(--color-surface-container-high)] px-3 py-2.5">
+                <p className="truncate text-[12px] font-semibold text-[var(--color-on-surface)]">{name}</p>
+                <p className="text-[11px] text-[var(--color-on-surface-variant)]">
+                  {isAdmin ? 'Administrador' : 'Editor'}
+                </p>
+              </div>
+
+              {/* Items */}
+              <div className="p-1">
+                <Link
+                  href="/crm/configuracion/perfil"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className={menuItemCls}
+                >
+                  <HugeiconsIcon icon={UserAccountIcon} size={15} strokeWidth={1.5} className="shrink-0 opacity-60" />
+                  Mi perfil
+                </Link>
+                <Link
+                  href="/crm/configuracion"
+                  role="menuitem"
+                  onClick={() => setOpen(false)}
+                  className={menuItemCls}
+                >
+                  <HugeiconsIcon icon={Settings01Icon} size={15} strokeWidth={1.5} className="shrink-0 opacity-60" />
+                  Configuración
+                </Link>
+              </div>
+
+              <div className="border-t border-[var(--color-surface-container-high)] p-1">
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => signOut({ callbackUrl: '/crm-login' })}
+                  className={menuItemCls}
+                >
+                  <HugeiconsIcon icon={Logout01Icon} size={15} strokeWidth={1.5} className="shrink-0 opacity-60" />
+                  Cerrar sesión
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

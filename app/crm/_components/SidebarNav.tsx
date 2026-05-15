@@ -12,7 +12,6 @@ import File01Icon from '@hugeicons/core-free-icons/File01Icon'
 import Mail01Icon from '@hugeicons/core-free-icons/Mail01Icon'
 import BookOpen01Icon from '@hugeicons/core-free-icons/BookOpen01Icon'
 import ShoppingCart01Icon from '@hugeicons/core-free-icons/ShoppingCart01Icon'
-import Settings01Icon from '@hugeicons/core-free-icons/Settings01Icon'
 import UserAccountIcon from '@hugeicons/core-free-icons/UserAccountIcon'
 import TagsIcon from '@hugeicons/core-free-icons/TagsIcon'
 
@@ -37,10 +36,8 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 const CONFIG_ITEMS: NavItem[] = [
-  { label: 'Configuración', href: '/crm/configuracion',           icon: Settings01Icon  },
-  { label: 'Usuarios',      href: '/crm/configuracion/usuarios',  icon: UserAccountIcon, roles: ['ADMIN'] },
-  { label: 'Etiquetas',     href: '/crm/configuracion/etiquetas', icon: TagsIcon,        roles: ['ADMIN', 'VENDEDOR'] },
-  { label: 'Mi perfil',    href: '/crm/configuracion/perfil',   icon: UserAccountIcon },
+  { label: 'Usuarios',  href: '/crm/configuracion/usuarios',  icon: UserAccountIcon, roles: ['ADMIN'] },
+  { label: 'Etiquetas', href: '/crm/configuracion/etiquetas', icon: TagsIcon,        roles: ['ADMIN', 'VENDEDOR'] },
 ]
 
 function isVisible(item: NavItem, role: Role | null): boolean {
@@ -87,7 +84,9 @@ export function SidebarNav({ role }: SidebarNavProps) {
         )
       })}
 
-      <div className="my-2 h-px bg-[var(--color-surface-container-high)]" />
+      {CONFIG_ITEMS.some((item) => isVisible(item, role)) && (
+        <div className="my-2 h-px bg-[var(--color-surface-container-high)]" />
+      )}
 
       {CONFIG_ITEMS.filter((item) => isVisible(item, role)).map(({ label, href, icon }) => {
         const active = isActive(href)

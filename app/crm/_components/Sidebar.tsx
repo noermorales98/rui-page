@@ -1,6 +1,5 @@
 import type { Role } from '@prisma/client'
 import { auth } from '@/auth'
-import SignOutButton from './SignOutButton'
 import { SidebarNav } from './SidebarNav'
 
 export default async function Sidebar() {
@@ -17,11 +16,6 @@ export default async function Sidebar() {
       {/* Nav: sin scroll; el contenedor recorta si no cupiera */}
       <div className="min-h-0 flex-1 overflow-hidden">
         <SidebarNav role={role} />
-      </div>
-
-      {/* Sign out */}
-      <div className="shrink-0 pt-3">
-        <SignOutButton />
       </div>
     </aside>
   )
