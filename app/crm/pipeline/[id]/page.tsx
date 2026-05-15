@@ -6,6 +6,7 @@ import { getDeal } from '@/lib/services/deals'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { Accordion, DealStageBadge, ContactStatusBadge } from '@/app/crm/_components/ui'
 import { DealTimeline, type TimelineEntry } from './_components/DealTimeline'
+import { CheckoutLauncher } from './_components/CheckoutLauncher'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -83,7 +84,7 @@ export default async function DealDetailPage({ params }: Props) {
           <DealStageBadge stage={deal.stage} />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4">
           <div className="rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-4">
             <p className={TOK.label}>Contacto</p>
             <Link
@@ -121,6 +122,15 @@ export default async function DealDetailPage({ params }: Props) {
                 </p>
               )}
             </Accordion>
+          </div>
+
+          <div className="rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-4">
+            <p className={`mb-3 ${TOK.label}`}>Generar pago con Stripe</p>
+            <CheckoutLauncher
+              contactId={deal.contactId}
+              dealId={deal.id}
+              defaultProductName={deal.courseName ?? ''}
+            />
           </div>
         </div>
 
