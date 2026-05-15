@@ -5,6 +5,8 @@ import { getMissingSmtpConfig } from '@/lib/mailer'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { ViewToggle, type ListView } from '@/app/crm/_components/ui'
 import { CampaignsTable } from './_components/CampaignsTable'
+import { CampaignsGrid } from './_components/CampaignsGrid'
+import { ViewToggle } from '@/app/crm/_components/ui'
 import type { CampaignRow } from './_components/CampaignsTable'
 
 interface Props {

@@ -46,6 +46,13 @@ function formatDate(value: Date | string) {
 
 const labelClass = TOK.label
 
+const tabBtn = (active: boolean) =>
+  `-mb-px border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+    active
+      ? 'border-[var(--color-on-surface)] text-[var(--color-on-surface)]'
+      : 'border-transparent text-[var(--color-on-surface-variant)] hover:border-[var(--color-outline-variant)] hover:text-[var(--color-on-surface)]'
+  }`
+
 export function CampaignWorkspace({ forms, webinars }: Props) {
   const [activeTab, setActiveTab] = useState('message')
   const [createState, createAction, createPending] = useActionState(createCampaign, null)
@@ -187,9 +194,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
             </div>
 
             <div>
-              <label className={labelClass}>
-                Proyecto o curso
-              </label>
+              <label className={labelClass}>Proyecto o curso</label>
               <input
                 name="projectQuery"
                 placeholder="Nombre del proyecto"

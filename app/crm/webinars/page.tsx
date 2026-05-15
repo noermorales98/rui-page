@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import { ViewToggle, type ListView } from '@/app/crm/_components/ui'
 import { WebinarTable } from './_components/WebinarTable'
+import { WebinarGrid } from './_components/WebinarGrid'
+import { ViewToggle } from '@/app/crm/_components/ui'
 import type { WebinarWithStats } from './_components/WebinarTable'
 
 interface Props {

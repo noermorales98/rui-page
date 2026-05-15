@@ -60,7 +60,8 @@ export function SalesTable({ sales, view = 'table' }: Props) {
     setSaleToDelete(null)
     setMessage(null)
     startTransition(async () => {
-      const result = await deleteSale(sale.id)
+      if (!saleToDelete) return
+      const result = await deleteSale(saleToDelete.id)
       if (result.error) setMessage(result.error)
     })
   }

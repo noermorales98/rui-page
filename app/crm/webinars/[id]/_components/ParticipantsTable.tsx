@@ -5,6 +5,7 @@ import type { RegistrationStatus } from '@prisma/client'
 import { updateRegistrationStatus, removeRegistration } from '../../actions'
 import { Dialog, useToast } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
+import { Dialog, useToast } from '@/app/crm/_components/ui'
 
 export type RegistrationWithContact = {
   id: number

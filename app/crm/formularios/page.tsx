@@ -3,6 +3,8 @@ import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { ViewToggle, type ListView } from '@/app/crm/_components/ui'
 import { CreateFormModal } from './_components/CreateFormModal'
 import { FormulariosTable } from './_components/FormulariosTable'
+import { FormulariosGrid } from './_components/FormulariosGrid'
+import { ViewToggle } from '@/app/crm/_components/ui'
 
 interface Props {
   searchParams: Promise<{ view?: string }>

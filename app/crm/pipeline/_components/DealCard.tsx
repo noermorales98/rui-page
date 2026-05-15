@@ -10,6 +10,7 @@ import { deleteDeal } from '../actions'
 import { CreateDealModal } from './CreateDealModal'
 import { Dialog, Select, useToast } from '@/app/crm/_components/ui'
 import type { DealWithContact } from './PipelineBoard'
+import { Dialog, useToast } from '@/app/crm/_components/ui'
 
 const STAGE_OPTIONS: { value: DealStage; label: string }[] = [
   { value: 'LEAD', label: 'Lead' },
