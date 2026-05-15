@@ -41,6 +41,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    authorized: async ({ request, auth: session }) => {
+      const isLoginPage = request.nextUrl.pathname === '/crm-login'
+      const isAuthenticated = !!session?.user
+
+      // Redirect logged-in users away from the login page
+      if (isLoginPage && isAuthenticated) {
+        return Response.redirect(new URL('/crm/dashboard', request.nextUrl))
+      }
+
+      // Allow authenticated users through; reject others (Auth.js will redirect to signIn page)
+      return isAuthenticated
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id as string

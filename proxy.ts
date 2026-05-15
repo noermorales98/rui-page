@@ -16,5 +16,6 @@ export const config = {
      */
     '/crm/:path*',
     '/api/crm/:path*',
+    '/crm-login',
   ],
 }
