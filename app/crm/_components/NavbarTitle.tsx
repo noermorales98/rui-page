@@ -28,6 +28,14 @@ const ROUTE_META: Record<string, RouteMeta> = {
     title: 'Formularios',
     description: 'Crea formularios y captura leads al CRM.',
   },
+  '/crm/landings/nuevo': {
+    title: 'Nuevo funnel',
+    description: 'Crea un funnel tipo webinar con paginas internas y tema global.',
+  },
+  '/crm/landings': {
+    title: 'Landings',
+    description: 'Construye funnels, paginas publicas, webinars y automatizaciones.',
+  },
   '/crm/campanas/new': {
     title: 'Nueva campaña',
     description: 'Crea el mensaje, define la audiencia y guarda el borrador antes de enviarlo.',

@@ -28,6 +28,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Pipeline',    href: '/crm/pipeline',               icon: GitBranchIcon         },
   { label: 'Webinars',    href: '/crm/webinars',               icon: Video01Icon           },
   { label: 'Formularios', href: '/crm/formularios',            icon: File01Icon            },
+  { label: 'Landings',    href: '/crm/landings',               icon: File01Icon            },
   { label: 'Campañas',    href: '/crm/campanas',               icon: Mail01Icon            },
   { label: 'Plantillas',  href: '/crm/campanas/templates',     icon: File01Icon            },
   { label: 'Segmentos',   href: '/crm/campanas/segmentos',     icon: TagsIcon              },
@@ -56,6 +57,7 @@ export function SidebarNav({ role }: SidebarNavProps) {
     if (href === '/crm/contactos') return pathname === href || pathname.startsWith('/crm/contactos/')
     if (href === '/crm/webinars') return pathname === href || pathname.startsWith('/crm/webinars/')
     if (href === '/crm/formularios') return pathname === href || pathname.startsWith('/crm/formularios/')
+    if (href === '/crm/landings') return pathname === href || pathname.startsWith('/crm/landings/')
     return pathname === href || pathname.startsWith(href + '/')
   }
 

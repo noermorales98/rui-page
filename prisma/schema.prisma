@@ -39,6 +39,7 @@ model User {
   templates     CampaignTemplate[]
   segments      Segment[]
   landings      Landing[]
+  funnels       Funnel[]
   flows         Flow[]
   auditLogs     AuditLog[]
 
@@ -276,6 +277,7 @@ model Webinar {
   updatedAt     DateTime              @updatedAt
   registrations WebinarRegistration[]
   integration   WebinarIntegration?
+  funnels       Funnel[]
 
   @@index([deletedAt])
   @@index([date])
@@ -603,6 +605,30 @@ model AuditLog {
 // LANDINGS
 // ============================================================
 
+enum FunnelType {
+  WEBINAR
+  GENERAL
+}
+
+enum FunnelStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum FunnelPageKind {
+  REGISTRATION
+  THANK_YOU
+  ACCESS
+  ROOM
+  CUSTOM
+}
+
+enum FunnelPageMode {
+  VISUAL
+  HTML
+}
+
 enum LandingStatus {
   DRAFT
   PUBLISHED
@@ -678,6 +704,70 @@ model LandingView {
 
   @@index([landingId, viewedAt])
   @@index([ipHash, landingId])
+}
+
+model Funnel {
+  id          Int                      @id @default(autoincrement())
+  name        String
+  slug        String                   @unique @db.VarChar(191)
+  type        FunnelType               @default(GENERAL)
+  status      FunnelStatus             @default(DRAFT)
+  theme       Json
+  webinarId   Int?
+  webinar     Webinar?                 @relation(fields: [webinarId], references: [id], onDelete: SetNull)
+  pages       FunnelPage[]
+  categories  FunnelCategoryOnFunnel[]
+  createdById Int?
+  createdBy   User?                    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  deletedAt   DateTime?
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+
+  @@index([status, updatedAt])
+  @@index([type, status])
+  @@index([webinarId])
+  @@index([createdById])
+  @@index([deletedAt])
+}
+
+model FunnelPage {
+  id          Int            @id @default(autoincrement())
+  funnelId    Int
+  funnel      Funnel         @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  kind        FunnelPageKind
+  key         String         @db.VarChar(64)
+  slug        String?        @db.VarChar(191)
+  mode        FunnelPageMode @default(VISUAL)
+  title       String?
+  description String?        @db.Text
+  blocks      Json
+  customHtml  String?        @db.Text
+  customCss   String?        @db.Text
+  position    Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([funnelId, key])
+  @@unique([funnelId, slug])
+  @@index([funnelId, position])
+}
+
+model FunnelCategory {
+  id        Int                      @id @default(autoincrement())
+  name      String                   @unique
+  color     String                   @default("#9a7b45")
+  funnels   FunnelCategoryOnFunnel[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+}
+
+model FunnelCategoryOnFunnel {
+  funnelId   Int
+  categoryId Int
+  funnel     Funnel         @relation(fields: [funnelId], references: [id], onDelete: Cascade)
+  category   FunnelCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([funnelId, categoryId])
 }
 
 // ============================================================
