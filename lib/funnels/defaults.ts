@@ -93,10 +93,10 @@ export function defaultWebinarPages(funnelSlug: string): FunnelPageSeed[] {
 
 export const defaultConfigByType: Record<FunnelBlock['type'], Record<string, unknown>> = {
   HERO:         { eyebrow: '', title: 'Tu título', subtitle: '', ctaText: 'Quiero entrar', ctaHref: '#registro' },
-  TEXT:         { heading: '', body: 'Escribe aquí el contenido...', align: 'left' },
+  TEXT:         { title: '', body: 'Escribe aquí el contenido...', align: 'left' },
   VIDEO:        { url: '', caption: '', aspect: '16/9' },
   FORM:         { title: 'Reserva tu lugar', submitLabel: 'Reservar mi lugar' },
-  CTA:          { heading: '', body: '', buttonText: 'Quiero entrar', buttonHref: '#registro', variant: 'primary' },
+  CTA:          { title: '', body: '', buttonText: 'Quiero entrar', href: '#registro', variant: 'primary' },
   FAQ:          { heading: 'Preguntas frecuentes', items: [] },
   TESTIMONIALS: { heading: 'Lo que dicen', items: [] },
   WEBINAR_ROOM: { title: 'Webinar en vivo', body: '' },
