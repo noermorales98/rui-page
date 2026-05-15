@@ -6,6 +6,12 @@ import { Card } from '@/app/crm/_components/ui'
 import { ProfileForm } from './_components/ProfileForm'
 import { PasswordForm } from './_components/PasswordForm'
 
+const ROLE_LABEL: Record<string, string> = {
+  ADMIN: 'Administrador',
+  VENDEDOR: 'Vendedor',
+  ASISTENTE: 'Asistente',
+}
+
 export default async function PerfilPage() {
   const session = await auth()
   if (!session?.user?.id) redirect('/auth/login')
@@ -16,22 +22,59 @@ export default async function PerfilPage() {
   })
   if (!user) redirect('/auth/login')
 
+  const initials = (user.name ?? '')
+    .split(' ')
+    .map((p) => p[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[var(--color-on-surface)]">Mi perfil</h1>
+    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[300px_1fr]">
 
-      <Card className="max-w-lg">
-        <h2 className={`mb-4 ${TOK.sectionTitle}`}>Información personal</h2>
-        <p className="mb-4 text-sm text-[var(--color-on-surface-variant)]">
-          {user.email} · <span className="font-medium">{user.role}</span>
-        </p>
-        <ProfileForm currentName={user.name ?? ''} />
+      {/* ── Columna izquierda: info de cuenta ── */}
+      <Card className="lg:sticky lg:top-[96px]">
+        <div className="flex flex-col items-center gap-4 py-4 text-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-accent-neon)] text-2xl font-bold text-[var(--color-on-surface)]">
+            {initials}
+          </div>
+
+          <div>
+            <p className="text-[17px] font-semibold text-[var(--color-on-surface)]">{user.name}</p>
+            <p className="mt-0.5 text-sm text-[var(--color-on-surface-variant)]">{user.email}</p>
+          </div>
+
+          <span className="rounded-full bg-[var(--color-primary-fixed-dim)] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--color-on-surface)]">
+            {ROLE_LABEL[user.role] ?? user.role}
+          </span>
+        </div>
+
+        <div className="mt-4 border-t border-[var(--color-surface-container-high)] pt-4">
+          <dl className="space-y-3 text-sm">
+            <div>
+              <dt className={TOK.label}>Correo electrónico</dt>
+              <dd className="mt-0.5 text-[var(--color-on-surface)]">{user.email}</dd>
+            </div>
+            <div>
+              <dt className={TOK.label}>Rol</dt>
+              <dd className="mt-0.5 text-[var(--color-on-surface)]">{ROLE_LABEL[user.role] ?? user.role}</dd>
+            </div>
+          </dl>
+        </div>
       </Card>
 
-      <Card className="max-w-lg">
-        <h2 className={`mb-4 ${TOK.sectionTitle}`}>Cambiar contraseña</h2>
-        <PasswordForm />
-      </Card>
+      {/* ── Columna derecha: formularios ── */}
+      <div className="flex flex-col gap-6">
+        <Card>
+          <h2 className={`mb-5 ${TOK.sectionTitle}`}>Información personal</h2>
+          <ProfileForm currentName={user.name ?? ''} />
+        </Card>
+
+        <Card>
+          <h2 className={`mb-5 ${TOK.sectionTitle}`}>Cambiar contraseña</h2>
+          <PasswordForm />
+        </Card>
+      </div>
     </div>
   )
 }
