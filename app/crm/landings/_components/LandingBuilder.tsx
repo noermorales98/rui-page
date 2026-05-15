@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef, useActionState } from 'react'
+import { useState, useCallback, useEffect, useRef, useActionState, useMemo } from 'react'
 import { DndContext, DragOverlay, closestCenter, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import type { FunnelPage } from '@prisma/client'
@@ -23,13 +23,14 @@ function coerceTheme(value: unknown): FunnelTheme {
   return defaultTheme
 }
 
-export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: unknown }) {
+export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: FunnelTheme | null | undefined }) {
   const [blocks, setBlocks] = useState<FunnelBlock[]>(() => coerceBlocks(page.blocks))
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [isDirty, setIsDirty] = useState(false)
   const [validationErrors, setValidationErrors] = useState<BlockValidationError[]>([])
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
-  const [state, action, isPending] = useActionState(saveBlocksAction.bind(null, page.id), null)
+  const boundSaveAction = useMemo(() => saveBlocksAction.bind(null, page.id), [page.id])
+  const [state, action, isPending] = useActionState(boundSaveAction, null)
 
   const formRef = useRef<HTMLFormElement>(null)
   const blocksInputRef = useRef<HTMLInputElement>(null)
@@ -68,11 +69,16 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: unkno
     }
 
     if (activeId !== overId) {
-      const oldIdx = blocks.findIndex((b) => b.id === activeId)
-      const newIdx = blocks.findIndex((b) => b.id === overId)
-      if (oldIdx >= 0 && newIdx >= 0) {
-        setBlocks(markDirty(arrayMove(blocks, oldIdx, newIdx)))
-      }
+      setBlocks((prev) => {
+        const oldIdx = prev.findIndex((b) => b.id === activeId)
+        const newIdx = prev.findIndex((b) => b.id === overId)
+        if (oldIdx >= 0 && newIdx >= 0) {
+          setIsDirty(true)
+          setValidationErrors([])
+          return arrayMove(prev, oldIdx, newIdx)
+        }
+        return prev
+      })
     }
   }
 
@@ -88,7 +94,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: unkno
     setIsDirty(true)
   }, [])
 
-  function triggerSave() {
+  const triggerSave = useCallback(() => {
     const errors = validateBlocks(blocks)
     if (errors.length > 0) {
       setValidationErrors(errors)
@@ -98,7 +104,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: unkno
       blocksInputRef.current.value = JSON.stringify(blocks)
     }
     formRef.current?.requestSubmit()
-  }
+  }, [blocks])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -120,7 +126,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: unkno
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [selectedId, blocks, handleDeleteBlock])
+  }, [selectedId, triggerSave, handleDeleteBlock])
 
   const selectedBlock = blocks.find((b) => b.id === selectedId) ?? null
   const activePaletteType = activeDragId?.startsWith('palette-')
@@ -158,6 +164,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: unkno
           isPending={isPending}
           onSelect={setSelectedId}
           onDelete={handleDeleteBlock}
+          onSave={triggerSave}
         />
 
         {/* Right: Properties */}

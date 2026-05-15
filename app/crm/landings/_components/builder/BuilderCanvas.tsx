@@ -18,10 +18,11 @@ type Props = {
   isPending: boolean
   onSelect: (id: string) => void
   onDelete: (id: string) => void
+  onSave: () => void
 }
 
 export function BuilderCanvas({
-  pageId, blocks, theme, selectedId, validationErrors, isDirty, isPending, onSelect, onDelete,
+  pageId, blocks, theme, selectedId, validationErrors, isDirty, isPending, onSelect, onDelete, onSave,
 }: Props) {
   const { setNodeRef } = useDroppable({ id: 'canvas' })
 
@@ -36,8 +37,8 @@ export function BuilderCanvas({
           )}
         </span>
         <button
-          type="submit"
-          form={`builder-form-${pageId}`}
+          type="button"
+          onClick={onSave}
           disabled={isPending}
           className="rounded-[var(--radius-md)] bg-[var(--color-primary)] px-4 py-1.5 text-sm font-semibold text-[var(--color-on-primary)] transition disabled:opacity-50"
         >
