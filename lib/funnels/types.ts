@@ -36,3 +36,19 @@ export type FunnelPageSeed = {
   position: number
   blocks: FunnelBlock[]
 }
+
+export type FormCacheEntry = {
+  id: number
+  name: string
+  slug: string
+  submitLabel: string
+  successMessage: string
+  fields: {
+    id: number
+    label: string
+    fieldKey: string
+    type: string
+    placeholder: string | null
+    isRequired: boolean
+  }[]
+}

@@ -24,6 +24,9 @@ export function validateBlocks(blocks: FunnelBlock[]): BlockValidationError[] {
     if (block.type === 'CUSTOM_HTML' && !cfg.html) {
       errors.push({ blockId: block.id, message: 'El HTML no puede estar vacío' })
     }
+    if (block.type === 'FORM' && !cfg.formId) {
+      errors.push({ blockId: block.id, message: 'Debes seleccionar un formulario' })
+    }
   }
   return errors
 }

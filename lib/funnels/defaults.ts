@@ -95,7 +95,7 @@ export const defaultConfigByType: Record<FunnelBlock['type'], Record<string, unk
   HERO:         { eyebrow: '', title: 'Tu título', subtitle: '', ctaText: 'Quiero entrar', ctaHref: '#registro' },
   TEXT:         { title: '', body: 'Escribe aquí el contenido...', align: 'left' },
   VIDEO:        { url: '', caption: '', aspect: '16/9' },
-  FORM:         { title: 'Reserva tu lugar', submitLabel: 'Reservar mi lugar' },
+  FORM:         { title: '', formId: null, formSlug: null },
   CTA:          { title: '', body: '', buttonText: 'Quiero entrar', href: '#registro', variant: 'primary' },
   FAQ:          { heading: 'Preguntas frecuentes', items: [] },
   TESTIMONIALS: { heading: 'Lo que dicen', items: [] },

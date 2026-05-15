@@ -56,3 +56,14 @@ test('isInvalidBlock returns true when blockId is in errors', () => {
   assert.equal(isInvalidBlock('abc', errors), true)
   assert.equal(isInvalidBlock('xyz', errors), false)
 })
+
+test('validateBlocks flags FORM without formId', () => {
+  const errors = validateBlocks([block('FORM', { title: '', formId: null, formSlug: null })])
+  assert.equal(errors.length, 1)
+  assert.equal(errors[0].message, 'Debes seleccionar un formulario')
+})
+
+test('validateBlocks accepts FORM with formId', () => {
+  const errors = validateBlocks([block('FORM', { title: '', formId: 5, formSlug: 'mi-form' })])
+  assert.deepEqual(errors, [])
+})
