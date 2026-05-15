@@ -382,3 +382,145 @@ export async function deleteTemplate(templateId: number): Promise<{ error?: stri
   }
   return {}
 }
+
+// ── Segment ─────────────────────────────────────────────────
+
+type SegmentState = { error?: string; message?: string; id?: number } | null
+
+const segmentSchema = z.object({
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  description: z.string().optional(),
+  isDynamic: z.coerce.boolean().default(true),
+  filters: z.string().min(2, 'Los filtros son requeridos'),
+})
+
+export async function createSegment(
+  _prevState: SegmentState,
+  formData: FormData,
+): Promise<SegmentState> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const parsed = segmentSchema.safeParse({
+    name: formData.get('name'),
+    description: nullableText(formData.get('description')),
+    isDynamic: formData.get('isDynamic') !== 'false',
+    filters: formData.get('filters'),
+  })
+
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
+
+  let filtersJson: unknown
+  try {
+    filtersJson = JSON.parse(parsed.data.filters)
+  } catch {
+    return { error: 'Los filtros no son JSON válido' }
+  }
+
+  try {
+    const seg = await prisma.segment.create({
+      data: {
+        name: parsed.data.name,
+        description: parsed.data.description ?? null,
+        isDynamic: parsed.data.isDynamic,
+        filters: filtersJson as Parameters<typeof prisma.segment.create>[0]['data']['filters'],
+        createdById: Number(session.user.id),
+      },
+      select: { id: true },
+    })
+    revalidatePath('/crm/campanas/segmentos')
+    return { message: 'Segmento creado', id: seg.id }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : ''
+    if (message.includes('Unique constraint')) return { error: 'Ya existe un segmento con ese nombre' }
+    return { error: 'Error al crear el segmento' }
+  }
+}
+
+export async function updateSegment(
+  segmentId: number,
+  _prevState: SegmentState,
+  formData: FormData,
+): Promise<SegmentState> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const parsed = segmentSchema.safeParse({
+    name: formData.get('name'),
+    description: nullableText(formData.get('description')),
+    isDynamic: formData.get('isDynamic') !== 'false',
+    filters: formData.get('filters'),
+  })
+
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Datos inválidos' }
+
+  let filtersJson: unknown
+  try {
+    filtersJson = JSON.parse(parsed.data.filters)
+  } catch {
+    return { error: 'Los filtros no son JSON válido' }
+  }
+
+  try {
+    await prisma.segment.update({
+      where: { id: segmentId },
+      data: {
+        name: parsed.data.name,
+        description: parsed.data.description ?? null,
+        isDynamic: parsed.data.isDynamic,
+        filters: filtersJson as Parameters<typeof prisma.segment.update>[0]['data']['filters'],
+      },
+    })
+    revalidatePath('/crm/campanas/segmentos')
+    revalidatePath(`/crm/campanas/segmentos/${segmentId}`)
+    return { message: 'Segmento actualizado' }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : ''
+    if (message.includes('Unique constraint')) return { error: 'Ya existe un segmento con ese nombre' }
+    return { error: 'Error al actualizar el segmento' }
+  }
+}
+
+export async function deleteSegment(segmentId: number): Promise<{ error?: string }> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  try {
+    await prisma.segment.update({
+      where: { id: segmentId },
+      data: { deletedAt: new Date() },
+    })
+    revalidatePath('/crm/campanas/segmentos')
+  } catch {
+    return { error: 'Error al eliminar el segmento' }
+  }
+  return {}
+}
+
+export async function previewSegmentRecipients(
+  segmentId: number,
+): Promise<{ error?: string; count?: number; sample?: { id: number; name: string; email: string }[] }> {
+  const session = await requireSession()
+  if (!session) return { error: 'No autorizado' }
+
+  const segment = await prisma.segment.findFirst({
+    where: { id: segmentId, deletedAt: null },
+    select: { filters: true },
+  })
+  if (!segment) return { error: 'Segmento no encontrado' }
+
+  const { buildSegmentWhere } = await import('@/lib/segments/evaluator')
+  const where = { ...buildSegmentWhere(segment.filters), deletedAt: null }
+
+  const [count, sample] = await Promise.all([
+    prisma.contact.count({ where }),
+    prisma.contact.findMany({
+      where,
+      select: { id: true, name: true, email: true },
+      take: 10,
+      orderBy: { createdAt: 'desc' },
+    }),
+  ])
+
+  return { count, sample }
+}
