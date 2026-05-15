@@ -1,5 +1,5 @@
 import React from 'react'
-import type { FunnelBlock, FunnelTheme } from './types'
+import type { FunnelBlock, FunnelTheme, FormCacheEntry } from './types'
 import { sanitizeCss, sanitizeHtml } from './sanitize'
 
 type RenderOptions = {
@@ -8,6 +8,8 @@ type RenderOptions = {
   registerForm?: React.ReactNode
   webinarEmbedUrl?: string | null
   webinarLink?: string | null
+  formsCache?: Record<number, FormCacheEntry>
+  formElements?: Record<number, React.ReactNode>
 }
 
 function asText(value: unknown, fallback = ''): string {
@@ -39,7 +41,7 @@ function buttonStyle(theme: FunnelTheme): React.CSSProperties {
   }
 }
 
-export function renderFunnelBlocks({ blocks, theme, registerForm, webinarEmbedUrl, webinarLink }: RenderOptions) {
+export function renderFunnelBlocks({ blocks, theme, registerForm, webinarEmbedUrl, webinarLink, formsCache, formElements }: RenderOptions) {
   return blocks.map((block) => {
     const cfg = block.config
     if (block.type === 'HERO') {
@@ -60,14 +62,57 @@ export function renderFunnelBlocks({ blocks, theme, registerForm, webinarEmbedUr
     }
 
     if (block.type === 'FORM') {
+      const formId = typeof cfg.formId === 'number' ? cfg.formId : null
+      const formElement = formId != null ? formElements?.[formId] : undefined
+      const formData = formId != null ? formsCache?.[formId] : undefined
+      const title = asText(cfg.title) || formData?.name || 'Reserva tu lugar'
+
+      let content: React.ReactNode
+      if (formElement != null) {
+        content = formElement
+      } else if (formData != null) {
+        const fieldElements = formData.fields.map((f) =>
+          React.createElement(
+            'label',
+            {
+              key: f.id,
+              style: { display: 'grid', gap: '.35rem', fontSize: 12, textTransform: 'uppercase' as const, letterSpacing: '.14em' },
+            },
+            `${f.label}${f.isRequired ? ' *' : ''}`,
+            React.createElement('input', {
+              placeholder: f.placeholder ?? '',
+              disabled: true,
+              style: { minHeight: 44, border: `1px solid ${theme.accentColor}55`, background: '#fff', padding: '0 .9rem', fontSize: 16 },
+            }),
+          ),
+        )
+        const buttonElement = React.createElement(
+          'button',
+          {
+            disabled: true,
+            style: { border: `1px solid ${theme.accentColor}`, background: theme.accentColor, color: theme.backgroundColor, padding: '1rem', fontWeight: 700, textTransform: 'uppercase' as const, letterSpacing: '.14em', opacity: 0.7 },
+          },
+          formData.submitLabel,
+        )
+        content = React.createElement('div', { style: { display: 'grid', gap: '1rem' } }, ...fieldElements, buttonElement)
+      } else if (formId == null) {
+        content = registerForm ?? React.createElement(
+          'div',
+          { style: { border: '2px dashed #888', padding: '2rem', textAlign: 'center' as const, color: '#888', borderRadius: 4 } },
+          'Selecciona un formulario en el panel derecho',
+        )
+      } else {
+        content = React.createElement('div', { style: { color: '#888', padding: '1rem', textAlign: 'center' as const } }, 'Cargando formulario...')
+      }
+
       return React.createElement(
         'section',
         { key: block.id, id: 'registro', style: { ...sectionStyle(theme), padding: '3rem 1.25rem' } },
         React.createElement(
           'div',
           { style: { maxWidth: 520, margin: '0 auto', background: theme.surfaceColor, padding: '2rem', border: `1px solid ${theme.accentColor}33` } },
-          React.createElement('h2', { style: { marginTop: 0 } }, asText(cfg.title, 'Reserva tu lugar')),
-          registerForm,
+          React.createElement('h2', { style: { marginTop: 0 } }, title),
+          content,
         ),
       )
     }
