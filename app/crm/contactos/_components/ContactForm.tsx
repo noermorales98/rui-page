@@ -201,7 +201,7 @@ export function ContactForm(props: ContactFormProps) {
                 type="button"
                 key={tag.id}
                 onClick={() => toggleTag(tag.id)}
-                className={`cursor-pointer rounded-full border-none px-2.5 py-1 text-xs font-semibold text-white transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${
+                className={`cursor-pointer rounded-full border-none px-2.5 py-1 text-xs font-semibold text-[var(--color-on-primary)] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${
                   selectedTagIds.includes(tag.id)
                     ? 'opacity-100 outline outline-2 outline-offset-2 outline-[var(--color-outline)]'
                     : 'opacity-55 hover:opacity-90'
@@ -244,7 +244,7 @@ export function ContactForm(props: ContactFormProps) {
           {variant === 'page' && cancelHref ? (
             <Link
               href={cancelHref}
-              className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-6 py-3 text-sm font-semibold text-[var(--color-on-surface)] transition hover:bg-[var(--color-surface-container)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
+              className={`${TOK.actionSecondary} w-full`}
             >
               Cancelar
             </Link>

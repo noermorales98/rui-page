@@ -72,7 +72,7 @@ function MiniBarChart({ data, formatter = compactNumber }: { data: ChartPoint[];
   const max = Math.max(...data.map((item) => item.value), 1)
 
   return (
-    <div className="flex h-64 items-end gap-2 border-t border-[var(--color-outline-variant)] pt-6">
+    <div className="flex h-64 items-end gap-2 rounded-[var(--radius-lg)] bg-[var(--color-surface-container-low)] p-4">
       {data.map((item) => {
         const height = Math.max(8, Math.round((item.value / max) * 100))
 
@@ -136,7 +136,7 @@ function SectionSummaryCard({
   return (
     <Link
       href={href}
-      className="group flex min-h-[132px] flex-col justify-between rounded-[24px] border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] p-4 transition hover:bg-[var(--color-surface-container-low)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
+      className="group flex min-h-[132px] flex-col justify-between rounded-[24px] bg-[var(--color-surface-container-lowest)] p-4 transition hover:bg-[var(--color-surface-container-low)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
     >
       <div className="flex items-start justify-between gap-2">
         <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-low)] text-[var(--color-on-surface)]">

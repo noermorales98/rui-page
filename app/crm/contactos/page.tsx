@@ -5,18 +5,19 @@ import { listContacts } from '@/lib/services/contacts'
 import { listTags } from '@/lib/services/tags'
 import { ContactsTable } from './_components/ContactsTable'
 import { ContactFilters } from './_components/ContactFilters'
-import { Card, MetricCard } from '@/app/crm/_components/ui'
+import { Card, MetricCard, ViewToggle, type ListView } from '@/app/crm/_components/ui'
 import { buildContactMetrics } from './_lib/contact-metrics'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const PAGE_SIZE = 50
 
 interface Props {
-  searchParams: Promise<{ q?: string; status?: string; source?: string; tag?: string; page?: string }>
+  searchParams: Promise<{ q?: string; status?: string; source?: string; tag?: string; page?: string; view?: string }>
 }
 
 export default async function ContactosPage({ searchParams }: Props) {
   const params = await searchParams
+  const view: ListView = params.view === 'cards' ? 'cards' : 'table'
 
   const listResult = await listContacts({
     q: params.q,
@@ -62,6 +63,7 @@ export default async function ContactosPage({ searchParams }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap justify-end gap-2">
+        <ViewToggle view={view} searchParams={params} />
         <Link href="/crm/contactos/importar" className={TOK.actionSecondary}>
           <Upload size={16} strokeWidth={2} />
           Importar CSV
@@ -90,7 +92,7 @@ export default async function ContactosPage({ searchParams }: Props) {
 
       {/* Table card */}
       <Card>
-        <ContactsTable contacts={contacts} />
+        <ContactsTable contacts={contacts} view={view} />
       </Card>
 
       {/* Pagination */}

@@ -1,8 +1,10 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import { Eye, MailPlus, Send } from 'lucide-react'
 import { createCampaign, previewCampaignRecipients } from '../actions'
+import { Tabs } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type FormOption = {
   id: number
@@ -42,35 +44,39 @@ function formatDate(value: Date | string) {
   }).format(new Date(value))
 }
 
-const inputClass =
-  'w-full rounded-full px-5 py-2.5 border border-[#f2f2f2] bg-white focus:border-[#9ca3af] outline-none transition text-sm'
-const textareaClass =
-  'w-full rounded-2xl px-5 py-2.5 border border-[#f2f2f2] bg-white focus:border-[#9ca3af] outline-none transition text-sm leading-6'
-const labelClass = 'block text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider mb-1.5'
+const labelClass = TOK.label
 
 export function CampaignWorkspace({ forms, webinars }: Props) {
+  const [activeTab, setActiveTab] = useState('message')
   const [createState, createAction, createPending] = useActionState(createCampaign, null)
   const [previewState, previewAction, previewPending] = useActionState(previewCampaignRecipients, null)
+  const tabs = [
+    { id: 'message', label: 'Mensaje' },
+    { id: 'audience', label: 'Audiencia' },
+    { id: 'review', label: 'Revisión' },
+  ]
 
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <span className="rounded-xl bg-[#080808] p-2 text-white">
+        <span className="rounded-[var(--radius-sm)] bg-[var(--color-on-surface)] p-2 text-[var(--color-surface-container-lowest)]">
           <MailPlus size={18} />
         </span>
         <div>
-          <h2 className="text-base font-semibold text-[#080808]">Nueva campaña</h2>
-          <p className="text-sm text-[#8a8a8a]">Define mensaje, audiencia y guarda un borrador antes de enviarlo.</p>
+          <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Nueva campaña</h2>
+          <p className={TOK.textMuted}>Define mensaje, audiencia y guarda un borrador antes de enviarlo.</p>
         </div>
       </div>
 
-      <form className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="space-y-5 pr-0 lg:pr-6">
+      <Tabs tabs={tabs} active={activeTab} onChange={setActiveTab} className="mb-5" />
+
+      <form className="space-y-6">
+        <div className={activeTab === 'message' ? 'space-y-5' : 'hidden'}>
           {createState?.error && (
-            <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{createState.error}</p>
+            <p className={TOK.errorBox}>{createState.error}</p>
           )}
           {createState?.message && (
-            <p className="rounded-2xl bg-green-50 px-4 py-3 text-sm text-green-700">
+            <p className="rounded-[var(--radius-md)] bg-[var(--color-tertiary-fixed)] px-4 py-3 text-sm text-[var(--color-on-tertiary-fixed)]">
               {createState.message} #{createState.campaignId}
             </p>
           )}
@@ -83,7 +89,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
                 required
                 minLength={2}
                 placeholder="Lanzamiento mayo"
-                className={inputClass}
+                className={TOK.inputNative}
               />
             </div>
             <div>
@@ -93,7 +99,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
                 required
                 minLength={3}
                 placeholder="Hola {{nombre}}, tenemos una invitacion para ti"
-                className={inputClass}
+                className={TOK.inputNative}
               />
             </div>
           </div>
@@ -104,7 +110,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               <input
                 name="previewText"
                 placeholder="Texto breve que aparece en inbox"
-                className={inputClass}
+                className={TOK.inputNative}
               />
             </div>
             <div>
@@ -112,7 +118,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               <input
                 name="fromName"
                 placeholder="Rui Machalele"
-                className={inputClass}
+                className={TOK.inputNative}
               />
             </div>
             <div>
@@ -121,7 +127,7 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
                 name="fromEmail"
                 type="email"
                 placeholder="hola@tudominio.com"
-                className={inputClass}
+                className={TOK.inputNative}
               />
             </div>
           </div>
@@ -134,34 +140,34 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               minLength={10}
               rows={9}
               placeholder={'Hola {{nombre}},\n\nQueria invitarte a...'}
-              className={textareaClass}
+              className={`${TOK.inputNativeMultiline} leading-6`}
             />
-            <p className="mt-1 text-xs text-[#b0b0b0]">
+            <p className="mt-1 text-xs text-[var(--color-on-surface-variant)]">
               Variables: {'{{nombre}}'}, {'{{email}}'}, {'{{telefono}}'}, {'{{proyecto}}'}.
             </p>
           </div>
         </div>
 
-        <aside className="border-t border-[#e8e8e8] pt-6 mt-6 lg:border-l lg:border-t-0 lg:pt-0 lg:mt-0 lg:pl-6">
-          <h3 className="text-xs font-semibold text-[#8a8a8a] uppercase tracking-wider">Audiencia</h3>
+        <section className={activeTab === 'audience' ? 'space-y-5' : 'hidden'}>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">Audiencia</h3>
           <div className="mt-4 space-y-5">
             <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm text-[#080808]">
-                <input name="audience" value="registered" type="checkbox" defaultChecked className="h-4 w-4 rounded border-[#f2f2f2] accent-[#080808]" />
+              <label className="flex items-center gap-2 text-sm text-[var(--color-on-surface)]">
+                <input name="audience" value="registered" type="checkbox" defaultChecked className="h-4 w-4 rounded accent-[var(--color-on-surface)]" />
                 Contactos registrados
               </label>
-              <label className="flex items-center gap-2 text-sm text-[#080808]">
-                <input name="audience" value="pipeline_leads" type="checkbox" defaultChecked className="h-4 w-4 rounded border-[#f2f2f2] accent-[#080808]" />
+              <label className="flex items-center gap-2 text-sm text-[var(--color-on-surface)]">
+                <input name="audience" value="pipeline_leads" type="checkbox" defaultChecked className="h-4 w-4 rounded accent-[var(--color-on-surface)]" />
                 Leads del pipeline
               </label>
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]">Estado del contacto</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">Estado del contacto</p>
               <div className="flex flex-wrap gap-2">
                 {CONTACT_STATUSES.map((status) => (
-                  <label key={status.value} className="rounded-xl border border-[#e8e8e8] bg-white px-3 py-2 text-xs text-[#080808]">
-                    <input name="contactStatuses" value={status.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
+                  <label key={status.value} className="rounded-[var(--radius-sm)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-xs text-[var(--color-on-surface)]">
+                    <input name="contactStatuses" value={status.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded accent-[var(--color-on-surface)]" />
                     {status.label}
                   </label>
                 ))}
@@ -169,11 +175,11 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]">Etapa del pipeline</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">Etapa del pipeline</p>
               <div className="grid grid-cols-2 gap-2">
                 {DEAL_STAGES.map((stage) => (
-                  <label key={stage.value} className="rounded-xl border border-[#e8e8e8] bg-white px-3 py-2 text-xs text-[#080808]">
-                    <input name="dealStages" value={stage.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
+                  <label key={stage.value} className="rounded-[var(--radius-sm)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-xs text-[var(--color-on-surface)]">
+                    <input name="dealStages" value={stage.value} type="checkbox" className="mr-2 h-3.5 w-3.5 rounded accent-[var(--color-on-surface)]" />
                     {stage.label}
                   </label>
                 ))}
@@ -187,21 +193,21 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               <input
                 name="projectQuery"
                 placeholder="Nombre del proyecto"
-                className={inputClass}
+                className={TOK.inputNative}
               />
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]">Formulario / tipo</p>
-              <div className="max-h-32 space-y-2 overflow-y-auto rounded-2xl border border-[#e8e8e8] bg-white p-2">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">Formulario / tipo</p>
+              <div className="grid gap-2 sm:grid-cols-2">
                 {forms.length === 0 ? (
-                  <p className="px-1 py-2 text-xs text-[#b0b0b0]">No hay formularios.</p>
+                  <p className="px-1 py-2 text-xs text-[var(--color-on-surface-variant)]">No hay formularios.</p>
                 ) : (
                   forms.map((form) => (
-                    <label key={form.id} className="flex items-center gap-2 text-xs text-[#080808]">
-                      <input name="formIds" value={form.id} type="checkbox" className="h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
+                    <label key={form.id} className="flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-xs text-[var(--color-on-surface)]">
+                      <input name="formIds" value={form.id} type="checkbox" className="h-3.5 w-3.5 rounded accent-[var(--color-on-surface)]" />
                       <span className="truncate">{form.name}</span>
-                      <span className="ml-auto text-[10px] text-[#b0b0b0]">{form.status}</span>
+                      <span className="ml-auto text-[10px] text-[var(--color-on-surface-variant)]">{form.status}</span>
                     </label>
                   ))
                 )}
@@ -209,34 +215,36 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]">Webinar</p>
-              <div className="max-h-32 space-y-2 overflow-y-auto rounded-2xl border border-[#e8e8e8] bg-white p-2">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">Webinar</p>
+              <div className="grid gap-2 sm:grid-cols-2">
                 {webinars.length === 0 ? (
-                  <p className="px-1 py-2 text-xs text-[#b0b0b0]">No hay webinars.</p>
+                  <p className="px-1 py-2 text-xs text-[var(--color-on-surface-variant)]">No hay webinars.</p>
                 ) : (
                   webinars.map((webinar) => (
-                    <label key={webinar.id} className="flex items-center gap-2 text-xs text-[#080808]">
-                      <input name="webinarIds" value={webinar.id} type="checkbox" className="h-3.5 w-3.5 rounded border-[#f2f2f2] accent-[#080808]" />
+                    <label key={webinar.id} className="flex items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-xs text-[var(--color-on-surface)]">
+                      <input name="webinarIds" value={webinar.id} type="checkbox" className="h-3.5 w-3.5 rounded accent-[var(--color-on-surface)]" />
                       <span className="min-w-0 flex-1 truncate">{webinar.title}</span>
-                      <span className="text-[10px] text-[#b0b0b0]">{formatDate(webinar.date)}</span>
+                      <span className="text-[10px] text-[var(--color-on-surface-variant)]">{formatDate(webinar.date)}</span>
                     </label>
                   ))
                 )}
               </div>
             </div>
           </div>
+        </section>
 
+        <section className={activeTab === 'review' ? 'space-y-5' : 'hidden'}>
           {previewState?.error && (
-            <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{previewState.error}</p>
+            <p className={TOK.errorBox}>{previewState.error}</p>
           )}
           {previewState?.count !== undefined && (
-            <div className="mt-4 rounded-2xl border border-[#e8e8e8] bg-white p-3">
-              <p className="text-sm font-semibold text-[#080808]">{previewState.count} destinatarios</p>
-              <p className="mt-1 text-xs text-[#8a8a8a]">{previewState.audienceLabel}</p>
+            <div className="rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-4">
+              <p className="text-sm font-semibold text-[var(--color-on-surface)]">{previewState.count} destinatarios</p>
+              <p className="mt-1 text-xs text-[var(--color-on-surface-variant)]">{previewState.audienceLabel}</p>
               {previewState.sample && previewState.sample.length > 0 && (
                 <div className="mt-3 space-y-1">
                   {previewState.sample.map((contact) => (
-                    <p key={contact.id} className="truncate text-xs text-[#555]">
+                    <p key={contact.id} className="truncate text-xs text-[var(--color-on-surface-variant)]">
                       {contact.name} · {contact.email}
                     </p>
                   ))}
@@ -250,22 +258,22 @@ export function CampaignWorkspace({ forms, webinars }: Props) {
               type="submit"
               formAction={previewAction}
               disabled={previewPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#e5e5e5] bg-white px-3 py-2.5 text-sm font-semibold text-[#080808] hover:bg-[#f7f8fa] transition border-none cursor-pointer font-sans disabled:opacity-50"
+              className={TOK.actionSecondary}
             >
               <Eye size={15} />
-              {previewPending ? 'Calculando...' : 'Preview'}
+              {previewPending ? 'Calculando...' : 'Vista previa'}
             </button>
             <button
               type="submit"
               formAction={createAction}
               disabled={createPending}
-              className="bg-[#080808] text-white rounded-full px-6 py-3 text-sm font-semibold hover:bg-[#222] transition border-none cursor-pointer font-sans disabled:opacity-50 inline-flex items-center justify-center gap-2"
+              className={TOK.actionPrimary}
             >
               <Send size={15} />
               {createPending ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
-        </aside>
+        </section>
       </form>
     </div>
   )

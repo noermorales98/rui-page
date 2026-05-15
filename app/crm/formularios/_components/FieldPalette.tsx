@@ -47,16 +47,16 @@ function PresetRow({
     <button
       type="button"
       onClick={onPick}
-      className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-3 py-2 text-left text-sm text-gray-700 hover:border-indigo-200 hover:bg-indigo-50"
+      className="flex w-full items-center justify-between rounded-[var(--radius-sm)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-left text-sm text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-high)]"
     >
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
-          <Icon size={16} className="shrink-0 text-gray-500" />
-          <span className="font-medium text-gray-900">{preset.title}</span>
+          <Icon size={16} className="shrink-0 text-[var(--color-on-surface-variant)]" />
+          <span className="font-medium text-[var(--color-on-surface)]">{preset.title}</span>
         </span>
-        {preset.subtitle && <span className="mt-0.5 block truncate pl-7 text-xs text-gray-500">{preset.subtitle}</span>}
+        {preset.subtitle && <span className="mt-0.5 block truncate pl-7 text-xs text-[var(--color-on-surface-variant)]">{preset.subtitle}</span>}
       </span>
-      <Plus size={14} className="shrink-0 text-gray-400" />
+      <Plus size={14} className="shrink-0 text-[var(--color-on-surface-variant)]" />
     </button>
   )
 }
@@ -67,15 +67,15 @@ export function FieldPalette({ formId }: Props) {
 
   return (
     <>
-      <aside className="max-h-[calc(100vh-8rem)] overflow-y-auto rounded-xl border border-gray-200 bg-white p-4">
-        <h2 className="mb-3 text-sm font-semibold text-gray-900">Inputs</h2>
-        <p className="mb-4 text-xs leading-relaxed text-gray-500">
+      <aside className="rounded-[var(--radius-lg)] bg-[var(--color-surface-container-low)] p-4">
+        <h2 className="mb-3 text-sm font-semibold text-[var(--color-on-surface)]">Inputs</h2>
+        <p className="mb-4 text-xs leading-relaxed text-[var(--color-on-surface-variant)]">
           Elige un tipo: podrás ajustar etiqueta, clave interna, placeholder, ayuda y obligatorio antes de crear el
           campo.
         </p>
 
         <div className="mb-5">
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Contacto y CRM</h3>
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-on-surface-variant)]">Contacto y CRM</h3>
           <div className="space-y-2">
             {CRM_PALETTE_PRESETS.map((preset) => (
               <PresetRow
@@ -91,7 +91,7 @@ export function FieldPalette({ formId }: Props) {
         </div>
 
         <div>
-          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">HTML personalizado</h3>
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-on-surface-variant)]">HTML personalizado</h3>
           <div className="space-y-2">
             {HTML_PALETTE_PRESETS.map((preset) => (
               <PresetRow
@@ -106,9 +106,9 @@ export function FieldPalette({ formId }: Props) {
           </div>
         </div>
 
-        <p className="mt-4 text-[11px] leading-relaxed text-gray-400">
+        <p className="mt-4 text-[11px] leading-relaxed text-[var(--color-on-surface-variant)]">
           Total: {ALL_PALETTE_PRESETS.length} plantillas. Los campos HTML guardan la forma del control en{' '}
-          <code className="rounded bg-gray-100 px-1">config.html</code>.
+          <code className="rounded bg-[var(--color-surface-container-high)] px-1">config.html</code>.
         </p>
       </aside>
 

@@ -8,6 +8,7 @@ import { ActivityTimeline } from './_components/ActivityTimeline'
 import { AddNoteForm } from './_components/AddNoteForm'
 import { ContactDeals } from './_components/ContactDeals'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
+import { Accordion } from '@/app/crm/_components/ui'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -40,24 +41,23 @@ export default async function ContactDetailPage({ params }: Props) {
       <div className="flex gap-5 items-start">
         {/* Left: info */}
         <div className="w-72 shrink-0">
-          <div className={`${TOK.panel} overflow-hidden`}>
+          <div className={TOK.panel}>
             <ContactInfo contact={contact} />
           </div>
         </div>
 
         {/* Right: header + activity */}
         <div className="min-w-0 flex-1">
-          <div className={`${TOK.panel} overflow-hidden`}>
+          <div className={TOK.panel}>
             <ContactHeader contact={contact} canDelete={canDelete} />
             <div className="p-6">
-              <ContactDeals contactId={contact.id} contactName={contact.name} />
-              <div className="mt-6 border-t border-[var(--color-outline-variant)] pt-6">
-                <h3 className="mb-4 text-sm font-semibold tracking-tight text-[var(--color-on-surface)]">
-                  Actividad
-                </h3>
+              <Accordion title="Oportunidades" defaultOpen>
+                <ContactDeals contactId={contact.id} contactName={contact.name} />
+              </Accordion>
+              <Accordion title="Actividad" className="mt-3">
                 <AddNoteForm contactId={contact.id} />
                 <ActivityTimeline activities={contact.activities} />
-              </div>
+              </Accordion>
             </div>
           </div>
         </div>

@@ -50,7 +50,7 @@ export function CreateFormModal() {
             <form action={formAction} onSubmit={() => setSubmitted(true)} className="space-y-4">
               <div>
                 <label className={TOK.label}>
-                  Nombre <span className="text-red-500">*</span>
+                  Nombre <span className="text-[var(--color-error)]">*</span>
                 </label>
                 <Input
                   name="name"
@@ -68,7 +68,7 @@ export function CreateFormModal() {
 
               <div>
                 <label className={TOK.label}>
-                  Slug publico <span className="text-red-500">*</span>
+                  Slug publico <span className="text-[var(--color-error)]">*</span>
                 </label>
                 <Input
                   name="slug"

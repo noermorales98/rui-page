@@ -45,7 +45,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] p-4">
       <div
         className={TOK.modalPanel}
         role="dialog"
@@ -71,7 +71,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
         <form action={formAction} onSubmit={() => { submittedRef.current = true }}>
           <div className="mb-4">
             <label className={TOK.label}>
-              Título <span className="text-red-500">*</span>
+              Título <span className="text-[var(--color-error)]">*</span>
             </label>
             <input
               type="text"
@@ -85,7 +85,7 @@ export function CreateWebinarModal({ webinar, onClose }: Props) {
 
           <div className="mb-4">
             <label className={TOK.label}>
-              Fecha y hora <span className="text-red-500">*</span>
+              Fecha y hora <span className="text-[var(--color-error)]">*</span>
             </label>
             <input
               type="datetime-local"

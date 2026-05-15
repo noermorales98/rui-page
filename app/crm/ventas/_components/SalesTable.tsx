@@ -6,7 +6,7 @@ import type { CrmPaymentMethod, CrmSaleStatus, DealStage } from '@prisma/client'
 import { Trash2 } from 'lucide-react'
 import { deleteSale } from '../actions'
 import { formatMoneyFromCents } from '../_lib/sales-metrics'
-import { SaleStatusBadge } from '@/app/crm/_components/ui'
+import { SaleStatusBadge, Dialog, type ListView } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type SaleRow = {
@@ -25,6 +25,7 @@ export type SaleRow = {
 
 type Props = {
   sales: SaleRow[]
+  view?: ListView
 }
 
 const METHOD_LABELS: Record<CrmPaymentMethod, string> = {
@@ -44,13 +45,19 @@ function formatDate(value: Date) {
   }).format(new Date(value))
 }
 
-export function SalesTable({ sales }: Props) {
+export function SalesTable({ sales, view = 'table' }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [saleToDelete, setSaleToDelete] = useState<SaleRow | null>(null)
 
   function handleDelete(sale: SaleRow) {
-    if (!window.confirm(`¿Eliminar la venta de "${sale.productName}"?`)) return
+    setSaleToDelete(sale)
+  }
 
+  function doDelete() {
+    if (!saleToDelete) return
+    const sale = saleToDelete
+    setSaleToDelete(null)
     setMessage(null)
     startTransition(async () => {
       const result = await deleteSale(sale.id)
@@ -58,22 +65,76 @@ export function SalesTable({ sales }: Props) {
     })
   }
 
-  if (sales.length === 0) {
-    return (
-      <div className={`py-12 text-center ${TOK.textMuted}`}>No hay ventas que coincidan con los filtros.</div>
-    )
-  }
-
   return (
-    <div>
+    <>
+      <Dialog
+        open={saleToDelete !== null}
+        title="¿Eliminar venta?"
+        description={saleToDelete ? `Eliminar la venta de "${saleToDelete.productName}".` : undefined}
+        variant="danger"
+        confirmLabel="Eliminar"
+        onConfirm={doDelete}
+        onCancel={() => setSaleToDelete(null)}
+      />
+      {sales.length === 0 ? (
+        <div className={`py-12 text-center ${TOK.textMuted}`}>No hay ventas que coincidan con los filtros.</div>
+      ) : view === 'cards' ? (
+        <div>
+          {message && (
+            <div className={TOK.errorBox}>{message}</div>
+          )}
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {sales.map((sale) => (
+              <div
+                key={sale.id}
+                className="flex min-h-48 flex-col justify-between rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5 transition hover:bg-[var(--color-surface-container-low)]"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[var(--color-on-surface)]">{sale.productName}</p>
+                      <p className={`mt-1 text-xs ${TOK.textSubtle}`}>#{sale.id}{sale.deal && ` · Pipeline #${sale.deal.id}`}</p>
+                    </div>
+                    <SaleStatusBadge status={sale.status} />
+                  </div>
+                  <Link
+                    href={`/crm/contactos/${sale.contact.id}`}
+                    className="mt-4 block truncate text-sm font-semibold text-[var(--color-on-surface)] transition hover:text-[var(--color-primary)]"
+                  >
+                    {sale.contact.name}
+                  </Link>
+                  <p className={`mt-1 truncate text-xs ${TOK.textSubtle}`}>{sale.contact.email}</p>
+                </div>
+                <div className="mt-5 flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      {formatMoneyFromCents(sale.amountCents, sale.currency)}
+                    </p>
+                    <p className={`mt-1 text-xs ${TOK.textSubtle}`}>{METHOD_LABELS[sale.paymentMethod]} · {formatDate(sale.soldAt)}</p>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={isPending}
+                    onClick={() => handleDelete(sale)}
+                    className="cursor-pointer rounded-[var(--radius-sm)] border-none bg-transparent p-2 text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)] disabled:opacity-50"
+                    aria-label="Eliminar venta"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+      <div>
       {message && (
         <div className={TOK.errorBox}>{message}</div>
       )}
 
       {/* Column headers */}
       <div
-        className={`grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}
-        style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 0.5fr' }}
+        className={`grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_0.5fr] px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}
       >
         <span>Venta</span>
         <span>Contacto</span>
@@ -87,8 +148,7 @@ export function SalesTable({ sales }: Props) {
       {sales.map((sale) => (
         <div
           key={sale.id}
-          className="mb-1.5 grid items-center rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0"
-          style={{ gridTemplateColumns: '2fr 1.5fr 1fr 1fr 1fr 0.5fr' }}
+          className="mb-1.5 grid grid-cols-[2fr_1.5fr_1fr_1fr_1fr_0.5fr] items-center rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] px-4 py-3 transition last:mb-0 hover:bg-[var(--color-surface-container-low)]"
         >
           {/* Venta */}
           <div>
@@ -141,5 +201,7 @@ export function SalesTable({ sales }: Props) {
         </div>
       ))}
     </div>
+      )}
+    </>
   )
 }

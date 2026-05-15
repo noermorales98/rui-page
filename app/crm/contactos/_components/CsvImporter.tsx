@@ -109,7 +109,7 @@ export function CsvImporter({ standalone = false }: CsvImporterProps) {
           accept=".csv,text/csv"
           required
           onChange={handleFileChange}
-          className="block w-full rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] p-3 text-sm text-[var(--color-on-surface-variant)] file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-[var(--color-secondary-container)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[var(--color-on-secondary-container)] hover:file:brightness-95"
+          className="block w-full rounded-[var(--radius-md)] border-0 bg-[var(--color-surface-container-low)] p-3 text-sm text-[var(--color-on-surface-variant)] file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-[var(--color-secondary-container)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[var(--color-on-secondary-container)] hover:file:brightness-95"
         />
 
         {rows.length > 0 && (
@@ -117,7 +117,7 @@ export function CsvImporter({ standalone = false }: CsvImporterProps) {
             <p className={`mb-2 ${TOK.textStrong}`}>
               Vista previa (cliente): primeras 5 filas de {rows.length} detectadas.
             </p>
-            <div className="overflow-x-auto rounded-2xl border border-[var(--color-outline-variant)]">
+            <div className="overflow-x-auto rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)]">
               <table className="min-w-full text-xs">
                 <thead className="bg-[var(--color-surface-container)]">
                   <tr>
@@ -128,9 +128,9 @@ export function CsvImporter({ standalone = false }: CsvImporterProps) {
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--color-outline-variant)]">
+                <tbody>
                   {rows.slice(0, 5).map((row, i) => (
-                    <tr key={i}>
+                    <tr key={i} className="odd:bg-[var(--color-surface-container-low)]/55">
                       <td className="px-3 py-2 text-[var(--color-on-surface)]">{row.name}</td>
                       <td className="px-3 py-2 text-[var(--color-on-surface)]">{row.email}</td>
                       <td className="px-3 py-2 text-[var(--color-on-surface-variant)]">{row.phone ?? '—'}</td>
@@ -144,7 +144,7 @@ export function CsvImporter({ standalone = false }: CsvImporterProps) {
         )}
 
         {state && submitted && (
-          <div className="rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-secondary-container)]/25 px-4 py-3 text-sm text-[var(--color-on-surface)]">
+          <div className="rounded-[var(--radius-md)] bg-[var(--color-secondary-container)]/25 px-4 py-3 text-sm text-[var(--color-on-surface)]">
             <p>
               Nuevos: <strong>{state.inserted}</strong>
               {' · '}
@@ -157,7 +157,7 @@ export function CsvImporter({ standalone = false }: CsvImporterProps) {
               )}
             </p>
             {state.errors.length > 0 && (
-              <ul className="mt-2 max-h-40 list-inside list-disc space-y-0.5 overflow-y-auto text-xs text-[var(--color-error)]">
+              <ul className="mt-2 list-inside list-disc space-y-0.5 text-xs text-[var(--color-error)]">
                 {state.errors.slice(0, 20).map((e) => (
                   <li key={`${e.row}-${e.message}`}>
                     Fila {e.row}: {e.message}

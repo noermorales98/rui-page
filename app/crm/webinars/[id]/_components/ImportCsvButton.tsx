@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { importRegistrations } from '../../actions'
+import { useToast } from '@/app/crm/_components/ui'
 
 function parseCsvLine(line: string): string[] {
   const cols: string[] = []
@@ -36,6 +37,7 @@ export function ImportCsvButton({ webinarId }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<{ imported: number; skipped: number } | null>(null)
+  const { error: toastError } = useToast()
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -44,7 +46,7 @@ export function ImportCsvButton({ webinarId }: Props) {
     const text = await file.text()
     const lines = text.replace(/^﻿/, '').trim().split(/\r?\n/)
     if (lines.length < 2) {
-      alert('El CSV está vacío o no tiene datos.')
+      toastError('El CSV está vacío o no tiene datos.')
       if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
@@ -54,7 +56,7 @@ export function ImportCsvButton({ webinarId }: Props) {
     const emailIdx = headers.findIndex((h) => h === 'email' || h === 'correo')
 
     if (emailIdx === -1) {
-      alert('El CSV debe tener una columna llamada "email" o "correo".')
+      toastError('El CSV debe tener una columna llamada "email" o "correo".')
       if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
@@ -72,7 +74,7 @@ export function ImportCsvButton({ webinarId }: Props) {
       .filter((r) => r.email.trim())
 
     if (rows.length === 0) {
-      alert('No se encontraron filas válidas en el CSV.')
+      toastError('No se encontraron filas válidas en el CSV.')
       if (fileInputRef.current) fileInputRef.current.value = ''
       return
     }
@@ -82,7 +84,7 @@ export function ImportCsvButton({ webinarId }: Props) {
     const res = await importRegistrations(webinarId, rows)
     setLoading(false)
     if ('error' in res && res.error) {
-      alert(res.error)
+      toastError(res.error)
     } else {
       setResult({ imported: res.imported, skipped: res.skipped })
     }
@@ -103,7 +105,7 @@ export function ImportCsvButton({ webinarId }: Props) {
         type="button"
         onClick={() => fileInputRef.current?.click()}
         disabled={loading}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-green-300 bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-100 disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-[var(--radius-md)] bg-[var(--color-secondary-container)] px-3 py-1.5 text-sm font-medium text-[var(--color-on-secondary-container)] hover:brightness-95 disabled:opacity-60"
       >
         {loading ? (
           'Importando...'
@@ -118,7 +120,7 @@ export function ImportCsvButton({ webinarId }: Props) {
         )}
       </button>
       {result && (
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-[var(--color-on-surface-variant)]">
           {result.imported} importado{result.imported !== 1 ? 's' : ''}
           {result.skipped > 0 ? `, ${result.skipped} omitido${result.skipped !== 1 ? 's' : ''}` : ''}
         </span>

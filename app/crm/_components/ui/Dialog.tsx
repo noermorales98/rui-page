@@ -35,19 +35,19 @@ export function Dialog({
 
   const confirmClassName =
     variant === 'danger'
-      ? 'rounded-full bg-[var(--color-error)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed)]'
-      : 'rounded-full bg-[var(--color-on-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-surface-container-lowest)] hover:opacity-90 transition focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed)]'
+      ? 'rounded-[var(--radius-md)] bg-[var(--color-error)] px-4 py-2 text-sm font-semibold text-[var(--color-on-error)] transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]'
+      : 'rounded-[var(--radius-md)] bg-[var(--color-on-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-surface-container-lowest)] transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]'
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] p-4"
       onClick={handleOverlayClick}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-[calc(100vw-2rem)] max-w-sm rounded-[var(--radius-lg,20px)] bg-[var(--color-surface-container-lowest)] p-6 shadow-[var(--shadow-md,0_4px_14px_rgba(0,0,0,.30))]"
+        className="w-full max-w-sm rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6 shadow-[var(--shadow-md)]"
       >
         <h2
           id={titleId}
@@ -66,7 +66,7 @@ export function Dialog({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-full bg-[var(--color-surface-container-high)] px-4 py-2 text-sm font-medium text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-highest)] transition focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed)]"
+            className="rounded-[var(--radius-md)] bg-[var(--color-surface-container-high)] px-4 py-2 text-sm font-medium text-[var(--color-on-surface)] transition hover:bg-[var(--color-surface-container-highest)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
           >
             {cancelLabel}
           </button>

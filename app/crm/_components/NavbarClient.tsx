@@ -14,12 +14,10 @@ export function NavbarClient({ name, initials, isAdmin }: Props) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const container = document.getElementById('crm-main')
-    if (!container) return
-
-    const onScroll = () => setScrolled(container.scrollTop > 10)
-    container.addEventListener('scroll', onScroll, { passive: true })
-    return () => container.removeEventListener('scroll', onScroll)
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
@@ -45,7 +43,7 @@ export function NavbarClient({ name, initials, isAdmin }: Props) {
         <button
           type="button"
           aria-label="Buscar"
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-white text-[var(--color-on-surface-variant)] transition hover:text-[var(--color-on-surface)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)]"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)]"
           title="Buscar"
         >
           <Search size={17} strokeWidth={1.8} />
@@ -55,18 +53,18 @@ export function NavbarClient({ name, initials, isAdmin }: Props) {
         <button
           type="button"
           aria-label="Notificaciones"
-          className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-white text-[var(--color-on-surface-variant)] transition hover:text-[var(--color-on-surface)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)]"
+          className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-none bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)]"
           title="Notificaciones"
         >
           <Bell size={17} strokeWidth={1.8} />
-          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full border border-[var(--color-surface-container-low)] bg-[var(--color-accent-neon)]" />
+          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-[var(--color-accent-neon)]" />
         </button>
 
         {/* Divider */}
-        <div className="mx-1 h-7 w-px bg-[var(--color-outline-variant)]" />
+        <div className="mx-1 h-7 w-px bg-[var(--color-surface-container-high)]" />
 
         {/* User pill */}
-        <div className="flex items-center gap-2.5 rounded-full bg-white py-1.5 pl-3 pr-1.5">
+        <div className="flex items-center gap-2.5 rounded-full bg-[var(--color-surface-container-lowest)] py-1.5 pl-3 pr-1.5">
           <span className="text-[13px] font-semibold text-[var(--color-on-surface)]">{name}</span>
           <span className="rounded-full bg-[var(--color-primary-fixed-dim)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-on-surface)]">
             {isAdmin ? 'Admin' : 'Editor'}

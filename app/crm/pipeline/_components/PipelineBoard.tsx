@@ -122,29 +122,29 @@ export function PipelineBoard({ initialDeals, canMutate, canDelete, stages }: Pr
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveId(null)}
     >
-      <div className="flex gap-3 overflow-x-auto pb-6">
-        {stages.map((stage) => (
-          <PipelineColumn
-            key={stage}
-            stage={stage}
-            deals={deals[stage] ?? []}
-            onMove={handleMoveCard}
-            onDelete={handleDeleteCard}
-            canMutate={canMutate}
-            canDelete={canDelete}
-          />
-        ))}
+      <div className="w-full min-w-0 pb-2">
+        <div className="grid w-full min-w-0 gap-2 [grid-template-columns:repeat(4,minmax(0,1fr))] sm:gap-3 md:gap-4">
+          {stages.map((stage) => (
+            <PipelineColumn
+              key={stage}
+              stage={stage}
+              deals={deals[stage] ?? []}
+              onMove={handleMoveCard}
+              onDelete={handleDeleteCard}
+              canMutate={canMutate}
+              canDelete={canDelete}
+            />
+          ))}
+        </div>
       </div>
       <DragOverlay>
         {activeDeal ? (
-          <div className="w-64 cursor-grabbing rounded-2xl border-2 border-[var(--color-primary-fixed)] bg-[var(--color-surface-container-lowest)] px-3.5 py-3 opacity-90">
-            <p className="truncate text-sm font-semibold text-[var(--color-on-surface)]">
-              {activeDeal.contact.name}
-            </p>
+          <div className="w-[min(100vw-2rem,22rem)] cursor-grabbing rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] px-4 py-3.5 opacity-95">
+            <p className="truncate text-sm font-semibold text-[var(--color-on-surface)]">{activeDeal.contact.name}</p>
             {activeDeal.courseName ? (
-              <p className="mt-0.5 truncate text-xs text-[var(--color-on-surface-variant)]">{activeDeal.courseName}</p>
+              <p className="mt-1 truncate text-xs text-[var(--color-on-surface-variant)]">{activeDeal.courseName}</p>
             ) : (
-              <p className="mt-0.5 text-xs italic text-[var(--color-on-surface-variant)]/70">sin curso</p>
+              <p className="mt-1 text-xs italic text-[var(--color-on-surface-variant)]/80">sin curso</p>
             )}
           </div>
         ) : null}

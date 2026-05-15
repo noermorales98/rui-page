@@ -8,19 +8,19 @@ export default async function Sidebar() {
   const role = (session?.user?.role ?? null) as Role | null
 
   return (
-    <aside className="flex h-full max-h-full flex-col gap-px overflow-hidden rounded-[28px] border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] p-5">
+    <aside className="flex h-full min-h-0 w-full flex-col gap-px overflow-hidden rounded-[var(--radius-lg)] bg-[var(--color-surface-container)] p-5">
       {/* Brand */}
-      <div className="px-2 pb-4 border-b border-[var(--color-outline-variant)] mb-2">
+      <div className="shrink-0 px-2 pb-4 pt-0.5">
         <span className="text-[17px] font-bold tracking-[-0.04em] text-[var(--color-on-surface)]">CRM Digital</span>
       </div>
 
-      {/* Nav */}
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      {/* Nav: sin scroll; el contenedor recorta si no cupiera */}
+      <div className="min-h-0 flex-1 overflow-hidden">
         <SidebarNav role={role} />
       </div>
 
       {/* Sign out */}
-      <div className="pt-3 border-t border-[var(--color-outline-variant)]">
+      <div className="shrink-0 pt-3">
         <SignOutButton />
       </div>
     </aside>

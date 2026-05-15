@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
+import React, { createContext, useCallback, useRef, useState } from 'react'
 
 interface ToastItem {
   id: number
@@ -54,14 +54,14 @@ export function ToastProvider({ children }: { children: React.ReactNode }): Reac
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`flex items-start gap-2 rounded-[var(--radius-md,10px)] px-4 py-3 text-sm font-medium shadow-[var(--shadow-md,0_4px_14px_rgba(0,0,0,.30))] max-w-xs ${variantClass[toast.variant]}`}
+            className={`flex max-w-xs items-start gap-2 rounded-[var(--radius-md)] px-4 py-3 text-sm font-medium shadow-[var(--shadow-md)] ${variantClass[toast.variant]}`}
           >
             <span className="flex-1">{toast.message}</span>
             <button
               type="button"
               aria-label="Cerrar"
               onClick={() => dismiss(toast.id)}
-              className="ml-1 leading-none opacity-70 hover:opacity-100 transition focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed)]"
+              className="ml-1 leading-none opacity-70 transition hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
             >
               ×
             </button>

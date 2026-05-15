@@ -2,7 +2,7 @@ import type { RegistrationStatus } from '@prisma/client'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const statCard =
-  'rounded-[24px] border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] p-5 text-center'
+  'rounded-[24px] bg-[var(--color-surface-container-low)] p-5 text-center'
 
 interface Props {
   registrations: { status: RegistrationStatus }[]

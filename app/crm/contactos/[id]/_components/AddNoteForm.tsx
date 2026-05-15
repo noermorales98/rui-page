@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from 'react'
 import { addNote } from '../actions'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export function AddNoteForm({ contactId }: { contactId: number }) {
   const boundAction = addNote.bind(null, contactId)
@@ -22,7 +23,7 @@ export function AddNoteForm({ contactId }: { contactId: number }) {
           name="body"
           rows={3}
           placeholder="Agregar una nota..."
-          className="w-full resize-none rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-3 text-sm text-[var(--color-on-surface)] outline-none transition placeholder:text-[var(--color-on-surface-variant)] focus:border-[var(--color-outline)]"
+          className={TOK.inputNativeMultiline}
         />
         {state?.error && (
           <p className="mb-2 text-xs text-[var(--color-error)]">{state.error}</p>
@@ -31,7 +32,7 @@ export function AddNoteForm({ contactId }: { contactId: number }) {
           <button
             type="submit"
             disabled={isPending}
-            className="cursor-pointer rounded-full border-none bg-[var(--color-on-surface)] px-5 py-2 font-sans text-sm font-semibold text-[var(--color-surface-container-lowest)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+            className={TOK.actionPrimary}
           >
             {isPending ? 'Guardando...' : 'Agregar nota'}
           </button>

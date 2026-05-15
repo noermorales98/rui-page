@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react'
 import { useActionState, useEffect, useState } from 'react'
 import { createTag } from '../actions'
 import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const DEFAULT_PALETTE = [
   '#6366f1', // indigo
@@ -43,7 +44,7 @@ export function CreateTagModal() {
       {open && (
         <ModalWrapper onClose={() => { setOpen(false); setSubmitted(false) }} title="Nueva etiqueta">
           {state?.error && (
-            <div className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className={TOK.errorBox}>
               {state.error}
             </div>
           )}

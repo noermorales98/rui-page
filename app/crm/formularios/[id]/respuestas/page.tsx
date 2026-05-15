@@ -62,7 +62,7 @@ export default async function FormResponsesPage({ params, searchParams }: Props)
 
   const gridTemplateColumns = `1fr 1.5fr ${form.fields.map(() => '1fr').join(' ')}`
   const rowSurface =
-    'grid items-center gap-3 rounded-2xl border border-[var(--color-outline-variant)]/60 bg-[var(--color-surface-container-lowest)] px-4 py-3'
+    'grid items-center gap-3 rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3'
 
   return (
     <div className="flex flex-col gap-6">

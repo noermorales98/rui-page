@@ -37,6 +37,7 @@
   --color-on-secondary-container: #755100;
   --color-on-error-container: #93000a;
   --color-accent-neon: #dfff00;   /* dot notificación, avatar bg */
+  --color-overlay: rgb(29 28 23 / 0.42);
   --color-on-secondary: #ffffff;
   --color-inverse-surface: #32302b;
   --color-tertiary: #002a19;
@@ -57,6 +58,13 @@
   --font-body: var(--font-inter), sans-serif;
   --font-label: var(--font-inter), sans-serif;
   --font-noto-serif: var(--font-noto-serif), serif;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+
+  --shadow-sm: 0 1px 2px rgb(29 28 23 / 0.04);
+  --shadow-md: 0 16px 40px rgb(29 28 23 / 0.08);
 }
 
 body {

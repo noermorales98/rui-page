@@ -11,10 +11,19 @@ import { ZoomLinkPanel } from './_components/ZoomLinkPanel'
 
 interface Props {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ tab?: string }>
 }
 
-export default async function WebinarDetailPage({ params }: Props) {
-  const { id } = await params
+type WebinarTab = 'info' | 'participantes' | 'zoom'
+
+function tabHref(tab: WebinarTab) {
+  return tab === 'info' ? '?' : `?tab=${tab}`
+}
+
+export default async function WebinarDetailPage({ params, searchParams }: Props) {
+  const [{ id }, query] = await Promise.all([params, searchParams])
+  const activeTab: WebinarTab =
+    query.tab === 'participantes' || query.tab === 'zoom' ? query.tab : 'info'
   const webinarId = Number(id)
   if (isNaN(webinarId)) notFound()
 
@@ -54,11 +63,37 @@ export default async function WebinarDetailPage({ params }: Props) {
         Webinars
       </Link>
 
-      <div className={TOK.panel}>
-        <WebinarHeader webinar={webinar} />
-        <div className="p-6">
+      <div className="inline-flex w-fit rounded-[var(--radius-md)] bg-[var(--color-surface-container-high)] p-1">
+        {([
+          ['info', 'Info'],
+          ['participantes', 'Participantes'],
+          ['zoom', 'Zoom'],
+        ] as Array<[WebinarTab, string]>).map(([tab, label]) => (
+          <Link
+            key={tab}
+            href={tabHref(tab)}
+            className={`rounded-[calc(var(--radius-md)-4px)] px-4 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${
+              activeTab === tab
+                ? 'bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)]'
+                : 'text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)]'
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
+      </div>
+
+      {activeTab === 'info' && (
+        <div className={TOK.panel}>
+          <WebinarHeader webinar={webinar} />
+          <div className="p-6">
           <WebinarStats registrations={webinar.registrations} />
-          <div className="mt-6">
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'participantes' && (
+        <div className={`${TOK.panel} p-6`}>
             <div className="mb-4 flex items-center justify-between">
               <h3 className={TOK.textStrong}>
                 Participantes ({webinar.registrations.length})
@@ -72,15 +107,17 @@ export default async function WebinarDetailPage({ params }: Props) {
               </div>
             </div>
             <ParticipantsTable registrations={webinar.registrations} />
-          </div>
         </div>
-      </div>
-      <ZoomLinkPanel
-        webinarId={webinar.id}
-        zoomWebinarId={zoomWebinarId}
-        viewerCount={webinar.viewerCount}
-        zoomConnected={zoomConnected}
-      />
+      )}
+
+      {activeTab === 'zoom' && (
+        <ZoomLinkPanel
+          webinarId={webinar.id}
+          zoomWebinarId={zoomWebinarId}
+          viewerCount={webinar.viewerCount}
+          zoomConnected={zoomConnected}
+        />
+      )}
     </div>
   )
 }

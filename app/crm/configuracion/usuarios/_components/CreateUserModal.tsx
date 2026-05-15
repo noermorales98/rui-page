@@ -5,9 +5,10 @@ import { useState, useActionState, useEffect } from 'react'
 import { createUser } from '../actions'
 import { CRM_USER_ROLES } from '../role-options'
 import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
-const fieldClass = 'bg-[#f7f8fa]'
-const selectClass = 'min-h-10 w-full rounded-full border border-[#f2f2f2] bg-[#f7f8fa] px-5 py-2.5 text-sm text-[#080808] outline-none transition focus:border-[#9ca3af] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bbdf7]'
+const fieldClass = TOK.fieldBg
+const selectClass = TOK.selectLg
 
 export function CreateUserModal() {
   const [open, setOpen] = useState(false)
@@ -44,7 +45,7 @@ export function CreateUserModal() {
       {open && (
         <ModalWrapper onClose={handleClose} title="Nuevo usuario">
             {state?.error && (
-              <div className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className={TOK.errorBox}>
                 {state.error}
               </div>
             )}
@@ -60,7 +61,7 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="name"
-                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
+                  className={TOK.label}
                 >
                   Nombre
                 </label>
@@ -78,7 +79,7 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
+                  className={TOK.label}
                 >
                   Email
                 </label>
@@ -95,7 +96,7 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="password"
-                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
+                  className={TOK.label}
                 >
                   Contraseña
                 </label>
@@ -113,7 +114,7 @@ export function CreateUserModal() {
               <div>
                 <label
                   htmlFor="role"
-                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-[#8a8a8a]"
+                  className={TOK.label}
                 >
                   Rol
                 </label>

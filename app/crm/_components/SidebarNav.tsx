@@ -60,7 +60,7 @@ export function SidebarNav({ role }: SidebarNavProps) {
   }
 
   return (
-    <nav className="flex flex-col gap-0.5">
+    <nav className="flex h-full min-h-0 flex-col gap-0.5 overflow-hidden">
       {NAV_ITEMS.map(({ label, href, icon }) => {
         const active = isActive(href)
         return (
@@ -69,8 +69,8 @@ export function SidebarNav({ role }: SidebarNavProps) {
             href={href}
             className={`flex min-h-10 items-center gap-2.5 rounded-full px-3.5 py-2.5 text-[13.5px] font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)] ${
               active
-                ? 'bg-white text-[var(--color-on-surface)] font-semibold'
-                : 'text-[var(--color-on-surface-variant)] hover:bg-white hover:text-[var(--color-on-surface)]'
+                ? 'bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] font-semibold'
+                : 'text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-lowest)] hover:text-[var(--color-on-surface)]'
             }`}
           >
             <HugeiconsIcon
@@ -84,7 +84,7 @@ export function SidebarNav({ role }: SidebarNavProps) {
         )
       })}
 
-      <div className="my-2 h-px bg-[var(--color-outline-variant)]" />
+      <div className="my-2 h-px bg-[var(--color-surface-container-high)]" />
 
       {CONFIG_ITEMS.filter((item) => isVisible(item, role)).map(({ label, href, icon }) => {
         const active = isActive(href)
@@ -94,8 +94,8 @@ export function SidebarNav({ role }: SidebarNavProps) {
             href={href}
             className={`flex min-h-10 items-center gap-2.5 rounded-full px-3.5 py-2.5 text-[13.5px] font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed-dim)] ${
               active
-                ? 'bg-white text-[var(--color-on-surface)] font-semibold'
-                : 'text-[var(--color-on-surface-variant)] hover:bg-white hover:text-[var(--color-on-surface)]'
+                ? 'bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] font-semibold'
+                : 'text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-lowest)] hover:text-[var(--color-on-surface)]'
             }`}
           >
             <HugeiconsIcon

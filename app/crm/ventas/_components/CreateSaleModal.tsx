@@ -140,7 +140,7 @@ export function CreateSaleModal({ deals }: Props) {
       </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] p-4">
           <div
             className={TOK.modalPanel}
             role="dialog"
@@ -177,7 +177,7 @@ export function CreateSaleModal({ deals }: Props) {
 
               <div>
                 <label className={TOK.label}>
-                  Contacto <span className="text-red-500">*</span>
+                  Contacto <span className="text-[var(--color-error)]">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -199,13 +199,13 @@ export function CreateSaleModal({ deals }: Props) {
                     className={TOK.inputNative}
                   />
                   {showDropdown && (
-                    <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] py-1">
+                    <ul className="absolute z-10 mt-1 w-full rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-1 shadow-[var(--shadow-sm)]">
                       {searchResults.map((contact) => (
                         <li key={contact.id}>
                           <button
                             type="button"
                             onMouseDown={() => chooseContact(contact)}
-                            className="w-full cursor-pointer border-none bg-transparent px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
+                            className="w-full cursor-pointer rounded-[var(--radius-sm)] border-none bg-transparent px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
                           >
                             <span className="font-medium text-[var(--color-on-surface)]">{contact.name}</span>
                             <span className="ml-2 text-xs text-[var(--color-on-surface-variant)]">{contact.email}</span>
@@ -240,7 +240,7 @@ export function CreateSaleModal({ deals }: Props) {
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className={TOK.label}>
-                    Producto / curso <span className="text-red-500">*</span>
+                    Producto / curso <span className="text-[var(--color-error)]">*</span>
                   </label>
                   <input
                     name="productName"
@@ -254,7 +254,7 @@ export function CreateSaleModal({ deals }: Props) {
                 </div>
                 <div>
                   <label className={TOK.label}>
-                    Monto <span className="text-red-500">*</span>
+                    Monto <span className="text-[var(--color-error)]">*</span>
                   </label>
                   <input
                     name="amount"

@@ -10,10 +10,10 @@ const STAGE_LABELS: Record<DealStage, string> = {
 }
 
 const STAGE_BADGE: Record<DealStage, string> = {
-  LEAD: 'bg-indigo-100 text-indigo-800',
-  DEMO: 'bg-yellow-100 text-yellow-800',
-  NEGOTIATION: 'bg-orange-100 text-orange-800',
-  ENROLLED: 'bg-green-100 text-green-800',
+  LEAD: 'bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)]',
+  DEMO: 'bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed)]',
+  NEGOTIATION: 'bg-[var(--color-secondary-fixed)] text-[var(--color-on-secondary-fixed-variant)]',
+  ENROLLED: 'bg-[var(--color-secondary-container)] text-[var(--color-on-secondary-container)]',
 }
 
 interface Props {
@@ -28,22 +28,22 @@ export async function ContactDeals({ contactId, contactName }: Props) {
   })
 
   return (
-    <div className="mt-6 border-t border-gray-100 pt-6">
+    <div>
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-700">Oportunidades</h3>
+        <h3 className="text-sm font-semibold text-[var(--color-on-surface)]">Oportunidades</h3>
         <NewDealButton contactId={contactId} contactName={contactName} />
       </div>
       {deals.length === 0 ? (
-        <p className="text-sm text-gray-400">Sin oportunidades registradas</p>
+        <p className="text-sm text-[var(--color-on-surface-variant)]">Sin oportunidades registradas</p>
       ) : (
         <ul className="space-y-2">
           {deals.map((deal) => (
             <li
               key={deal.id}
-              className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2"
+              className="flex items-center justify-between rounded-[var(--radius-sm)] bg-[var(--color-surface-container-low)] px-3 py-2"
             >
-              <span className="text-sm font-medium text-gray-900">
-                {deal.courseName || <span className="italic text-gray-400">sin curso</span>}
+              <span className="text-sm font-medium text-[var(--color-on-surface)]">
+                {deal.courseName || <span className="italic text-[var(--color-on-surface-variant)]">sin curso</span>}
               </span>
               <span
                 className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${STAGE_BADGE[deal.stage]}`}

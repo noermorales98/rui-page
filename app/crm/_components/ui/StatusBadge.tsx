@@ -15,7 +15,7 @@ const SALE_STATUS: Record<string, { label: string; variant: 'lime' | 'blue' | 'g
 
 const DEAL_STAGE: Record<string, { label: string; variant: 'lime' | 'blue' | 'gray' | 'amber' }> = {
   LEAD:        { label: 'Lead',        variant: 'gray'  },
-  DEMO:        { label: 'Demo',        variant: 'blue'  },
+  DEMO:        { label: 'Demo / Llamada', variant: 'blue' },
   NEGOTIATION: { label: 'Negociación', variant: 'amber' },
   ENROLLED:    { label: 'Inscrito',    variant: 'lime'  },
 }

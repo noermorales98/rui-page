@@ -50,7 +50,7 @@ function bodyTextToHtml(text: string, previewText?: string | null) {
     ? `<span style="display:none!important;visibility:hidden;opacity:0;color:transparent;height:0;width:0;overflow:hidden;">${escapeHtml(previewText)}</span>`
     : ''
 
-  return `${preheader}<div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;max-width:640px;">${paragraphs}</div>`
+  return `${preheader}<div style="font-family:Arial,sans-serif;line-height:1.6;color:#1d1c17;max-width:640px;">${paragraphs}</div>`
 }
 
 export function renderCampaignEmail(input: RenderCampaignEmailInput) {

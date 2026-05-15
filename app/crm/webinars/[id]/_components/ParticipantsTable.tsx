@@ -3,6 +3,7 @@
 import { useState, startTransition } from 'react'
 import type { RegistrationStatus } from '@prisma/client'
 import { updateRegistrationStatus, removeRegistration } from '../../actions'
+import { Dialog, useToast } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export type RegistrationWithContact = {
@@ -51,41 +52,52 @@ export function ParticipantsTable({ registrations }: Props) {
   const [statuses, setStatuses] = useState<Record<number, RegistrationStatus>>(
     Object.fromEntries(registrations.map((r) => [r.id, r.status])),
   )
+  const [regToRemove, setRegToRemove] = useState<RegistrationWithContact | null>(null)
+  const { error: toastError } = useToast()
 
   function handleStatusChange(registrationId: number, status: RegistrationStatus) {
     setStatuses((prev) => ({ ...prev, [registrationId]: status }))
     startTransition(async () => {
       const result = await updateRegistrationStatus(registrationId, status)
       if (result?.error) {
-        // Revert optimistic update on error
         setStatuses((prev) => ({ ...prev, [registrationId]: registrations.find(r => r.id === registrationId)?.status ?? status }))
       }
     })
   }
 
   function handleRemove(reg: RegistrationWithContact) {
-    if (!window.confirm(`¿Quitar a ${reg.contact.name} de este webinar?`)) return
+    setRegToRemove(reg)
+  }
+
+  function doRemove() {
+    if (!regToRemove) return
+    const reg = regToRemove
+    setRegToRemove(null)
     startTransition(async () => {
       const result = await removeRegistration(reg.id)
-      if (result?.error) {
-        alert(result.error)
-      }
+      if (result?.error) toastError(result.error)
     })
   }
 
-  if (registrations.length === 0) {
-    return (
-      <div className={`${TOK.emptyState} ${TOK.textSubtle}`}>
-        No hay participantes todavía. Agrega contactos o importa un CSV.
-      </div>
-    )
-  }
-
   return (
+    <>
+      <Dialog
+        open={regToRemove !== null}
+        title="¿Quitar participante?"
+        description={regToRemove ? `Quitar a ${regToRemove.contact.name} de este webinar.` : undefined}
+        variant="danger"
+        confirmLabel="Quitar"
+        onConfirm={doRemove}
+        onCancel={() => setRegToRemove(null)}
+      />
+      {registrations.length === 0 ? (
+        <div className={`${TOK.emptyState} ${TOK.textSubtle}`}>
+          No hay participantes todavía. Agrega contactos o importa un CSV.
+        </div>
+      ) : (
     <div>
       {/* Column headers */}
-      <div className={`grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}
-        style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
+      <div className={`grid grid-cols-[1.5fr_1.5fr_1fr_0.7fr_0.3fr] px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}>
         <span>Contacto</span>
         <span>Email</span>
         <span>Estado</span>
@@ -98,8 +110,7 @@ export function ParticipantsTable({ registrations }: Props) {
         const statusConfig = STATUS_OPTIONS.find((s) => s.value === currentStatus)
         return (
           <div key={reg.id}
-            className="mb-1.5 grid items-center rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0"
-            style={{ gridTemplateColumns: '1.5fr 1.5fr 1fr 0.7fr 0.3fr' }}>
+            className="mb-1.5 grid grid-cols-[1.5fr_1.5fr_1fr_0.7fr_0.3fr] items-center rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0">
             <a
               href={`/crm/contactos/${reg.contact.id}`}
               className="text-sm font-medium text-[var(--color-primary)] hover:underline"
@@ -114,7 +125,7 @@ export function ParticipantsTable({ registrations }: Props) {
                   handleStatusChange(reg.id, e.target.value as RegistrationStatus)
                 }
                 aria-label={`Estado de ${reg.contact.name}`}
-                className={`rounded-lg border border-[var(--color-outline-variant)] py-1 pl-2 pr-6 text-xs font-medium focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary-fixed)] ${statusConfig?.colorClass ?? ''}`}
+                className={`rounded-[var(--radius-sm)] border-0 py-1 pl-2 pr-6 text-xs font-medium outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${statusConfig?.colorClass ?? ''}`}
               >
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -140,5 +151,7 @@ export function ParticipantsTable({ registrations }: Props) {
         )
       })}
     </div>
+      )}
+    </>
   )
 }

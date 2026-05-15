@@ -14,10 +14,10 @@ export function Accordion({ title, children, defaultOpen = false, className = ''
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className={`border-t border-[var(--color-outline-variant)] ${className}`}>
+    <div className={`rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] ${className}`}>
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between py-3 text-sm font-semibold text-[var(--color-on-surface)] focus-visible:outline-2 focus-visible:outline-[var(--color-primary-fixed)]"
+        className="flex w-full items-center justify-between rounded-[var(--radius-md)] px-4 py-3 text-sm font-semibold text-[var(--color-on-surface)] transition hover:bg-[var(--color-surface-container-low)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
         aria-expanded={open}
       >
         {title}
@@ -26,7 +26,7 @@ export function Accordion({ title, children, defaultOpen = false, className = ''
           className={`transition-transform duration-200 ${open ? 'rotate-180' : 'rotate-0'}`}
         />
       </button>
-      {open && <div className="pb-4">{children}</div>}
+      {open && <div className="px-4 pb-4">{children}</div>}
     </div>
   )
 }

@@ -9,7 +9,7 @@ import { FieldEditor } from './FieldEditor'
 import { FieldPalette } from './FieldPalette'
 import { FieldPreviewCard } from './FieldPreviewCard'
 import { slugify } from '../_lib/field-types'
-import { Button, Card, FormStatusBadge } from '@/app/crm/_components/ui'
+import { Button, Card, FormStatusBadge, Tabs } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type FormWithFields = CrmForm & {
@@ -23,6 +23,7 @@ interface Props {
 
 export function FormBuilder({ form }: Props) {
   const [selectedFieldId, setSelectedFieldId] = useState<number | null>(form.fields[0]?.id ?? null)
+  const [activeTab, setActiveTab] = useState('fields')
   const [isStatusPending, startStatusTransition] = useTransition()
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
   const selectedField = useMemo(
@@ -32,6 +33,11 @@ export function FormBuilder({ form }: Props) {
 
   const updateSettings = updateFormSettings.bind(null, form.id)
   const [settingsState, settingsAction, isSavingSettings] = useActionState(updateSettings, null)
+  const formTabs = [
+    { id: 'fields', label: 'Campos' },
+    { id: 'preview', label: 'Vista previa' },
+    { id: 'settings', label: 'Configuración' },
+  ]
 
   function changeStatus(status: CrmFormStatus) {
     setStatusMessage(null)
@@ -50,7 +56,7 @@ export function FormBuilder({ form }: Props) {
             <FormStatusBadge status={form.status} />
           </div>
           <div className={`flex flex-wrap items-center gap-3 text-sm ${TOK.textMuted}`}>
-            <code className="rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-high)] px-2 py-1 font-mono text-xs">
+            <code className="rounded-[var(--radius-sm)] bg-[var(--color-surface-container-high)] px-2 py-1 font-mono text-xs">
               /formularios/{form.slug}
             </code>
             <Link
@@ -99,89 +105,117 @@ export function FormBuilder({ form }: Props) {
         <div className={`mb-4 ${TOK.errorBox}`}>{statusMessage ?? settingsState?.error}</div>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)_340px]">
-        <FieldPalette formId={form.id} />
+      <Tabs tabs={formTabs} active={activeTab} onChange={setActiveTab} className="mb-5" />
 
-        <Card className="min-h-[560px]">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className={TOK.sectionTitle}>Vista del formulario</h2>
-              <p className={`mt-1 ${TOK.sectionSubtitle}`}>{form.fields.length} campos configurados</p>
-            </div>
-          </div>
+      {activeTab === 'fields' && (
+        <div className="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)_340px]">
+          <FieldPalette formId={form.id} />
+          <FormPreview
+            fields={form.fields}
+            selectedFieldId={selectedField?.id ?? null}
+            onSelectField={(id) => setSelectedFieldId(id)}
+          />
+          <aside>{selectedField && <FieldEditor key={selectedField.id} field={selectedField} />}</aside>
+        </div>
+      )}
 
-          <div className="space-y-3">
-            {form.fields.map((field, index) => (
-              <FieldPreviewCard
-                key={field.id}
-                field={field}
-                isSelected={field.id === selectedField?.id}
-                isFirst={index === 0}
-                isLast={index === form.fields.length - 1}
-                onSelect={() => setSelectedFieldId(field.id)}
+      {activeTab === 'preview' && (
+        <FormPreview
+          fields={form.fields}
+          selectedFieldId={selectedField?.id ?? null}
+          onSelectField={(id) => setSelectedFieldId(id)}
+        />
+      )}
+
+      {activeTab === 'settings' && (
+        <Card className="max-w-3xl">
+          <h2 className={`mb-4 ${TOK.sectionTitle}`}>Configuración</h2>
+          <form action={settingsAction} className="grid gap-4 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <label className={TOK.label}>Nombre</label>
+              <input
+                name="name"
+                defaultValue={form.name}
+                className={TOK.inputNative}
               />
-            ))}
-            {form.fields.length === 0 && (
-              <div className={TOK.emptyState}>
-                <p className={TOK.textMuted}>Agrega un campo desde la paleta.</p>
-              </div>
-            )}
-          </div>
+            </div>
+            <div>
+              <label className={TOK.label}>Slug</label>
+              <SlugInput defaultValue={form.slug} />
+            </div>
+            <div>
+              <label className={TOK.label}>Botón</label>
+              <input
+                name="submitLabel"
+                defaultValue={form.submitLabel}
+                className={TOK.inputNative}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className={TOK.label}>Descripción</label>
+              <textarea
+                name="description"
+                defaultValue={form.description ?? ''}
+                rows={3}
+                className={TOK.inputNativeMultiline}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className={TOK.label}>Mensaje final</label>
+              <textarea
+                name="successMessage"
+                defaultValue={form.successMessage}
+                rows={2}
+                className={TOK.inputNativeMultiline}
+              />
+            </div>
+            <Button type="submit" disabled={isSavingSettings} className="w-full justify-center md:col-span-2">
+              <Save size={16} />
+              {isSavingSettings ? 'Guardando...' : 'Guardar ajustes'}
+            </Button>
+          </form>
         </Card>
-
-        <aside className="space-y-5">
-          <Card>
-            <h2 className={`mb-4 ${TOK.sectionTitle}`}>Configuracion</h2>
-            <form action={settingsAction} className="space-y-4">
-              <div>
-                <label className={TOK.label}>Nombre</label>
-                <input
-                  name="name"
-                  defaultValue={form.name}
-                  className={TOK.inputNative}
-                />
-              </div>
-              <div>
-                <label className={TOK.label}>Slug</label>
-                <SlugInput defaultValue={form.slug} />
-              </div>
-              <div>
-                <label className={TOK.label}>Descripcion</label>
-                <textarea
-                  name="description"
-                  defaultValue={form.description ?? ''}
-                  rows={3}
-                  className={TOK.inputNativeMultiline}
-                />
-              </div>
-              <div>
-                <label className={TOK.label}>Boton</label>
-                <input
-                  name="submitLabel"
-                  defaultValue={form.submitLabel}
-                  className={TOK.inputNative}
-                />
-              </div>
-              <div>
-                <label className={TOK.label}>Mensaje final</label>
-                <textarea
-                  name="successMessage"
-                  defaultValue={form.successMessage}
-                  rows={2}
-                  className={TOK.inputNativeMultiline}
-                />
-              </div>
-              <Button type="submit" disabled={isSavingSettings} className="w-full justify-center">
-                <Save size={16} />
-                {isSavingSettings ? 'Guardando...' : 'Guardar ajustes'}
-              </Button>
-            </form>
-          </Card>
-
-          {selectedField && <FieldEditor key={selectedField.id} field={selectedField} />}
-        </aside>
-      </div>
+      )}
     </div>
+  )
+}
+
+function FormPreview({
+  fields,
+  selectedFieldId,
+  onSelectField,
+}: {
+  fields: CrmFormField[]
+  selectedFieldId: number | null
+  onSelectField: (id: number) => void
+}) {
+  return (
+    <Card className="min-h-[520px]">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className={TOK.sectionTitle}>Vista del formulario</h2>
+          <p className={`mt-1 ${TOK.sectionSubtitle}`}>{fields.length} campos configurados</p>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        {fields.map((field, index) => (
+          <FieldPreviewCard
+            key={field.id}
+            field={field}
+            isSelected={field.id === selectedFieldId}
+            isFirst={index === 0}
+            isLast={index === fields.length - 1}
+            onSelect={() => onSelectField(field.id)}
+          />
+        ))}
+        {fields.length === 0 && (
+          <div className={TOK.emptyState}>
+            <p className={TOK.textMuted}>Agrega un campo desde la paleta.</p>
+          </div>
+        )}
+      </div>
+    </Card>
   )
 }
 

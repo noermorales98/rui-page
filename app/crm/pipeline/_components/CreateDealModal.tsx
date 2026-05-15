@@ -82,7 +82,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
   }, [searchQuery, isContactLocked])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] p-4">
       <div
         className={TOK.modalPanel}
         role="dialog"
@@ -114,7 +114,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
           {/* Contact */}
           <div className="mb-4">
             <label className={TOK.label}>
-              Contacto <span className="text-red-500">*</span>
+              Contacto <span className="text-[var(--color-error)]">*</span>
             </label>
             <input type="hidden" name="contactId" value={selectedContact?.id ?? ''} />
             {isContactLocked ? (
@@ -141,7 +141,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                   className={TOK.inputNative}
                 />
                 {showDropdown && (
-                  <ul className="absolute z-10 mt-1 w-full rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] py-1">
+                  <ul className="absolute z-10 mt-1 w-full rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-1 shadow-[var(--shadow-sm)]">
                     {searchResults.map((c) => (
                       <li key={c.id}>
                         <button
@@ -151,7 +151,7 @@ export function CreateDealModal({ deal, initialStage, lockedContact, onClose }: 
                             setSearchQuery(c.name)
                             setShowDropdown(false)
                           }}
-                          className="w-full px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)]"
+                          className="w-full rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)]"
                         >
                           <span className="font-medium text-[var(--color-on-surface)]">{c.name}</span>
                           <span className="ml-2 text-xs text-[var(--color-on-surface-variant)]">{c.email}</span>

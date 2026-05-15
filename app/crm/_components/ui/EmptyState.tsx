@@ -8,7 +8,7 @@ interface EmptyStateProps {
 export function EmptyState({ title, description, action, className = '' }: EmptyStateProps) {
   return (
     <div
-      className={`rounded-[var(--radius-lg,20px)] border border-dashed border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)]/80 px-6 py-12 text-center ${className}`}
+      className={`rounded-[var(--radius-lg)] bg-[var(--color-surface-container-low)] px-6 py-12 text-center ${className}`}
     >
       <p className="text-sm font-semibold text-[var(--color-on-surface)]">{title}</p>
       {description && (

@@ -63,7 +63,7 @@ export function DealTimeline({ entries }: { entries: TimelineEntry[] }) {
         return (
           <li
             key={`${entry.kind}-${entry.row.id}`}
-            className="flex items-start gap-3 rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-3"
+            className="flex items-start gap-3 rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3"
           >
             <span className="text-base leading-none">{icon}</span>
             <div className="flex-1 min-w-0">

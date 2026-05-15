@@ -1,10 +1,11 @@
 'use client'
 
 import { Pencil, Trash2 } from 'lucide-react'
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState, useEffect, useState, useTransition } from 'react'
 import type { Tag } from '@prisma/client'
 import { deleteTag, updateTag } from '../actions'
-import { Button, Input, ModalWrapper } from '@/app/crm/_components/ui'
+import { Button, Dialog, Input, ModalWrapper, useToast } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const DEFAULT_PALETTE = [
   '#6366f1',
@@ -29,9 +30,11 @@ export function EditTagRow({
   const [editing, setEditing] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [color, setColor] = useState(tag.color)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [isDeleting, startDeleteTransition] = useTransition()
+  const { error: toastError } = useToast()
 
   const updateAction = updateTag.bind(null, tag.id)
-  const deleteAction = deleteTag.bind(null, tag.id)
 
   const [state, formAction, isPending] = useActionState(updateAction, null)
 
@@ -45,50 +48,60 @@ export function EditTagRow({
     }
   }, [isPending, state, submitted])
 
-  function confirmDelete(event: React.MouseEvent<HTMLButtonElement>) {
-    const confirmed = window.confirm(
-      `¿Archivar la etiqueta «${tag.name}»? Los contactos que la tienen no la verán más en sus filtros, pero la asignación queda en el historial.`,
-    )
-    if (!confirmed) {
-      event.preventDefault()
-    }
+  function archiveTag() {
+    setDeleteOpen(false)
+    startDeleteTransition(async () => {
+      try {
+        await deleteTag(tag.id)
+      } catch (err) {
+        toastError(err instanceof Error ? err.message : 'No se pudo archivar la etiqueta.')
+      }
+    })
   }
 
   return (
-    <tr className="hover:bg-gray-50">
-      <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+    <tr className="bg-[var(--color-surface-container-lowest)] transition hover:bg-[var(--color-surface-container-low)]">
+      <td className="whitespace-nowrap rounded-l-[var(--radius-md)] px-6 py-4 text-sm font-medium text-[var(--color-on-surface)]">
         <span className="inline-flex items-center gap-2">
           <span className="h-3 w-3 rounded-full" style={{ backgroundColor: tag.color }} />
           {tag.name}
         </span>
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
-        <span className="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-mono">{tag.color}</span>
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--color-on-surface-variant)]">
+        <span className="rounded-[var(--radius-sm)] bg-[var(--color-surface-container-high)] px-2 py-0.5 font-mono text-xs">{tag.color}</span>
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-[var(--color-on-surface-variant)]">
         {usage > 0 ? `${usage} contacto${usage === 1 ? '' : 's'}` : '—'}
       </td>
-      <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
+      <td className="whitespace-nowrap rounded-r-[var(--radius-md)] px-6 py-4 text-right text-sm">
+        <Dialog
+          open={deleteOpen}
+          title="¿Archivar etiqueta?"
+          description={`Archivar "${tag.name}". Los contactos ya no la verán en filtros, pero la asignación queda en el historial.`}
+          variant="danger"
+          confirmLabel="Archivar"
+          onConfirm={archiveTag}
+          onCancel={() => setDeleteOpen(false)}
+        />
         <div className="inline-flex items-center gap-1">
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
+            className="rounded-full p-2 text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-high)] hover:text-[var(--color-on-surface)] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
             title="Editar"
           >
             <Pencil size={14} strokeWidth={2} />
           </button>
           {canDelete && (
-            <form action={deleteAction} className="inline">
-              <button
-                type="submit"
-                onClick={confirmDelete}
-                className="rounded-full p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]"
-                title="Archivar"
-              >
-                <Trash2 size={14} strokeWidth={2} />
-              </button>
-            </form>
+            <button
+              type="button"
+              disabled={isDeleting}
+              onClick={() => setDeleteOpen(true)}
+              className="rounded-full p-2 text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)] focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] disabled:opacity-50"
+              title="Archivar"
+            >
+              <Trash2 size={14} strokeWidth={2} />
+            </button>
           )}
         </div>
       </td>
@@ -100,7 +113,7 @@ export function EditTagRow({
             title={`Editar «${tag.name}»`}
           >
             {state?.error && (
-              <div className="mb-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              <div className={TOK.errorBox}>
                 {state.error}
               </div>
             )}

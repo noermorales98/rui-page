@@ -3,6 +3,8 @@
 import { useState, useTransition } from 'react'
 import { Link2, RefreshCw, Unlink } from 'lucide-react'
 import { linkZoomWebinar, unlinkZoomWebinar, updateViewerCount } from '../../actions'
+import { Dialog } from '@/app/crm/_components/ui'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 interface Props {
   webinarId: number
@@ -16,6 +18,7 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
   const [viewers, setViewers] = useState(viewerCount?.toString() ?? '')
   const [message, setMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [confirmUnlinkOpen, setConfirmUnlinkOpen] = useState(false)
 
   async function handleLink() {
     startTransition(async () => {
@@ -24,8 +27,12 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
     })
   }
 
-  async function handleUnlink() {
-    if (!confirm('¿Desvincular este webinar de Zoom?')) return
+  function handleUnlink() {
+    setConfirmUnlinkOpen(true)
+  }
+
+  function doUnlink() {
+    setConfirmUnlinkOpen(false)
     startTransition(async () => {
       const result = await unlinkZoomWebinar(webinarId)
       setMessage(result.error ?? 'Desvinculado.')
@@ -54,15 +61,25 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
   }
 
   return (
-    <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 p-5 space-y-5">
+    <>
+      <Dialog
+        open={confirmUnlinkOpen}
+        title="¿Desvincular de Zoom?"
+        description="Los datos de sincronización se perderán."
+        variant="danger"
+        confirmLabel="Desvincular"
+        onConfirm={doUnlink}
+        onCancel={() => setConfirmUnlinkOpen(false)}
+      />
+    <div className={`${TOK.panel} space-y-5 p-5`}>
       {/* Zoom section */}
       <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-3">
+        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--color-on-surface-variant)]">
           Zoom
         </h3>
 
         {!zoomConnected && (
-          <p className="text-sm text-yellow-700 bg-yellow-50 rounded-lg px-3 py-2">
+          <p className="rounded-[var(--radius-md)] bg-[var(--color-secondary-fixed)] px-3 py-2 text-sm text-[var(--color-on-secondary-fixed-variant)]">
             Zoom no está conectado.{' '}
             <a href="/crm/configuracion/integraciones" className="underline">
               Conectar
@@ -73,35 +90,35 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
         {zoomConnected && (
           <>
             {zoomWebinarId ? (
-              <div className="flex items-center gap-2 text-sm text-gray-700 mb-3">
-                <Link2 className="h-4 w-4 text-indigo-500" />
-                <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">
+              <div className="mb-3 flex items-center gap-2 text-sm text-[var(--color-on-surface)]">
+                <Link2 className="h-4 w-4 text-[var(--color-primary)]" />
+                <span className="rounded bg-[var(--color-surface-container-high)] px-2 py-0.5 font-mono text-xs">
                   {zoomWebinarId}
                 </span>
                 <button
                   type="button"
                   onClick={handleUnlink}
                   disabled={isPending}
-                  className="ml-auto text-gray-400 hover:text-red-500"
+                  className="ml-auto text-[var(--color-on-surface-variant)] hover:text-[var(--color-error)]"
                   title="Desvincular"
                 >
                   <Unlink className="h-4 w-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex gap-2 mb-3">
+              <div className="mb-3 flex gap-2">
                 <input
                   type="text"
                   placeholder="ID del webinar en Zoom"
                   value={zoomId}
                   onChange={(e) => setZoomId(e.target.value)}
-                  className="flex-1 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className={`${TOK.inputCompact} flex-1`}
                 />
                 <button
                   type="button"
                   onClick={handleLink}
                   disabled={isPending || !zoomId.trim()}
-                  className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+                  className={`${TOK.actionPrimary} px-3 py-1.5 disabled:opacity-60`}
                 >
                   Vincular
                 </button>
@@ -113,7 +130,7 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
                 type="button"
                 onClick={handleSync}
                 disabled={isPending}
-                className="flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-60"
+                className="flex items-center gap-1.5 text-sm font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-container)] disabled:opacity-60"
               >
                 <RefreshCw className="h-4 w-4" />
                 Sincronizar desde Zoom
@@ -125,7 +142,7 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
 
       {/* Streamyard metrics */}
       <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-3">
+        <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-[var(--color-on-surface-variant)]">
           Streamyard — Espectadores
         </h3>
         <div className="flex gap-2">
@@ -135,13 +152,13 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
             placeholder="0"
             value={viewers}
             onChange={(e) => setViewers(e.target.value)}
-            className="w-32 rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className={`${TOK.inputCompact} w-32`}
           />
           <button
             type="button"
             onClick={handleViewerCount}
             disabled={isPending}
-            className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-200 disabled:opacity-60"
+            className={`${TOK.actionSecondary} px-3 py-1.5 disabled:opacity-60`}
           >
             Guardar
           </button>
@@ -149,8 +166,9 @@ export function ZoomLinkPanel({ webinarId, zoomWebinarId, viewerCount, zoomConne
       </div>
 
       {message && (
-        <p className="text-sm text-gray-600">{message}</p>
+        <p className="text-sm text-[var(--color-on-surface-variant)]">{message}</p>
       )}
     </div>
+    </>
   )
 }

@@ -38,27 +38,27 @@ function relativeTime(date: Date): string {
 export function ActivityFeed({ activities }: { activities: ActivityWithUser[] }) {
   if (activities.length === 0) {
     return (
-      <p className="mt-4 text-sm text-gray-400">Sin actividad registrada.</p>
+      <p className="mt-4 text-sm text-[var(--color-on-surface-variant)]">Sin actividad registrada.</p>
     )
   }
 
   return (
     <div className="mt-6 space-y-4">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+      <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-on-surface-variant)]">
         Historial de actividad
       </p>
       {activities.map((activity) => (
         <div key={activity.id} className="flex gap-3">
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-container-high)] text-sm">
             {ACTIVITY_ICONS[activity.type] ?? '•'}
           </div>
-          <div className="min-w-0 flex-1 bg-white rounded-2xl px-4 py-3 mb-2 last:mb-0">
-            <p className="text-sm text-[#080808]">
+          <div className="mb-2 min-w-0 flex-1 rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0">
+            <p className="text-sm text-[var(--color-on-surface)]">
               {activity.type === 'NOTE'
                 ? activity.body
                 : `${ACTIVITY_LABELS[activity.type]}${activity.body ? ` — ${activity.body}` : ''}`}
             </p>
-            <p className="mt-1 text-xs text-[#8a8a8a]">
+            <p className="mt-1 text-xs text-[var(--color-on-surface-variant)]">
               {relativeTime(new Date(activity.createdAt))}
               {' · '}
               {activity.createdBy?.name ?? 'automático'}

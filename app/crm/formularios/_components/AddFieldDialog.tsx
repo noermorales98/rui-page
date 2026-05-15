@@ -6,6 +6,7 @@ import { createFieldSchema } from '@/lib/validators/forms'
 import type { PalettePreset } from '../_lib/palette-presets'
 import { addField } from '../actions'
 import { slugify } from '../_lib/field-types'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type Props = {
   formId: number
@@ -73,7 +74,7 @@ export function AddFieldDialog({ formId, preset, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
         type="button"
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-[var(--color-overlay)]"
         aria-label="Cerrar"
         onClick={() => !pending && onClose()}
       />
@@ -81,90 +82,90 @@ export function AddFieldDialog({ formId, preset, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="add-field-title"
-        className="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white p-6 shadow-xl"
+        className="relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6 shadow-[var(--shadow-md)]"
       >
-        <h2 id="add-field-title" className="text-lg font-semibold text-gray-900">
+        <h2 id="add-field-title" className="text-lg font-semibold text-[var(--color-on-surface)]">
           Agregar campo
         </h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Tipo: <span className="font-medium text-gray-900">{preset.title}</span>
+        <p className="mt-1 text-sm text-[var(--color-on-surface-variant)]">
+          Tipo: <span className="font-medium text-[var(--color-on-surface)]">{preset.title}</span>
           {preset.subtitle ? (
             <>
               {' '}
-              · <span className="text-gray-500">{preset.subtitle}</span>
+              · <span className="text-[var(--color-on-surface-variant)]">{preset.subtitle}</span>
             </>
           ) : null}
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-gray-500">
+        <p className="mt-2 text-xs leading-relaxed text-[var(--color-on-surface-variant)]">
           Solo completa lo que verá tu cliente. El tipo de control ya está definido; si necesitas cambiar opciones
           avanzadas (lista, rangos, etc.), podrás hacerlo después en el panel derecho al seleccionar el campo.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4">
-          {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+          {error && <p className={TOK.errorBox}>{error}</p>}
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Texto de la pregunta o etiqueta</label>
+            <label className="mb-1 block text-sm font-medium text-[var(--color-on-surface)]">Texto de la pregunta o etiqueta</label>
             <input
               value={label}
               onChange={(ev) => setLabel(ev.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className={TOK.inputCompact}
               required
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Nombre interno del campo</label>
+            <label className="mb-1 block text-sm font-medium text-[var(--color-on-surface)]">Nombre interno del campo</label>
             <input
               value={fieldKey}
               onChange={(ev) => setFieldKey(ev.target.value)}
               onBlur={() => setFieldKey(slugify(fieldKey))}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 font-mono text-sm"
+              className={`${TOK.inputCompact} font-mono`}
               required
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-[var(--color-on-surface-variant)]">
               Se usa por debajo para enlazar respuestas. Si ya existe uno parecido, el sistema añadirá un sufijo
               automáticamente.
             </p>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Texto de ejemplo (placeholder)</label>
+            <label className="mb-1 block text-sm font-medium text-[var(--color-on-surface)]">Texto de ejemplo (placeholder)</label>
             <input
               value={placeholder}
               onChange={(ev) => setPlaceholder(ev.target.value)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className={TOK.inputCompact}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Texto de ayuda (opcional)</label>
+            <label className="mb-1 block text-sm font-medium text-[var(--color-on-surface)]">Texto de ayuda (opcional)</label>
             <textarea
               value={helpText}
               onChange={(ev) => setHelpText(ev.target.value)}
               rows={2}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className={TOK.inputCompact}
             />
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-[var(--color-on-surface)]">
             <input
               type="checkbox"
               checked={isRequired}
               onChange={(ev) => setIsRequired(ev.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 accent-indigo-600"
+              className="h-4 w-4 rounded accent-[var(--color-on-surface)]"
             />
             Respuesta obligatoria
           </label>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className="mb-1 block text-sm font-medium text-[var(--color-on-surface)]">
               ¿Guardar también en la ficha del contacto?
             </label>
             <select
               value={contactTarget}
               onChange={(ev) => setContactTarget(ev.target.value as CrmFormContactTarget)}
-              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              className={TOK.inputCompact}
             >
               <option value="NONE">No, solo en esta respuesta del formulario</option>
               <option value="NAME">Sí — nombre del contacto</option>
@@ -178,14 +179,14 @@ export function AddFieldDialog({ formId, preset, onClose }: Props) {
               type="button"
               disabled={pending}
               onClick={onClose}
-              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className={TOK.actionSecondary}
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={pending}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+              className={`${TOK.actionPrimary} disabled:opacity-60`}
             >
               {pending ? 'Guardando…' : 'Agregar campo'}
             </button>

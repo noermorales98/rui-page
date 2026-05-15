@@ -17,7 +17,7 @@ export function ContactHeader({
   }
 
   return (
-    <div className="flex items-start gap-4 border-b border-[var(--color-outline-variant)] p-6">
+    <div className="flex items-start gap-4 p-6">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--color-secondary-container)] text-sm font-bold text-[var(--color-on-secondary-container)]">
         {initials(contact.name)}
       </div>
@@ -26,7 +26,7 @@ export function ContactHeader({
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <ContactStatusBadge status={contact.status} />
           {contact.tags.map(({ tag }) => (
-            <span key={tag.id} className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-white"
+            <span key={tag.id} className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-on-primary)]"
               style={{ backgroundColor: tag.color }}>
               {tag.name}
             </span>

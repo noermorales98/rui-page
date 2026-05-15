@@ -60,7 +60,7 @@ export function SalesFilters() {
       <select
         value={searchParams.get('status') ?? ''}
         onChange={(event) => updateParam('status', event.target.value)}
-        className={`min-h-10 shrink-0 cursor-pointer rounded-full border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-2.5 text-sm text-[var(--color-on-surface)] outline-none transition focus:border-[var(--color-outline)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]`}
+        className={`${TOK.select} shrink-0`}
       >
         <option value="">Estado: Todos</option>
         {STATUSES.map((status) => (
@@ -73,7 +73,7 @@ export function SalesFilters() {
       <select
         value={searchParams.get('method') ?? ''}
         onChange={(event) => updateParam('method', event.target.value)}
-        className={`min-h-10 shrink-0 cursor-pointer rounded-full border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-2.5 text-sm text-[var(--color-on-surface)] outline-none transition focus:border-[var(--color-outline)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)]`}
+        className={`${TOK.select} shrink-0`}
       >
         <option value="">Metodo: Todos</option>
         {METHODS.map((method) => (

@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react'
 import { DisconnectButton } from './_components/DisconnectButton'
+import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 export default async function IntegracionesPage() {
   const session = await auth()
@@ -19,18 +20,18 @@ export default async function IntegracionesPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">Integraciones</h1>
+      <h1 className="mb-6 text-2xl font-bold text-[var(--color-on-surface)]">Integraciones</h1>
 
       <div className="space-y-4">
         {/* Zoom */}
-        <div className="flex items-center justify-between rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+        <div className={`${TOK.panel} flex items-center justify-between p-5`}>
           <div className="flex items-center gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700 font-bold text-sm">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary-fixed)] text-sm font-bold text-[var(--color-on-primary-fixed)]">
               Z
             </div>
             <div>
-              <p className="font-semibold text-gray-900">Zoom</p>
-              <p className="text-xs text-gray-500">
+              <p className="font-semibold text-[var(--color-on-surface)]">Zoom</p>
+              <p className="text-xs text-[var(--color-on-surface-variant)]">
                 {zoomConnected
                   ? `Conectado · Última sync: ${byProvider['ZOOM']?.lastSyncAt ? new Intl.DateTimeFormat('es-MX', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(byProvider['ZOOM'].lastSyncAt)) : 'nunca'}`
                   : zoomError
@@ -38,16 +39,16 @@ export default async function IntegracionesPage() {
                   : 'No conectado'}
               </p>
             </div>
-            {zoomConnected && <CheckCircle className="h-5 w-5 text-green-500" />}
-            {zoomError && <AlertCircle className="h-5 w-5 text-yellow-500" />}
-            {!byProvider['ZOOM'] && <XCircle className="h-5 w-5 text-gray-300" />}
+            {zoomConnected && <CheckCircle className="h-5 w-5 text-[var(--color-tertiary)]" />}
+            {zoomError && <AlertCircle className="h-5 w-5 text-[var(--color-secondary)]" />}
+            {!byProvider['ZOOM'] && <XCircle className="h-5 w-5 text-[var(--color-on-surface-variant)]" />}
           </div>
 
           <div className="flex gap-2">
             {!zoomConnected ? (
               <a
                 href="/api/zoom/oauth/start"
-                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                className={TOK.actionPrimary}
               >
                 Conectar
               </a>
@@ -58,7 +59,7 @@ export default async function IntegracionesPage() {
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-gray-400">
+      <p className="mt-4 text-xs text-[var(--color-on-surface-variant)]">
         Más integraciones disponibles próximamente: Stripe, SMTP, WhatsApp.
       </p>
     </div>

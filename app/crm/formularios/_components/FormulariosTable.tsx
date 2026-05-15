@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react'
 import type { CrmFormStatus } from '@prisma/client'
 import { Archive, CheckCircle2, Clipboard, Edit3, ExternalLink, FileText } from 'lucide-react'
 import { setFormStatus } from '../actions'
-import { FormStatusBadge } from '@/app/crm/_components/ui'
+import { FormStatusBadge, type ListView } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type FormRow = {
@@ -20,6 +20,7 @@ type FormRow = {
 
 interface Props {
   forms: FormRow[]
+  view?: ListView
 }
 
 function formatDate(value: Date) {
@@ -30,15 +31,13 @@ function formatDate(value: Date) {
   }).format(new Date(value))
 }
 
-const GRID_COLS = '2fr 1fr 2fr 80px 100px 120px 120px'
-
 const ROW_SURFACE =
-  'mb-1.5 grid items-center gap-3 rounded-2xl border border-[var(--color-outline-variant)]/60 bg-[var(--color-surface-container-lowest)] px-4 py-3 transition last:mb-0'
+  'mb-1.5 grid grid-cols-[2fr_1fr_2fr_80px_100px_120px_120px] items-center gap-3 rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] px-4 py-3 transition last:mb-0 hover:bg-[var(--color-surface-container-low)]'
 
 const ACTION_ICON =
   'cursor-pointer rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)] disabled:opacity-50'
 
-export function FormulariosTable({ forms }: Props) {
+export function FormulariosTable({ forms, view = 'table' }: Props) {
   const [message, setMessage] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -68,18 +67,105 @@ export function FormulariosTable({ forms }: Props) {
     )
   }
 
+  if (view === 'cards') {
+    return (
+      <div>
+        {message && (
+          <div className="mb-4 rounded-[var(--radius-md)] bg-[var(--color-surface-container-low)] px-4 py-3 text-sm text-[var(--color-on-surface)]">
+            {message}
+          </div>
+        )}
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {forms.map((form) => (
+            <div
+              key={form.id}
+              className="flex min-h-52 flex-col justify-between rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5 transition hover:bg-[var(--color-surface-container-low)]"
+            >
+              <div className="min-w-0">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Link href={`/crm/formularios/${form.id}`} className={TOK.linkAccent}>
+                      {form.name}
+                    </Link>
+                    <p className={`mt-1 font-mono text-xs ${TOK.textSubtle}`}>#{form.id}</p>
+                  </div>
+                  <FormStatusBadge status={form.status} />
+                </div>
+                <div className="mt-4 flex items-center gap-2">
+                  <code className="truncate rounded-[var(--radius-sm)] bg-[var(--color-surface-container-high)] px-2 py-1 text-xs text-[var(--color-on-surface)]">
+                    /formularios/{form.slug}
+                  </code>
+                  <Link
+                    href={`/formularios/${form.slug}`}
+                    target="_blank"
+                    className={`${TOK.textSubtle} transition-colors hover:text-[var(--color-on-surface)]`}
+                    aria-label="Abrir formulario público"
+                  >
+                    <ExternalLink size={15} />
+                  </Link>
+                </div>
+              </div>
+              <div className="mt-5 grid grid-cols-3 gap-2 text-xs">
+                <div className="min-w-0 rounded-[var(--radius-sm)] bg-[var(--color-surface-container-low)] px-3 py-2">
+                  <p className="font-semibold text-[var(--color-on-surface)]">{form._count.fields}</p>
+                  <p className={TOK.textSubtle}>campos</p>
+                </div>
+                <Link
+                  href={`/crm/formularios/${form.id}/respuestas`}
+                  className="min-w-0 rounded-[var(--radius-sm)] bg-[var(--color-surface-container-low)] px-3 py-2 transition hover:bg-[var(--color-surface-container-high)]"
+                >
+                  <p className="font-semibold text-[var(--color-on-surface)]">{form._count.submissions}</p>
+                  <p className={TOK.textSubtle}>respuestas</p>
+                </Link>
+                <div className="min-w-0 rounded-[var(--radius-sm)] bg-[var(--color-surface-container-low)] px-3 py-2">
+                  <p className="truncate font-semibold text-[var(--color-on-surface)]">{formatDate(form.updatedAt)}</p>
+                  <p className={TOK.textSubtle}>actualizado</p>
+                </div>
+              </div>
+              <div className="mt-4 flex justify-end gap-1">
+                  <button type="button" onClick={() => copyUrl(form.slug)} className={ACTION_ICON} aria-label="Copiar URL">
+                    <Clipboard size={16} />
+                  </button>
+                  <Link href={`/crm/formularios/${form.id}`} className={`inline-flex ${ACTION_ICON}`} aria-label="Editar formulario">
+                    <Edit3 size={16} />
+                  </Link>
+                  <button
+                    type="button"
+                    disabled={isPending || form.status === 'ARCHIVED'}
+                    onClick={() => changeStatus(form.id, form.status === 'PUBLISHED' ? 'DRAFT' : 'PUBLISHED')}
+                    className={ACTION_ICON}
+                    aria-label={form.status === 'PUBLISHED' ? 'Pasar a borrador' : 'Publicar'}
+                  >
+                    <CheckCircle2 size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isPending || form.status === 'ARCHIVED'}
+                    onClick={() => changeStatus(form.id, 'ARCHIVED')}
+                    className={ACTION_ICON}
+                    aria-label="Archivar"
+                  >
+                    <Archive size={16} />
+                  </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       {message && (
-        <div className={`mb-4 rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-low)] px-4 py-3 text-sm text-[var(--color-on-surface)]`}>
+        <div className="mb-4 rounded-[var(--radius-md)] bg-[var(--color-surface-container-low)] px-4 py-3 text-sm text-[var(--color-on-surface)]">
           {message}
         </div>
       )}
 
       {/* Column headers */}
       <div
-        className="grid px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[var(--color-on-surface-variant)]"
-        style={{ gridTemplateColumns: GRID_COLS }}
+        className="grid grid-cols-[2fr_1fr_2fr_80px_100px_120px_120px] px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] text-[var(--color-on-surface-variant)]"
       >
         <span>Formulario</span>
         <span>Estado</span>
@@ -95,7 +181,6 @@ export function FormulariosTable({ forms }: Props) {
         <div
           key={form.id}
           className={ROW_SURFACE}
-          style={{ gridTemplateColumns: GRID_COLS }}
         >
           {/* Formulario */}
           <div>

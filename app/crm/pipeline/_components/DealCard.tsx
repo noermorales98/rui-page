@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { ExternalLink } from 'lucide-react'
 import { deleteDeal } from '../actions'
 import { CreateDealModal } from './CreateDealModal'
+import { Dialog, Select, useToast } from '@/app/crm/_components/ui'
 import type { DealWithContact } from './PipelineBoard'
 
 const STAGE_OPTIONS: { value: DealStage; label: string }[] = [
@@ -39,6 +40,8 @@ interface Props {
 
 export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props) {
   const [editOpen, setEditOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const { error: toastError } = useToast()
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: deal.id, disabled: !canMutate })
@@ -47,24 +50,36 @@ export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props
   const dragProps = canMutate ? { ...attributes, ...listeners } : {}
 
   function handleDelete() {
-    if (!window.confirm(`¿Archivar esta oportunidad de ${deal.contact.name}? Se bloqueará si tiene una venta pagada.`)) return
+    setConfirmOpen(true)
+  }
+
+  function doDelete() {
+    setConfirmOpen(false)
     onDelete()
     startTransition(async () => {
       try {
         await deleteDeal(deal.id)
       } catch (err) {
-        window.alert(err instanceof Error ? err.message : 'Error al archivar.')
-        // Server revalidate will re-pull deals.
+        toastError(err instanceof Error ? err.message : 'Error al archivar.')
       }
     })
   }
 
   return (
     <>
+      <Dialog
+        open={confirmOpen}
+        title="¿Archivar oportunidad?"
+        description={`Archivar la oportunidad de ${deal.contact.name}. Se bloqueará si tiene una venta pagada.`}
+        variant="danger"
+        confirmLabel="Archivar"
+        onConfirm={doDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
       <div
         ref={setNodeRef}
         style={style}
-        className={`rounded-2xl bg-[var(--color-surface-container-lowest)] px-3.5 py-3 transition-opacity ${
+        className={`min-w-0 max-w-full rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] px-3 py-3 transition-opacity sm:px-4 sm:py-3.5 ${
           isDragging
             ? 'opacity-40'
             : canMutate
@@ -74,19 +89,19 @@ export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props
         {...dragProps}
       >
         {/* Contact name + course */}
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex min-w-0 items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <a
               href={`/crm/contactos/${deal.contact.id}`}
-              className="block truncate text-[13px] font-semibold text-[var(--color-on-surface)] transition-colors hover:text-[var(--color-primary)]"
+              className="block truncate text-sm font-semibold text-[var(--color-on-surface)] transition-colors hover:text-[var(--color-primary)]"
               onPointerDown={(e) => e.stopPropagation()}
             >
               {deal.contact.name}
             </a>
             {deal.courseName ? (
-              <p className="mt-0.5 truncate text-xs text-[var(--color-on-surface-variant)]">{deal.courseName}</p>
+              <p className="mt-1 truncate text-sm text-[var(--color-on-surface-variant)]">{deal.courseName}</p>
             ) : (
-              <p className="mt-0.5 text-xs italic text-[var(--color-on-surface-variant)]/70">sin curso</p>
+              <p className="mt-1 text-sm italic text-[var(--color-on-surface-variant)]/75">sin curso</p>
             )}
           </div>
 
@@ -146,22 +161,23 @@ export function DealCard({ deal, onMove, onDelete, canMutate, canDelete }: Props
 
         {/* Stage selector fallback — stops drag pointer events */}
         {canMutate && (
-        <div className="mt-2" onPointerDown={(e) => e.stopPropagation()}>
-          <select
-            value={deal.stage}
-            onChange={(e) => onMove(e.target.value as DealStage)}
-            className="w-full cursor-pointer rounded-xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-high)] px-2 py-1 text-xs text-[var(--color-on-surface-variant)] focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-primary-fixed)]"
-          >
-            {STAGE_OPTIONS.map((s) => (
-              <option key={s.value} value={s.value}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="mt-3 min-w-0" onPointerDown={(e) => e.stopPropagation()}>
+            <Select
+              value={deal.stage}
+              aria-label="Mover a etapa"
+              onChange={(e) => onMove(e.target.value as DealStage)}
+              className="min-h-9 w-full max-w-full min-w-0 py-2 text-xs text-[var(--color-on-surface-variant)]"
+            >
+              {STAGE_OPTIONS.map((s) => (
+                <option key={s.value} value={s.value}>
+                  {s.label}
+                </option>
+              ))}
+            </Select>
+          </div>
         )}
 
-        <p className="mt-2 text-xs text-[var(--color-on-surface-variant)]/80">{relativeTime(deal.updatedAt)}</p>
+        <p className="mt-3 text-xs text-[var(--color-on-surface-variant)]">{relativeTime(deal.updatedAt)}</p>
       </div>
 
       {editOpen && (

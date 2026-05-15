@@ -5,6 +5,7 @@ import type { CrmFormField } from '@prisma/client'
 import { mergeHtmlFieldSettings } from '@/lib/forms/html-field'
 import { ArrowDown, ArrowUp, Trash2 } from 'lucide-react'
 import { deleteField, moveField } from '../actions'
+import { Dialog } from '@/app/crm/_components/ui'
 import { FIELD_TYPE_LABELS } from '../_lib/field-types'
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
 export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect }: Props) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const htmlHint =
     field.type === 'HTML_INPUT'
       ? (() => {
@@ -35,26 +37,41 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
   }
 
   return (
-    <div
-      className={`rounded-xl border p-4 transition ${
-        isSelected ? 'border-indigo-300 bg-indigo-50/50' : 'border-gray-200 bg-white hover:border-gray-300'
-      }`}
-    >
+    <>
+      <Dialog
+        open={confirmDeleteOpen}
+        title="¿Eliminar campo?"
+        description={`Eliminar "${field.label}" del formulario.`}
+        variant="danger"
+        confirmLabel="Eliminar"
+        onConfirm={() => {
+          setConfirmDeleteOpen(false)
+          run(() => deleteField(field.id))
+        }}
+        onCancel={() => setConfirmDeleteOpen(false)}
+      />
+      <div
+        className={`rounded-[var(--radius-md)] p-4 transition ${
+          isSelected
+            ? 'bg-[var(--color-primary-fixed)]/35'
+            : 'bg-[var(--color-surface-container-lowest)] hover:bg-[var(--color-surface-container-low)]'
+        }`}
+      >
       <div className="flex items-start justify-between gap-3">
         <button type="button" onClick={onSelect} className="min-w-0 flex-1 text-left">
           <div className="mb-2 flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-900">{field.label}</span>
+            <span className="text-sm font-semibold text-[var(--color-on-surface)]">{field.label}</span>
             {field.isRequired && (
-              <span className="rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-semibold text-red-600">
+              <span className="rounded-full bg-[var(--color-error-container)] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-on-error-container)]">
                 Obligatorio
               </span>
             )}
           </div>
-          <div className="rounded-lg border border-[#f2f2f2] bg-gray-50 px-3 py-2 text-sm text-gray-400">
+          <div className="rounded-[var(--radius-sm)] bg-[var(--color-surface-container-low)] px-3 py-2 text-sm text-[var(--color-on-surface-variant)]">
             {field.placeholder || htmlHint || FIELD_TYPE_LABELS[field.type]}
           </div>
-          {field.helpText && <p className="mt-2 text-xs text-gray-500">{field.helpText}</p>}
-          <p className="mt-2 font-mono text-[11px] text-gray-400">{field.fieldKey}</p>
+          {field.helpText && <p className="mt-2 text-xs text-[var(--color-on-surface-variant)]">{field.helpText}</p>}
+          <p className="mt-2 font-mono text-[11px] text-[var(--color-on-surface-variant)]">{field.fieldKey}</p>
         </button>
 
         <div className="flex shrink-0 gap-1">
@@ -62,7 +79,7 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
             type="button"
             disabled={isPending || isFirst}
             onClick={() => run(() => moveField(field.id, 'up'))}
-            className="rounded-lg p-2 text-gray-400 hover:bg-white hover:text-gray-700 disabled:opacity-40"
+            className="rounded-[var(--radius-sm)] p-2 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-lowest)] hover:text-[var(--color-on-surface)] disabled:opacity-40"
             aria-label="Mover arriba"
           >
             <ArrowUp size={15} />
@@ -71,7 +88,7 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
             type="button"
             disabled={isPending || isLast}
             onClick={() => run(() => moveField(field.id, 'down'))}
-            className="rounded-lg p-2 text-gray-400 hover:bg-white hover:text-gray-700 disabled:opacity-40"
+            className="rounded-[var(--radius-sm)] p-2 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-lowest)] hover:text-[var(--color-on-surface)] disabled:opacity-40"
             aria-label="Mover abajo"
           >
             <ArrowDown size={15} />
@@ -79,17 +96,16 @@ export function FieldPreviewCard({ field, isSelected, isFirst, isLast, onSelect 
           <button
             type="button"
             disabled={isPending}
-            onClick={() => {
-              if (window.confirm('Eliminar este campo?')) run(() => deleteField(field.id))
-            }}
-            className="rounded-lg p-2 text-gray-400 hover:bg-white hover:text-red-600 disabled:opacity-40"
+            onClick={() => setConfirmDeleteOpen(true)}
+            className="rounded-[var(--radius-sm)] p-2 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)] disabled:opacity-40"
             aria-label="Eliminar campo"
           >
             <Trash2 size={15} />
           </button>
         </div>
       </div>
-      {error && <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p>}
-    </div>
+      {error && <p className="mt-3 rounded-[var(--radius-sm)] bg-[var(--color-error-container)] px-3 py-2 text-xs text-[var(--color-on-error-container)]">{error}</p>}
+      </div>
+    </>
   )
 }

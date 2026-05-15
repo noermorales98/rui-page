@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { getDeal } from '@/lib/services/deals'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
-import { DealStageBadge, ContactStatusBadge } from '@/app/crm/_components/ui'
+import { Accordion, DealStageBadge, ContactStatusBadge } from '@/app/crm/_components/ui'
 import { DealTimeline, type TimelineEntry } from './_components/DealTimeline'
 
 interface Props {
@@ -26,24 +26,30 @@ export default async function DealDetailPage({ params }: Props) {
   // Timeline = AuditLog rows for this deal + ContactActivity rows for the linked
   // contact (so stage moves logged as NOTE on the contact also show here).
   // No service yet — two parallel prisma reads, merged + sorted in memory.
-  const [auditRows, activityRows] = await Promise.all([
+  const DEAL_MOVE_SNIPPET = 'Deal movido'
+
+  const [auditRows, noteActivitiesRaw] = await Promise.all([
     prisma.auditLog.findMany({
       where: { entityType: 'Deal', entityId: dealId },
       include: { actor: { select: { id: true, name: true, email: true } } },
       orderBy: { createdAt: 'desc' },
       take: 50,
     }),
+    // Sin `contains` en SQL: mezcla utf8mb4_bin (columna) vs unicode_ci (literal) rompe LIKE en MySQL.
     prisma.contactActivity.findMany({
       where: {
         contactId: deal.contactId,
         type: 'NOTE',
-        body: { contains: 'Deal movido' },
       },
       include: { createdBy: { select: { id: true, name: true, email: true } } },
       orderBy: { createdAt: 'desc' },
-      take: 50,
+      take: 120,
     }),
   ])
+
+  const activityRows = noteActivitiesRaw
+    .filter((row) => row.body != null && row.body.includes(DEAL_MOVE_SNIPPET))
+    .slice(0, 50)
 
   const entries: TimelineEntry[] = [
     ...auditRows.map((row) => ({ kind: 'audit' as const, row })),
@@ -78,7 +84,7 @@ export default async function DealDetailPage({ params }: Props) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] p-4">
+          <div className="rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-4">
             <p className={TOK.label}>Contacto</p>
             <Link
               href={`/crm/contactos/${deal.contact.id}`}
@@ -93,43 +99,42 @@ export default async function DealDetailPage({ params }: Props) {
             <div className="mt-2"><ContactStatusBadge status={deal.contact.status} /></div>
           </div>
 
-          <div className="rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] p-4">
-            <p className={TOK.label}>Ventas vinculadas</p>
-            {deal.sales.length === 0 ? (
-              <p className="text-sm text-[var(--color-on-surface-variant)]">Ninguna venta registrada.</p>
-            ) : (
-              <ul className="space-y-1.5 text-sm">
-                {deal.sales.map((sale) => (
-                  <li key={sale.id} className="flex items-center justify-between gap-3">
-                    <span className="truncate">{sale.productName}</span>
-                    <span className="whitespace-nowrap font-mono text-xs text-[var(--color-on-surface-variant)]">
-                      {moneyFmt.format(sale.amountCents / 100)} · {sale.status}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {paidSales.length > 0 && (
-              <p className="mt-3 text-xs text-[var(--color-on-surface-variant)]">
-                Pagado: <strong>{moneyFmt.format(paidTotal / 100)}</strong>
-              </p>
-            )}
+          <div className="rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-4">
+            <Accordion title="Ventas vinculadas" defaultOpen>
+              {deal.sales.length === 0 ? (
+                <p className="text-sm text-[var(--color-on-surface-variant)]">Ninguna venta registrada.</p>
+              ) : (
+                <ul className="space-y-1.5 text-sm">
+                  {deal.sales.map((sale) => (
+                    <li key={sale.id} className="flex items-center justify-between gap-3">
+                      <span className="truncate">{sale.productName}</span>
+                      <span className="whitespace-nowrap font-mono text-xs text-[var(--color-on-surface-variant)]">
+                        {moneyFmt.format(sale.amountCents / 100)} · {sale.status}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {paidSales.length > 0 && (
+                <p className="mt-3 text-xs text-[var(--color-on-surface-variant)]">
+                  Pagado: <strong>{moneyFmt.format(paidTotal / 100)}</strong>
+                </p>
+              )}
+            </Accordion>
           </div>
         </div>
 
         {deal.notes && (
-          <div className="rounded-2xl border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] p-4">
-            <p className={TOK.label}>Notas</p>
+          <Accordion title="Notas">
             <p className="whitespace-pre-wrap text-sm text-[var(--color-on-surface)]">{deal.notes}</p>
-          </div>
+          </Accordion>
         )}
       </div>
 
       <div className={`${TOK.panel} ${TOK.panelPad}`}>
-        <h2 className="mb-4 text-base font-semibold tracking-tight text-[var(--color-on-surface)]">
-          Línea de tiempo
-        </h2>
-        <DealTimeline entries={entries} />
+        <Accordion title="Línea de tiempo" defaultOpen>
+          <DealTimeline entries={entries} />
+        </Accordion>
       </div>
     </div>
   )

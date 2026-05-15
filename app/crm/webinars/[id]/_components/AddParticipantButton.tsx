@@ -104,9 +104,9 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)] p-4">
           <div
-            className="w-full max-w-sm rounded-xl bg-[var(--color-surface-container-lowest)] p-6"
+            className="w-full max-w-sm rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6 shadow-[var(--shadow-md)]"
             role="dialog"
             aria-modal="true"
             aria-labelledby="add-participant-title"
@@ -119,7 +119,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                 type="button"
                 onClick={handleClose}
                 aria-label="Cerrar"
-                className="rounded p-1 text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-high)]"
+                className="rounded-full bg-[var(--color-surface-container-high)] p-1.5 text-[var(--color-on-surface-variant)] transition hover:bg-[var(--color-surface-container-highest)] hover:text-[var(--color-on-surface)]"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5">
                   <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -146,7 +146,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                     className={TOK.inputCompact}
                   />
                   {showDropdown && (
-                    <ul className="absolute z-10 mt-1 w-full rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] py-1">
+                    <ul className="absolute z-10 mt-1 w-full rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-1 shadow-[var(--shadow-sm)]">
                       {results.map((c) => {
                         const alreadyAdded = registeredContactIds.includes(c.id)
                         return (
@@ -155,7 +155,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                               type="button"
                               disabled={alreadyAdded || loading}
                               onMouseDown={() => handleSelect(c)}
-                              className="w-full px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)] disabled:cursor-not-allowed disabled:opacity-40"
+                              className="w-full rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm transition hover:bg-[var(--color-surface-container)] disabled:cursor-not-allowed disabled:opacity-40"
                             >
                               <span className="font-medium text-[var(--color-on-surface)]">{c.name}</span>
                               <span className="ml-2 text-xs text-[var(--color-on-surface-variant)]">{c.email}</span>
@@ -207,7 +207,7 @@ export function AddParticipantButton({ webinarId, registeredContactIds }: Props)
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="rounded-lg border border-[var(--color-outline-variant)] bg-[var(--color-surface-container-lowest)] px-4 py-2 text-sm font-medium text-[var(--color-on-surface)] transition hover:bg-[var(--color-surface-container)]"
+                    className={TOK.actionSecondary}
                   >
                     Cancelar
                   </button>

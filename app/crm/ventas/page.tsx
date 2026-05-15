@@ -3,7 +3,7 @@ import { calculateSalesSummary, formatMoneyFromCents } from './_lib/sales-metric
 import { CreateSaleModal } from './_components/CreateSaleModal'
 import { SalesFilters } from './_components/SalesFilters'
 import { SalesTable } from './_components/SalesTable'
-import { MetricCard } from '@/app/crm/_components/ui'
+import { MetricCard, ViewToggle, type ListView } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import type { SaleRow } from './_components/SalesTable'
 
@@ -17,11 +17,13 @@ interface Props {
     status?: string
     method?: string
     page?: string
+    view?: string
   }>
 }
 
 export default async function VentasPage({ searchParams }: Props) {
   const params = await searchParams
+  const view: ListView = params.view === 'cards' ? 'cards' : 'table'
   const q = params.q?.trim() ?? ''
   const status = SALE_STATUSES.find((value) => value === params.status)
   const method = PAYMENT_METHODS.find((value) => value === params.method)
@@ -71,11 +73,12 @@ export default async function VentasPage({ searchParams }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap justify-end gap-2">
+        <ViewToggle view={view} searchParams={params} />
         <CreateSaleModal deals={deals} />
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           accent
           icon={
@@ -122,7 +125,7 @@ export default async function VentasPage({ searchParams }: Props) {
       <SalesFilters />
 
       <div className={`${TOK.panel} p-6`}>
-        <SalesTable sales={sales as SaleRow[]} />
+        <SalesTable sales={sales as SaleRow[]} view={view} />
       </div>
 
       {total > PAGE_SIZE && (
