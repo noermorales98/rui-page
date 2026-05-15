@@ -3,6 +3,7 @@
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useDroppable } from '@dnd-kit/core'
 import type { FunnelBlock, FunnelTheme } from '@/lib/funnels/types'
+import type { FormCacheEntry } from '@/lib/funnels/types'
 import type { BlockValidationError } from '@/lib/funnels/builder-validation'
 import { isInvalidBlock } from '@/lib/funnels/builder-validation'
 import { renderFunnelBlocks } from '@/lib/funnels/render'
@@ -19,10 +20,11 @@ type Props = {
   onSelect: (id: string) => void
   onDelete: (id: string) => void
   onSave: () => void
+  formsCache: Record<number, FormCacheEntry>
 }
 
 export function BuilderCanvas({
-  pageId, blocks, theme, selectedId, validationErrors, isDirty, isPending, onSelect, onDelete, onSave,
+  pageId, blocks, theme, selectedId, validationErrors, isDirty, isPending, onSelect, onDelete, onSave, formsCache,
 }: Props) {
   const { setNodeRef } = useDroppable({ id: 'canvas' })
 
@@ -54,7 +56,7 @@ export function BuilderCanvas({
             </div>
           ) : (
             blocks.map((block) => {
-              const [rendered] = renderFunnelBlocks({ blocks: [block], theme })
+              const [rendered] = renderFunnelBlocks({ blocks: [block], theme, formsCache })
               return (
                 <SortableBlockWrapper
                   key={block.id}

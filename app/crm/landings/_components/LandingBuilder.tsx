@@ -5,9 +5,10 @@ import { DndContext, DragOverlay, closestCenter, type DragEndEvent, type DragSta
 import { arrayMove } from '@dnd-kit/sortable'
 import type { FunnelPage } from '@prisma/client'
 import type { FunnelBlock, FunnelTheme } from '@/lib/funnels/types'
+import type { FormCacheEntry } from '@/lib/funnels/types'
 import { defaultConfigByType, defaultTheme } from '@/lib/funnels/defaults'
 import { validateBlocks, type BlockValidationError } from '@/lib/funnels/builder-validation'
-import { saveBlocksAction } from '../actions'
+import { saveBlocksAction, getFormDetailAction } from '../actions'
 import { BlockPalette } from './builder/BlockPalette'
 import { BuilderCanvas } from './builder/BuilderCanvas'
 import { BlockEditor } from './builder/BlockEditor'
@@ -29,6 +30,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: Funne
   const [isDirty, setIsDirty] = useState(false)
   const [validationErrors, setValidationErrors] = useState<BlockValidationError[]>([])
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
+  const [formsCache, setFormsCache] = useState<Record<number, FormCacheEntry>>({})
   const boundSaveAction = useMemo(() => saveBlocksAction.bind(null, page.id), [page.id])
   const [state, action, isPending] = useActionState(boundSaveAction, null)
 
@@ -128,6 +130,20 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: Funne
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [selectedId, triggerSave, handleDeleteBlock])
 
+  useEffect(() => {
+    const formBlocks = blocks.filter((b) => b.type === 'FORM')
+    for (const b of formBlocks) {
+      const formId = typeof b.config.formId === 'number' ? b.config.formId : null
+      if (formId != null && !formsCache[formId]) {
+        getFormDetailAction(formId).then((entry) => {
+          if (entry) {
+            setFormsCache((prev) => ({ ...prev, [formId]: entry }))
+          }
+        })
+      }
+    }
+  }, [blocks])
+
   const selectedBlock = blocks.find((b) => b.id === selectedId) ?? null
   const activePaletteType = activeDragId?.startsWith('palette-')
     ? activeDragId.replace('palette-', '')
@@ -165,6 +181,7 @@ export function LandingBuilder({ page, theme }: { page: FunnelPage; theme: Funne
           onSelect={setSelectedId}
           onDelete={handleDeleteBlock}
           onSave={triggerSave}
+          formsCache={formsCache}
         />
 
         {/* Right: Properties */}
