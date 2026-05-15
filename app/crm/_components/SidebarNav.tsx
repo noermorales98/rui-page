@@ -40,6 +40,7 @@ const CONFIG_ITEMS: NavItem[] = [
   { label: 'Configuración', href: '/crm/configuracion',           icon: Settings01Icon  },
   { label: 'Usuarios',      href: '/crm/configuracion/usuarios',  icon: UserAccountIcon, roles: ['ADMIN'] },
   { label: 'Etiquetas',     href: '/crm/configuracion/etiquetas', icon: TagsIcon,        roles: ['ADMIN', 'VENDEDOR'] },
+  { label: 'Mi perfil',    href: '/crm/configuracion/perfil',   icon: UserAccountIcon },
 ]
 
 function isVisible(item: NavItem, role: Role | null): boolean {
