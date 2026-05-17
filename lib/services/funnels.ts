@@ -1,12 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import type { FlowStepAction, FlowTrigger, FunnelStatus, Prisma } from '@prisma/client'
+import type { FlowStepAction, FlowTrigger, FunnelPageKind, FunnelStatus, Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { requireRole } from '@/lib/auth/permissions'
 import { mapError, type ApiError } from '@/lib/errors/map'
 import { logAudit } from '@/lib/audit'
-import { defaultTheme, defaultWebinarPages } from '@/lib/funnels/defaults'
+import { defaultTheme, defaultWebinarPages, pageKindDefaults } from '@/lib/funnels/defaults'
 import { canPublishFunnel, normalizeCategoryNames } from '@/lib/funnels/rules'
 import { publicFunnelUrl, slugifyFunnel } from '@/lib/funnels/slug'
 import { sanitizeCss, sanitizeHtml } from '@/lib/funnels/sanitize'
@@ -361,6 +361,60 @@ export async function saveFunnelAutomation(
     return { ok: true, data: { id: flow.id } }
   } catch (error) {
     return mapError(error)
+  }
+}
+
+export async function addFunnelPage(
+  funnelId: number,
+  kind: FunnelPageKind,
+): Promise<Result<{ id: number }>> {
+  try {
+    await requireRole([...LANDING_ROLES])
+    const funnel = await prisma.funnel.findUnique({
+      where: { id: funnelId },
+      select: { id: true, slug: true, pages: { select: { kind: true, position: true } } },
+    })
+    if (!funnel) return { ok: false, error: { code: 'NOT_FOUND', message: 'Funnel no encontrado.' } }
+
+    const alreadyExists = funnel.pages.some((p) => p.kind === kind)
+    if (alreadyExists) return validationError(`Ya existe una página de tipo ${kind}.`)
+
+    const defaults = pageKindDefaults(kind)
+    const maxPosition = funnel.pages.reduce((max, p) => Math.max(max, p.position), -1)
+
+    const page = await prisma.funnelPage.create({
+      data: {
+        funnelId,
+        kind,
+        key: defaults.key,
+        slug: defaults.slug,
+        title: defaults.title,
+        position: maxPosition + 1,
+        blocks: [],
+      },
+    })
+    revalidateFunnel(funnel.slug)
+    return { ok: true, data: { id: page.id } }
+  } catch (err) {
+    return mapError(err)
+  }
+}
+
+export async function deleteFunnelPage(pageId: number): Promise<Result<{ id: number }>> {
+  try {
+    await requireRole([...LANDING_ROLES])
+    const page = await prisma.funnelPage.findUnique({
+      where: { id: pageId },
+      select: { id: true, funnelId: true, funnel: { select: { slug: true, pages: { select: { id: true } } } } },
+    })
+    if (!page) return { ok: false, error: { code: 'NOT_FOUND', message: 'Página no encontrada.' } }
+    if (page.funnel.pages.length <= 1) return validationError('No puedes eliminar la única página del funnel.')
+
+    await prisma.funnelPage.delete({ where: { id: pageId } })
+    revalidateFunnel(page.funnel.slug)
+    return { ok: true, data: { id: pageId } }
+  } catch (err) {
+    return mapError(err)
   }
 }
 

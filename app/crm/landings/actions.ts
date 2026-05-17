@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import type { FunnelStatus } from '@prisma/client'
+import type { FunnelStatus, FunnelPageKind, FlowStepAction } from '@prisma/client'
 import {
   createWebinarFunnel,
   saveFunnelPageBlocks,
@@ -9,6 +9,8 @@ import {
   saveFunnelAutomation,
   setFunnelStatus,
   updateFunnelTheme,
+  addFunnelPage,
+  deleteFunnelPage,
 } from '@/lib/services/funnels'
 import { defaultTheme } from '@/lib/funnels/defaults'
 import { listForms, getForm } from '@/lib/services/forms'
@@ -145,4 +147,31 @@ export async function getFormDetailAction(formId: number): Promise<FormCacheEntr
       isRequired: field.isRequired,
     })),
   }
+}
+
+export async function addFunnelPageAction(
+  funnelId: number,
+  kind: FunnelPageKind,
+): Promise<{ error?: string }> {
+  const result = await addFunnelPage(funnelId, kind)
+  return result.ok ? {} : { error: result.error.message }
+}
+
+export async function deleteFunnelPageAction(pageId: number): Promise<{ error?: string }> {
+  const result = await deleteFunnelPage(pageId)
+  return result.ok ? {} : { error: result.error.message }
+}
+
+export async function saveFlowAction(
+  funnelId: number,
+  trigger: 'LANDING_SUBMITTED' | 'WEBINAR_REGISTERED',
+  status: 'DRAFT' | 'ACTIVE' | 'PAUSED',
+  steps: Array<{ action: string; delayMins: number; config: Record<string, unknown> }>,
+): Promise<{ error?: string }> {
+  const result = await saveFunnelAutomation(funnelId, {
+    trigger,
+    status,
+    steps: steps as Array<{ action: FlowStepAction; delayMins: number; config: Record<string, unknown> }>,
+  })
+  return result.ok ? {} : { error: result.error.message }
 }
