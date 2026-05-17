@@ -8,6 +8,9 @@ import { FunnelFlowEditor } from './FunnelFlowEditor'
 import { FunnelHtmlEditor } from './FunnelHtmlEditor'
 import { FunnelPublishPanel } from './FunnelPublishPanel'
 import { FunnelThemeForm } from './FunnelThemeForm'
+import { FunnelPagesTab } from './FunnelPagesTab'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { EyeIcon } from '@hugeicons/core-free-icons'
 
 type StudioFunnel = {
   id: number
@@ -23,12 +26,11 @@ type StudioFunnel = {
 type Automation = Flow & { steps: FlowStep[] }
 
 const TABS: Array<[StudioTab, string]> = [
-  ['paginas', 'Paginas'],
-  ['contenido', 'Contenido'],
-  ['tema', 'Tema'],
-  ['html', 'HTML'],
-  ['flujo', 'Flujo'],
-  ['publicacion', 'Publicacion'],
+  ['paginas',    'Páginas'],
+  ['contenido',  'Contenido'],
+  ['tema',       'Tema'],
+  ['flujo',      'Flujo'],
+  ['publicacion','Publicación'],
 ]
 
 export function FunnelStudio({
@@ -44,26 +46,68 @@ export function FunnelStudio({
 }) {
   const activeTab = normalizeStudioTab(tab)
   const selectedPage = funnel.pages.find((page) => String(page.id) === pageId) ?? funnel.pages[0]
+  const statusLabel = funnel.status === 'PUBLISHED' ? 'Publicado' : funnel.status === 'ARCHIVED' ? 'Archivado' : 'Borrador'
+  const statusColor = funnel.status === 'PUBLISHED'
+    ? 'bg-[var(--color-success-container)] text-[var(--color-on-success-container)]'
+    : 'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link href="/crm/landings" className={TOK.linkBack}>Volver a Landings</Link>
-        <a href={publicPageUrl(funnel.slug, 'registration', null)} target="_blank" className={TOK.actionSecondary}>
-          Ver publico
-        </a>
+    <div className="flex flex-col gap-3">
+      {/* Compact header */}
+      <div className="flex items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--color-outline-variant)] bg-[var(--color-surface)] px-4 py-2">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/crm/landings" className={TOK.linkBack}>←</Link>
+          <span className="truncate font-semibold text-[var(--color-on-surface)]">{funnel.name}</span>
+          <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <details className="relative">
+            <summary className="cursor-pointer list-none rounded-[var(--radius-md)] px-3 py-1.5 text-sm text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] select-none">
+              Avanzado
+            </summary>
+            <div className="absolute right-0 top-full z-30 mt-1 w-72 rounded-[var(--radius-lg)] border border-[var(--color-outline-variant)] bg-[var(--color-surface)] p-4 shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">Configuración avanzada</p>
+              <div className="mt-3 flex flex-col gap-2 text-sm">
+                <div>
+                  <span className="text-xs text-[var(--color-on-surface-variant)]">URL pública</span>
+                  <p className="font-mono text-xs text-[var(--color-on-surface)]">/f/{funnel.slug}</p>
+                </div>
+                {funnel.webinar && (
+                  <div>
+                    <span className="text-xs text-[var(--color-on-surface-variant)]">Webinar</span>
+                    <p className="text-xs text-[var(--color-on-surface)]">{funnel.webinar.title}</p>
+                  </div>
+                )}
+                {selectedPage && (
+                  <div className="border-t border-[var(--color-outline-variant)] pt-2">
+                    <span className="text-xs text-[var(--color-on-surface-variant)]">Página activa</span>
+                    <p className="text-xs text-[var(--color-on-surface)]">{selectedPage.title ?? selectedPage.key} — modo {selectedPage.mode}</p>
+                    {selectedPage.mode === 'HTML' && (
+                      <Link
+                        href={`/crm/landings/${funnel.id}?tab=html&page=${selectedPage.id}`}
+                        className="mt-1 inline-block text-xs text-[var(--color-primary)] underline"
+                      >
+                        Editar HTML
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </details>
+          <a
+            href={publicPageUrl(funnel.slug, selectedPage?.key ?? 'registration', selectedPage?.slug ?? null)}
+            target="_blank"
+            rel="noreferrer"
+            className={`${TOK.actionSecondary} flex items-center gap-1.5`}
+          >
+            <HugeiconsIcon icon={EyeIcon} size={14} />
+            Ver
+          </a>
+        </div>
       </div>
 
-      <div className={`${TOK.panel} ${TOK.panelPad}`}>
-        <p className="text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">
-          {funnel.status === 'PUBLISHED' ? 'Publicado' : 'Borrador'}
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-[var(--color-on-surface)]">{funnel.name}</h1>
-        <p className={`mt-2 ${TOK.sectionSubtitle}`}>
-          /f/{funnel.slug} {funnel.webinar ? `· ${funnel.webinar.title}` : ''}
-        </p>
-      </div>
-
+      {/* Tabs */}
       <div className="flex flex-wrap gap-2">
         {TABS.map(([key, label]) => (
           <Link
@@ -80,34 +124,18 @@ export function FunnelStudio({
         ))}
       </div>
 
+      {/* Tab content */}
       {activeTab === 'paginas' && (
-        <div className={`${TOK.panel} ${TOK.panelPad}`}>
-          <h2 className={TOK.sectionTitle}>Paginas del funnel</h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {funnel.pages.map((page) => (
-              <Link
-                key={page.id}
-                href={`/crm/landings/${funnel.id}?tab=contenido&page=${page.id}`}
-                className="rounded-[var(--radius-md)] bg-[var(--color-surface-container-lowest)] p-4 transition hover:bg-[var(--color-surface-container-low)]"
-              >
-                <p className="font-semibold text-[var(--color-on-surface)]">{page.title ?? page.key}</p>
-                <p className="mt-1 text-xs text-[var(--color-on-surface-variant)]">
-                  {publicPageUrl(funnel.slug, page.key, page.slug)}
-                </p>
-                <p className="mt-2 text-xs font-semibold uppercase text-[var(--color-on-surface-variant)]">{page.mode}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
+        <FunnelPagesTab funnel={funnel} />
       )}
-
       {activeTab === 'contenido' && selectedPage && (
         <LandingBuilder page={selectedPage} theme={funnel.theme as FunnelTheme | null | undefined} />
       )}
       {activeTab === 'tema' && <FunnelThemeForm funnelId={funnel.id} theme={funnel.theme} />}
-      {activeTab === 'html' && selectedPage && <FunnelHtmlEditor page={selectedPage} />}
       {activeTab === 'flujo' && <FunnelFlowEditor funnelId={funnel.id} automations={automations} />}
       {activeTab === 'publicacion' && <FunnelPublishPanel funnel={funnel} />}
+      {/* html tab hidden from tab bar but still accessible via advanced settings drawer */}
+      {activeTab === 'html' && selectedPage && <FunnelHtmlEditor page={selectedPage} />}
     </div>
   )
 }
