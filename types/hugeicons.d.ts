@@ -64,3 +64,38 @@ declare module '@hugeicons/core-free-icons/EyeIcon' {
   const EyeIcon: HugeIcon
   export default EyeIcon
 }
+
+declare module '@hugeicons/core-free-icons/Edit02Icon' {
+  const Edit02Icon: HugeIcon
+  export default Edit02Icon
+}
+
+declare module '@hugeicons/core-free-icons/Delete02Icon' {
+  const Delete02Icon: HugeIcon
+  export default Delete02Icon
+}
+
+declare module '@hugeicons/core-free-icons/UserAdd01Icon' {
+  const UserAdd01Icon: HugeIcon
+  export default UserAdd01Icon
+}
+
+declare module '@hugeicons/core-free-icons/CheckmarkCircle01Icon' {
+  const CheckmarkCircle01Icon: HugeIcon
+  export default CheckmarkCircle01Icon
+}
+
+declare module '@hugeicons/core-free-icons/LockPasswordIcon' {
+  const LockPasswordIcon: HugeIcon
+  export default LockPasswordIcon
+}
+
+declare module '@hugeicons/core-free-icons/PlusSignIcon' {
+  const PlusSignIcon: HugeIcon
+  export default PlusSignIcon
+}
+
+declare module '@hugeicons/core-free-icons/ArrowRight01Icon' {
+  const ArrowRight01Icon: HugeIcon
+  export default ArrowRight01Icon
+}
