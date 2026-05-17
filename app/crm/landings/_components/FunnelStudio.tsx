@@ -10,7 +10,7 @@ import { FunnelPublishPanel } from './FunnelPublishPanel'
 import { FunnelThemeForm } from './FunnelThemeForm'
 import { FunnelPagesTab } from './FunnelPagesTab'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { EyeIcon } from '@hugeicons/core-free-icons'
+import EyeIcon from '@hugeicons/core-free-icons/EyeIcon'
 
 type StudioFunnel = {
   id: number
@@ -48,7 +48,7 @@ export function FunnelStudio({
   const selectedPage = funnel.pages.find((page) => String(page.id) === pageId) ?? funnel.pages[0]
   const statusLabel = funnel.status === 'PUBLISHED' ? 'Publicado' : funnel.status === 'ARCHIVED' ? 'Archivado' : 'Borrador'
   const statusColor = funnel.status === 'PUBLISHED'
-    ? 'bg-[var(--color-success-container)] text-[var(--color-on-success-container)]'
+    ? 'bg-[var(--color-tertiary-container)] text-[var(--color-on-tertiary-container)]'
     : 'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
 
   return (
@@ -56,7 +56,7 @@ export function FunnelStudio({
       {/* Compact header */}
       <div className="flex items-center justify-between gap-3 rounded-[var(--radius-lg)] border border-[var(--color-outline-variant)] bg-[var(--color-surface)] px-4 py-2">
         <div className="flex items-center gap-3 min-w-0">
-          <Link href="/crm/landings" className={TOK.linkBack}>←</Link>
+          <Link href="/crm/landings" className={TOK.linkBack} aria-label="Volver a Landings">←</Link>
           <span className="truncate font-semibold text-[var(--color-on-surface)]">{funnel.name}</span>
           <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
         </div>

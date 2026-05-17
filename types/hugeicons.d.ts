@@ -59,3 +59,8 @@ declare module '@hugeicons/core-free-icons/TagsIcon' {
   const TagsIcon: HugeIcon
   export default TagsIcon
 }
+
+declare module '@hugeicons/core-free-icons/EyeIcon' {
+  const EyeIcon: HugeIcon
+  export default EyeIcon
+}
