@@ -99,3 +99,23 @@ declare module '@hugeicons/core-free-icons/ArrowRight01Icon' {
   const ArrowRight01Icon: HugeIcon
   export default ArrowRight01Icon
 }
+
+declare module '@hugeicons/core-free-icons/Clock01Icon' {
+  const Clock01Icon: HugeIcon
+  export default Clock01Icon
+}
+
+declare module '@hugeicons/core-free-icons/Tag01Icon' {
+  const Tag01Icon: HugeIcon
+  export default Tag01Icon
+}
+
+declare module '@hugeicons/core-free-icons/LinkSquare01Icon' {
+  const LinkSquare01Icon: HugeIcon
+  export default LinkSquare01Icon
+}
+
+declare module '@hugeicons/core-free-icons/FlashIcon' {
+  const FlashIcon: HugeIcon
+  export default FlashIcon
+}
