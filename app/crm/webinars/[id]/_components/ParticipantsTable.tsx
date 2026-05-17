@@ -11,6 +11,8 @@ export type RegistrationWithContact = {
   status: RegistrationStatus
   createdAt: Date | string
   contactId: number
+  registrationCount: number
+  registrationDates: unknown
   contact: { id: number; name: string; email: string }
 }
 
@@ -31,6 +33,16 @@ const STATUS_OPTIONS: { value: RegistrationStatus; label: string; colorClass: st
     colorClass: 'bg-[var(--color-tertiary-container)] text-[var(--color-on-tertiary-container)]',
   },
 ]
+
+function parseDates(raw: unknown): string[] {
+  return Array.isArray(raw) ? raw.filter((d): d is string => typeof d === 'string') : []
+}
+
+function formatDate(iso: string): string {
+  const d = new Date(iso)
+  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+  return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
 
 function relativeTime(date: Date | string): string {
   const ms = Date.now() - new Date(date).getTime()
@@ -53,6 +65,7 @@ export function ParticipantsTable({ registrations }: Props) {
     Object.fromEntries(registrations.map((r) => [r.id, r.status])),
   )
   const [regToRemove, setRegToRemove] = useState<RegistrationWithContact | null>(null)
+  const [expandedId, setExpandedId] = useState<number | null>(null)
   const { error: toastError } = useToast()
 
   function handleStatusChange(registrationId: number, status: RegistrationStatus) {
@@ -97,10 +110,11 @@ export function ParticipantsTable({ registrations }: Props) {
       ) : (
     <div>
       {/* Column headers */}
-      <div className={`grid grid-cols-[1.5fr_1.5fr_1fr_0.7fr_0.3fr] px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}>
+      <div className={`grid grid-cols-[1.5fr_1.5fr_1fr_auto_0.7fr_0.3fr] px-4 pb-3 text-[10.5px] font-semibold uppercase tracking-[0.07em] ${TOK.textSubtle}`}>
         <span>Contacto</span>
         <span>Email</span>
         <span>Estado</span>
+        <span className="px-2">Registros</span>
         <span>Agregado</span>
         <span></span>
       </div>
@@ -108,45 +122,79 @@ export function ParticipantsTable({ registrations }: Props) {
       {registrations.map((reg) => {
         const currentStatus = statuses[reg.id] ?? reg.status
         const statusConfig = STATUS_OPTIONS.find((s) => s.value === currentStatus)
+        const isMultiple = reg.registrationCount > 1
+        const isExpanded = expandedId === reg.id
+        const dates = parseDates(reg.registrationDates)
         return (
-          <div key={reg.id}
-            className="mb-1.5 grid grid-cols-[1.5fr_1.5fr_1fr_0.7fr_0.3fr] items-center rounded-2xl bg-[var(--color-surface-container-lowest)] px-4 py-3 last:mb-0">
-            <a
-              href={`/crm/contactos/${reg.contact.id}`}
-              className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+          <div key={reg.id} className="mb-1.5 last:mb-0">
+            <div
+              className={`grid grid-cols-[1.5fr_1.5fr_1fr_auto_0.7fr_0.3fr] items-center px-4 py-3 bg-[var(--color-surface-container-lowest)] ${isMultiple && isExpanded ? 'rounded-t-2xl' : 'rounded-2xl'}`}
             >
-              {reg.contact.name}
-            </a>
-            <span className={`text-sm ${TOK.textSubtle}`}>{reg.contact.email}</span>
-            <div>
-              <select
-                value={currentStatus}
-                onChange={(e) =>
-                  handleStatusChange(reg.id, e.target.value as RegistrationStatus)
-                }
-                aria-label={`Estado de ${reg.contact.name}`}
-                className={`rounded-[var(--radius-sm)] border-0 py-1 pl-2 pr-6 text-xs font-medium outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${statusConfig?.colorClass ?? ''}`}
+              <a
+                href={`/crm/contactos/${reg.contact.id}`}
+                className="text-sm font-medium text-[var(--color-primary)] hover:underline"
               >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s.value} value={s.value}>
-                    {s.label}
-                  </option>
-                ))}
-              </select>
+                {reg.contact.name}
+              </a>
+              <span className={`text-sm ${TOK.textSubtle}`}>{reg.contact.email}</span>
+              <div>
+                <select
+                  value={currentStatus}
+                  onChange={(e) =>
+                    handleStatusChange(reg.id, e.target.value as RegistrationStatus)
+                  }
+                  aria-label={`Estado de ${reg.contact.name}`}
+                  className={`rounded-[var(--radius-sm)] border-0 py-1 pl-2 pr-6 text-xs font-medium outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${statusConfig?.colorClass ?? ''}`}
+                >
+                  {STATUS_OPTIONS.map((s) => (
+                    <option key={s.value} value={s.value}>
+                      {s.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="px-2">
+                {isMultiple ? (
+                  <button
+                    type="button"
+                    onClick={() => setExpandedId(isExpanded ? null : reg.id)}
+                    aria-label={`Ver ${reg.registrationCount} fechas de registro de ${reg.contact.name}`}
+                    className="inline-flex items-center gap-1 rounded-full bg-[var(--color-tertiary-container)] px-2 py-0.5 text-xs font-semibold text-[var(--color-on-tertiary-container)]"
+                  >
+                    ×{reg.registrationCount} {isExpanded ? '▲' : '▼'}
+                  </button>
+                ) : (
+                  <span className={`text-xs ${TOK.textSubtle}`}>×1</span>
+                )}
+              </div>
+              <span className={`text-xs ${TOK.textSubtle}`}>{relativeTime(reg.createdAt)}</span>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => handleRemove(reg)}
+                  aria-label={`Quitar a ${reg.contact.name}`}
+                  className="cursor-pointer rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)]"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
+                    <path fillRule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
-            <span className={`text-xs ${TOK.textSubtle}`}>{relativeTime(reg.createdAt)}</span>
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={() => handleRemove(reg)}
-                aria-label={`Quitar a ${reg.contact.name}`}
-                className="cursor-pointer rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)]"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
-                  <path fillRule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </div>
+            {isExpanded && dates.length > 0 && (
+              <div className="rounded-b-2xl border border-t-0 border-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-4 py-3">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--color-on-surface-variant)]">
+                  Fechas de registro
+                </p>
+                <ul className="space-y-1">
+                  {dates.map((date, i) => (
+                    <li key={i} className={`text-xs ${TOK.textSubtle}`}>
+                      {formatDate(date)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )
       })}
