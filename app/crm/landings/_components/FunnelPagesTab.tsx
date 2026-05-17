@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition, useState } from 'react'
+import { useTransition, useState, useEffect } from 'react'
 import Link from 'next/link'
 import type { FunnelPage } from '@prisma/client'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -47,6 +47,18 @@ export function FunnelPagesTab({ funnel }: { funnel: StudioFunnel }) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [showAddMenu, setShowAddMenu] = useState(false)
+
+  useEffect(() => {
+    if (!showAddMenu) return
+    function handleOutsideClick(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (!target.closest('[data-add-menu]')) {
+        setShowAddMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick)
+    return () => document.removeEventListener('mousedown', handleOutsideClick)
+  }, [showAddMenu])
 
   const existingKinds = new Set(funnel.pages.map((p) => p.kind as FunnelPageKind))
   const availableKinds = ALL_KINDS.filter((k) => !existingKinds.has(k))
@@ -96,6 +108,7 @@ export function FunnelPagesTab({ funnel }: { funnel: StudioFunnel }) {
                   <Link
                     href={`/crm/landings/${funnel.id}?tab=contenido&page=${page.id}`}
                     title="Editar"
+                    aria-label="Editar página"
                     className="rounded-[var(--radius-sm)] p-1 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] hover:text-[var(--color-on-surface)]"
                   >
                     <HugeiconsIcon icon={Edit02Icon} size={14} />
@@ -105,6 +118,7 @@ export function FunnelPagesTab({ funnel }: { funnel: StudioFunnel }) {
                     target="_blank"
                     rel="noreferrer"
                     title="Previsualizar"
+                    aria-label="Previsualizar página"
                     className="rounded-[var(--radius-sm)] p-1 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)] hover:text-[var(--color-on-surface)]"
                   >
                     <HugeiconsIcon icon={EyeIcon} size={14} />
@@ -112,6 +126,7 @@ export function FunnelPagesTab({ funnel }: { funnel: StudioFunnel }) {
                   <button
                     type="button"
                     title="Eliminar"
+                    aria-label="Eliminar página"
                     disabled={isPending}
                     onClick={() => handleDelete(page.id, pageTitle)}
                     className="rounded-[var(--radius-sm)] p-1 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-error-container)] hover:text-[var(--color-on-error-container)] disabled:opacity-40"
@@ -138,7 +153,7 @@ export function FunnelPagesTab({ funnel }: { funnel: StudioFunnel }) {
                 <HugeiconsIcon icon={ArrowRight01Icon} size={18} />
               </div>
             )}
-            <div className="relative">
+            <div className="relative" data-add-menu>
               <button
                 type="button"
                 disabled={isPending}
