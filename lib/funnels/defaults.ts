@@ -1,3 +1,5 @@
+import type { FunnelPageKind } from '@prisma/client'
+
 import type { FunnelBlock, FunnelPageSeed, FunnelTheme } from './types'
 
 export const defaultTheme: FunnelTheme = {
@@ -106,13 +108,14 @@ export const defaultConfigByType: Record<FunnelBlock['type'], Record<string, unk
 
 export type PageKindDefaults = { title: string; key: string; slug: string }
 
-export function pageKindDefaults(kind: 'REGISTRATION' | 'THANK_YOU' | 'ACCESS' | 'ROOM' | 'CUSTOM'): PageKindDefaults {
-  const map: Record<string, PageKindDefaults> = {
-    REGISTRATION: { title: 'Registro',       key: 'registration', slug: 'registro' },
-    THANK_YOU:    { title: 'Gracias',         key: 'thank-you',    slug: 'gracias'  },
-    ACCESS:       { title: 'Acceso',          key: 'access',       slug: 'acceso'   },
-    ROOM:         { title: 'Sala',            key: 'room',         slug: 'sala'     },
-    CUSTOM:       { title: 'Personalizada',   key: 'custom',       slug: 'custom'   },
-  }
-  return map[kind] ?? map['REGISTRATION']
+const PAGE_KIND_DEFAULTS: Record<FunnelPageKind, PageKindDefaults> = {
+  REGISTRATION: { title: 'Registro',     key: 'registration', slug: 'registro' },
+  THANK_YOU:    { title: 'Gracias',       key: 'thank-you',    slug: 'gracias'  },
+  ACCESS:       { title: 'Acceso',        key: 'access',       slug: 'acceso'   },
+  ROOM:         { title: 'Sala',          key: 'room',         slug: 'sala'     },
+  CUSTOM:       { title: 'Personalizada', key: 'custom',       slug: 'custom'   },
+}
+
+export function pageKindDefaults(kind: FunnelPageKind): PageKindDefaults {
+  return PAGE_KIND_DEFAULTS[kind]
 }
