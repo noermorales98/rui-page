@@ -369,9 +369,9 @@ export async function addFunnelPage(
   kind: FunnelPageKind,
 ): Promise<Result<{ id: number }>> {
   try {
-    await requireRole([...LANDING_ROLES])
-    const funnel = await prisma.funnel.findUnique({
-      where: { id: funnelId },
+    const session = await requireRole([...LANDING_ROLES])
+    const funnel = await prisma.funnel.findFirst({
+      where: { id: funnelId, deletedAt: null },
       select: { id: true, slug: true, pages: { select: { kind: true, position: true } } },
     })
     if (!funnel) return { ok: false, error: { code: 'NOT_FOUND', message: 'Funnel no encontrado.' } }
@@ -390,19 +390,26 @@ export async function addFunnelPage(
         slug: defaults.slug,
         title: defaults.title,
         position: maxPosition + 1,
-        blocks: [],
+        blocks: [] as Prisma.InputJsonValue,
       },
     })
     revalidateFunnel(funnel.slug)
+    await logAudit({
+      actorId: Number(session.user.id),
+      entityType: 'FunnelPage',
+      entityId: page.id,
+      action: 'CREATE',
+      metadata: { kind, funnelId },
+    })
     return { ok: true, data: { id: page.id } }
-  } catch (err) {
-    return mapError(err)
+  } catch (error) {
+    return mapError(error)
   }
 }
 
 export async function deleteFunnelPage(pageId: number): Promise<Result<{ id: number }>> {
   try {
-    await requireRole([...LANDING_ROLES])
+    const session = await requireRole([...LANDING_ROLES])
     const page = await prisma.funnelPage.findUnique({
       where: { id: pageId },
       select: { id: true, funnelId: true, funnel: { select: { slug: true, pages: { select: { id: true } } } } },
@@ -412,9 +419,16 @@ export async function deleteFunnelPage(pageId: number): Promise<Result<{ id: num
 
     await prisma.funnelPage.delete({ where: { id: pageId } })
     revalidateFunnel(page.funnel.slug)
+    await logAudit({
+      actorId: Number(session.user.id),
+      entityType: 'FunnelPage',
+      entityId: pageId,
+      action: 'DELETE',
+      metadata: { funnelId: page.funnelId },
+    })
     return { ok: true, data: { id: pageId } }
-  } catch (err) {
-    return mapError(err)
+  } catch (error) {
+    return mapError(error)
   }
 }
 
