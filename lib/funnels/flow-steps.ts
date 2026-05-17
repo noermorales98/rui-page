@@ -9,7 +9,7 @@ type ServiceStep = { action: string; delayMins: number; config: Record<string, u
 export function visualStepsToService(steps: VisualStep[]): ServiceStep[] {
   return steps.map((step) => {
     if (step.type === 'email') {
-      return { action: 'SEND_EMAIL', delayMins: 0, config: { subject: step.subject, body: step.body } }
+      return { action: 'SEND_EMAIL', delayMins: 0, config: { subject: step.subject, bodyHtml: step.body } }
     }
     if (step.type === 'wait') {
       const delayMins = step.unit === 'hours' ? step.amount * 60 : step.amount * 1440
@@ -27,7 +27,7 @@ export function serviceStepsToVisual(steps: ServiceStep[]): VisualStep[] {
   for (const step of steps) {
     const id = crypto.randomUUID()
     if (step.action === 'SEND_EMAIL') {
-      result.push({ id, type: 'email', subject: String(step.config.subject ?? ''), body: String(step.config.body ?? '') })
+      result.push({ id, type: 'email', subject: String(step.config.subject ?? ''), body: String(step.config.bodyHtml ?? '') })
     } else if (step.action === 'WAIT') {
       const mins = step.delayMins
       if (mins >= 1440 && mins % 1440 === 0) {

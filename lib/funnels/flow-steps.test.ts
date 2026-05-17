@@ -8,7 +8,7 @@ test('visualStepsToService converts email step', () => {
     { id: 'a', type: 'email', subject: 'Hola', body: 'Bienvenido' },
   ])
   assert.deepEqual(result, [
-    { action: 'SEND_EMAIL', delayMins: 0, config: { subject: 'Hola', body: 'Bienvenido' } },
+    { action: 'SEND_EMAIL', delayMins: 0, config: { subject: 'Hola', bodyHtml: 'Bienvenido' } },
   ])
 })
 
@@ -39,7 +39,7 @@ test('visualStepsToService converts webhook step', () => {
 test('serviceStepsToVisual skips unsupported actions', () => {
   const result = serviceStepsToVisual([
     { action: 'UPDATE_CONTACT_STATUS', delayMins: 0, config: { status: 'QUALIFIED' } },
-    { action: 'SEND_EMAIL', delayMins: 0, config: { subject: 'Hi', body: 'Hello' } },
+    { action: 'SEND_EMAIL', delayMins: 0, config: { subject: 'Hi', bodyHtml: 'Hello' } },
   ])
   assert.equal(result.length, 1)
   assert.equal(result[0].type, 'email')
