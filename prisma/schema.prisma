@@ -284,14 +284,16 @@ model Webinar {
 }
 
 model WebinarRegistration {
-  id        Int                @id @default(autoincrement())
-  webinar   Webinar            @relation(fields: [webinarId], references: [id], onDelete: Cascade)
-  webinarId Int
-  contact   Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId Int
-  status    RegistrationStatus @default(REGISTERED)
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+  id                Int                @id @default(autoincrement())
+  webinar           Webinar            @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+  webinarId         Int
+  contact           Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId         Int
+  status            RegistrationStatus @default(REGISTERED)
+  registrationCount Int                @default(1)
+  registrationDates Json               @default("[]")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   @@unique([webinarId, contactId])
   @@index([contactId, status])
