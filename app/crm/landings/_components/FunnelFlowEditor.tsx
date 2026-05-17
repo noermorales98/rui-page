@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect, useRef } from 'react'
 import type { Flow, FlowStep } from '@prisma/client'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Mail01Icon from '@hugeicons/core-free-icons/Mail01Icon'
@@ -81,7 +81,10 @@ function StepForm({
           min={1}
           className={`${TOK.inputNative} w-24`}
           value={step.amount}
-          onChange={(e) => onChange({ ...step, amount: Math.max(1, Number(e.target.value)) })}
+          onChange={(e) => {
+            const n = Number(e.target.value)
+            onChange({ ...step, amount: Number.isFinite(n) ? Math.max(1, n) : 1 })
+          }}
         />
         <select
           className={TOK.inputNative}
@@ -160,6 +163,19 @@ export function FunnelFlowEditor({
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [isPending, startTransition] = useTransition()
+
+  const addMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!showAddMenu) return
+    function handleMouseDown(e: MouseEvent) {
+      if (addMenuRef.current && !addMenuRef.current.contains(e.target as Node)) {
+        setShowAddMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleMouseDown)
+    return () => document.removeEventListener('mousedown', handleMouseDown)
+  }, [showAddMenu])
 
   function addStep(type: StepType) {
     setShowAddMenu(false)
@@ -286,7 +302,7 @@ export function FunnelFlowEditor({
         {/* Add step */}
         <div className="relative mt-4 ml-0">
           <div className={steps.length > 0 ? 'ml-[1.1rem] h-6 w-0.5 bg-[var(--color-outline-variant)]' : 'hidden'} />
-          <div className="relative inline-block" data-add-step-menu>
+          <div className="relative inline-block" data-add-step-menu ref={addMenuRef}>
             <button
               type="button"
               onClick={() => setShowAddMenu((v) => !v)}

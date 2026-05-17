@@ -38,7 +38,8 @@ export function serviceStepsToVisual(steps: ServiceStep[]): VisualStep[] {
     } else if (step.action === 'ASSIGN_TAG') {
       result.push({ id, type: 'tag', tag: String(step.config.tagName ?? '') })
     } else if (step.action === 'SEND_WEBHOOK') {
-      result.push({ id, type: 'webhook', url: String(step.config.url ?? ''), method: (step.config.method as 'POST' | 'GET') ?? 'POST' })
+      const method = step.config.method === 'GET' ? 'GET' : 'POST'
+      result.push({ id, type: 'webhook', url: String(step.config.url ?? ''), method })
     }
     // Unsupported actions are silently skipped
   }

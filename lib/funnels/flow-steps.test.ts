@@ -54,3 +54,27 @@ test('serviceStepsToVisual converts wait back to days when >= 1440 mins', () => 
   const result = serviceStepsToVisual([{ action: 'WAIT', delayMins: 2880, config: {} }])
   assert.deepEqual(result[0], { id: result[0].id, type: 'wait', amount: 2, unit: 'days' })
 })
+
+test('serviceStepsToVisual falls back to POST for invalid webhook method', () => {
+  const result = serviceStepsToVisual([
+    { action: 'SEND_WEBHOOK', delayMins: 0, config: { url: 'https://x.com', method: 'PUT' } },
+  ])
+  assert.equal(result[0].type, 'webhook')
+  if (result[0].type === 'webhook') assert.equal(result[0].method, 'POST')
+})
+
+test('serviceStepsToVisual handles missing email config fields', () => {
+  const result = serviceStepsToVisual([
+    { action: 'SEND_EMAIL', delayMins: 0, config: {} },
+  ])
+  assert.equal(result[0].type, 'email')
+  if (result[0].type === 'email') {
+    assert.equal(result[0].subject, '')
+    assert.equal(result[0].body, '')
+  }
+})
+
+test('serviceStepsToVisual handles empty steps array', () => {
+  const result = serviceStepsToVisual([])
+  assert.deepEqual(result, [])
+})
