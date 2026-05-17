@@ -103,3 +103,16 @@ export const defaultConfigByType: Record<FunnelBlock['type'], Record<string, unk
   CUSTOM_HTML:  { html: '', css: '' },
   FOOTER:       { text: '', links: [] },
 }
+
+export type PageKindDefaults = { title: string; key: string; slug: string }
+
+export function pageKindDefaults(kind: 'REGISTRATION' | 'THANK_YOU' | 'ACCESS' | 'ROOM' | 'CUSTOM'): PageKindDefaults {
+  const map: Record<string, PageKindDefaults> = {
+    REGISTRATION: { title: 'Registro',       key: 'registration', slug: 'registro' },
+    THANK_YOU:    { title: 'Gracias',         key: 'thank-you',    slug: 'gracias'  },
+    ACCESS:       { title: 'Acceso',          key: 'access',       slug: 'acceso'   },
+    ROOM:         { title: 'Sala',            key: 'room',         slug: 'sala'     },
+    CUSTOM:       { title: 'Personalizada',   key: 'custom',       slug: 'custom'   },
+  }
+  return map[kind] ?? map['REGISTRATION']
+}

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { defaultTheme, defaultWebinarPages, defaultConfigByType } from './defaults'
+import { defaultTheme, defaultWebinarPages, defaultConfigByType, pageKindDefaults } from './defaults'
 import { sanitizeCss, sanitizeHtml } from './sanitize'
 import { resolveFunnelPagePath, slugifyFunnel } from './slug'
 
@@ -52,4 +52,12 @@ test('defaultConfigByType HERO has title field', () => {
 
 test('defaultConfigByType FAQ has items array', () => {
   assert.deepEqual(defaultConfigByType.FAQ.items, [])
+})
+
+test('pageKindDefaults returns correct key and slug for each kind', () => {
+  assert.deepEqual(pageKindDefaults('REGISTRATION'), { title: 'Registro', key: 'registration', slug: 'registro' })
+  assert.deepEqual(pageKindDefaults('THANK_YOU'), { title: 'Gracias', key: 'thank-you', slug: 'gracias' })
+  assert.deepEqual(pageKindDefaults('ACCESS'), { title: 'Acceso', key: 'access', slug: 'acceso' })
+  assert.deepEqual(pageKindDefaults('ROOM'), { title: 'Sala', key: 'room', slug: 'sala' })
+  assert.deepEqual(pageKindDefaults('CUSTOM'), { title: 'Personalizada', key: 'custom', slug: 'custom' })
 })
