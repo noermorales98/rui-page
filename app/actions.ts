@@ -131,6 +131,8 @@ export async function handleWebinarSubmission(
         contactId = created.id;
       }
 
+      const now = new Date()
+
       const existingReg = await tx.webinarRegistration.findUnique({
         where: {
           webinarId_contactId: {
@@ -138,32 +140,44 @@ export async function handleWebinarSubmission(
             contactId,
           },
         },
-      });
-
-      await tx.webinarRegistration.upsert({
-        where: {
-          webinarId_contactId: {
-            webinarId: WEBINAR_PUBLIC_ID,
-            contactId,
-          },
-        },
-        update: {},
-        create: {
-          webinarId: WEBINAR_PUBLIC_ID,
-          contactId,
-          status: 'REGISTERED',
-        },
-      });
+        select: { id: true, registrationDates: true },
+      })
 
       if (!existingReg) {
-        await tx.contactActivity.create({
+        await tx.webinarRegistration.create({
           data: {
+            webinarId: WEBINAR_PUBLIC_ID,
             contactId,
-            type: 'WEBINAR_REGISTERED',
-            body: `Registro en el webinar «${webinarExists.title}».`,
+            status: 'REGISTERED',
+            registrationCount: 1,
+            registrationDates: [now.toISOString()],
           },
-        });
+        })
+      } else {
+        const prevDates = Array.isArray(existingReg.registrationDates)
+          ? (existingReg.registrationDates as string[])
+          : []
+        await tx.webinarRegistration.update({
+          where: {
+            webinarId_contactId: {
+              webinarId: WEBINAR_PUBLIC_ID,
+              contactId,
+            },
+          },
+          data: {
+            registrationCount: { increment: 1 },
+            registrationDates: [...prevDates, now.toISOString()],
+          },
+        })
       }
+
+      await tx.contactActivity.create({
+        data: {
+          contactId,
+          type: 'WEBINAR_REGISTERED',
+          body: `Registro en el webinar «${webinarExists.title}».`,
+        },
+      })
     });
 
     revalidatePath('/crm/contactos');
