@@ -17,15 +17,18 @@ test('includes email and phone when field_ids and values exist', () => {
     formSlug: 'contacto',
     formName: 'Formulario de Contacto',
   }
+  assert.equal(buildLeadPayload(input, BASE_CONFIG).length, 1)
   const [lead] = buildLeadPayload(input, BASE_CONFIG) as Array<{
-    _embedded: { contacts: Array<{ custom_fields_values: Array<{ field_id: number; values: Array<{ value: string }> }> }> }
+    _embedded: { contacts: Array<{ custom_fields_values: Array<{ field_id: number; values: Array<{ value: string; enum_code: string }> }> }> }
   }>
   const fields = lead._embedded.contacts[0].custom_fields_values
   assert.equal(fields.length, 2)
   assert.equal(fields[0].field_id, 100)
   assert.equal(fields[0].values[0].value, 'ana@test.com')
+  assert.equal(fields[0].values[0].enum_code, 'WORK')
   assert.equal(fields[1].field_id, 200)
   assert.equal(fields[1].values[0].value, '+521234567890')
+  assert.equal(fields[1].values[0].enum_code, 'WORK')
 })
 
 test('omits email when emailFieldId is null', () => {
@@ -57,6 +60,24 @@ test('omits phone when phone is undefined', () => {
   const fields = lead._embedded.contacts[0].custom_fields_values
   assert.equal(fields.length, 1)
   assert.equal(fields[0].field_id, 100)
+  assert.equal(fields[0].values[0].enum_code, 'WORK')
+})
+
+test('omits phone when phoneFieldId is null', () => {
+  const config: KommoConfig = { ...BASE_CONFIG, phoneFieldId: null }
+  const input: KommoLeadInput = {
+    contactName: 'Ana',
+    email: 'ana@test.com',
+    phone: '+521234567890',
+    formSlug: 'f',
+    formName: 'F',
+  }
+  const [lead] = buildLeadPayload(input, config) as Array<{
+    _embedded: { contacts: Array<{ custom_fields_values: Array<{ field_id: number }> }> }
+  }>
+  const fields = lead._embedded.contacts[0].custom_fields_values
+  assert.equal(fields.length, 1)
+  assert.equal(fields[0].field_id, 100)
 })
 
 test('uses "Sin nombre" when contactName is undefined', () => {
@@ -72,7 +93,7 @@ test('uses "Sin nombre" when contactName is undefined', () => {
     _embedded: { contacts: Array<{ name: string }> }
   }>
   assert.equal(lead._embedded.contacts[0].name, 'Sin nombre')
-  assert.ok(lead.name.includes('Sin nombre'))
+  assert.equal(lead.name, 'Form: F — Sin nombre')
 })
 
 test('puts formSlug as tag', () => {
@@ -97,6 +118,8 @@ test('lead name follows "Form: [formName] — [contactName]" pattern', () => {
     formSlug: 'f',
     formName: 'Mi Formulario',
   }
-  const [lead] = buildLeadPayload(input, BASE_CONFIG) as Array<{ name: string }>
+  const [lead] = buildLeadPayload(input, BASE_CONFIG) as Array<{ name: string; pipeline_id: number; status_id: number }>
   assert.equal(lead.name, 'Form: Mi Formulario — Ana')
+  assert.equal(lead.pipeline_id, 1)
+  assert.equal(lead.status_id, 10)
 })
