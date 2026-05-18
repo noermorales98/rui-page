@@ -308,6 +308,7 @@ model WebinarRegistration {
   @@unique([webinarId, contactId])
   @@index([contactId, status])
   @@index([webinarId, status])
+  @@index([webinarId, commercialStatus])
 }
 
 model WebinarIntegration {
