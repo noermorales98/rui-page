@@ -75,9 +75,6 @@ interface Props {
 
 export function SeguimientoTable({ registrations, webinarId }: Props) {
   const [filter, setFilter] = useState<FilterKey>('todos')
-  const [regStatuses, setRegStatuses] = useState<Record<number, RegistrationStatus>>(
-    Object.fromEntries(registrations.map((r) => [r.id, r.status])),
-  )
   const [commercialStatuses, setCommercialStatuses] = useState<Record<number, CommercialStatus>>(
     Object.fromEntries(registrations.map((r) => [r.id, r.commercialStatus])),
   )
@@ -113,7 +110,7 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
   // Merge optimistic state into rows
   const rows = registrations.map((r) => ({
     ...r,
-    status: regStatuses[r.id] ?? r.status,
+    status: r.status,
     commercialStatus: commercialStatuses[r.id] ?? r.commercialStatus,
   }))
 
@@ -246,6 +243,7 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
                     <button
                       type="button"
                       aria-label={`Acciones para ${row.contact.name}`}
+                      onMouseDown={(e) => e.stopPropagation()}
                       onClick={() => setOpenMenuId(isMenuOpen ? null : row.id)}
                       className="rounded-lg border-none bg-transparent p-1.5 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-low)]"
                     >

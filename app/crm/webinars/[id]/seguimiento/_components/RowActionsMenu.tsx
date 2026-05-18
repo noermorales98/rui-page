@@ -81,7 +81,7 @@ export function RowActionsMenu({
       ) : (
         <div>
           <div className={`${itemClass} cursor-default opacity-60`}>
-            <span>💼</span> Oportunidad: {currentDeal.stage}
+            <span>💼</span> Oportunidad: {STAGE_LABEL[currentDeal.stage]}
           </div>
           <div className="pl-4">
             {STAGES.map((stage) => (
