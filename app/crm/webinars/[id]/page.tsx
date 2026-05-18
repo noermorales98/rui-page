@@ -81,6 +81,12 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
             {label}
           </Link>
         ))}
+        <Link
+          href={`/crm/webinars/${webinarId}/seguimiento`}
+          className={`rounded-[calc(var(--radius-md)-4px)] px-4 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)]`}
+        >
+          Seguimiento
+        </Link>
       </div>
 
       {activeTab === 'info' && (
