@@ -264,6 +264,15 @@ enum RegistrationStatus {
   PURCHASED
 }
 
+enum CommercialStatus {
+  SIN_CONTACTAR
+  CONTACTADO
+  INTERESADO
+  PLAN_PAGOS
+  NO_RESPONDE
+  DESCARTADO
+}
+
 model Webinar {
   id            Int                   @id @default(autoincrement())
   title         String
@@ -292,6 +301,7 @@ model WebinarRegistration {
   status            RegistrationStatus @default(REGISTERED)
   registrationCount Int                @default(1)
   registrationDates Json               @default("[]")
+  commercialStatus  CommercialStatus   @default(SIN_CONTACTAR)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
