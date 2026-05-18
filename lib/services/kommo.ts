@@ -19,7 +19,7 @@ let configCache: KommoConfig | null = null
 
 async function fetchKommoJson<T>(url: string, token: string): Promise<T> {
   const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${token}` },
   })
   if (!res.ok) throw new Error(`Kommo fetch ${res.status}: ${url}`)
   return res.json() as Promise<T>
@@ -40,15 +40,15 @@ export async function getKommoConfig(baseUrl: string, token: string): Promise<Ko
   const statusId = pipeline._embedded.statuses[0]?.id
   if (!statusId) throw new Error('Kommo: no statuses in pipeline')
 
-  type CustomField = { id: number; field_code?: string; field_type?: string }
+  type CustomField = { id: number; field_code?: string }
   type FieldsResponse = { _embedded: { custom_fields: CustomField[] } }
   const fieldsData = await fetchKommoJson<FieldsResponse>(
     `${baseUrl}/api/v4/contacts/custom_fields`,
     token,
   )
   const fields = fieldsData._embedded.custom_fields
-  const emailField = fields.find((f) => f.field_code === 'EMAIL' || f.field_type === 'EMAIL')
-  const phoneField = fields.find((f) => f.field_code === 'PHONE' || f.field_type === 'PHONE')
+  const emailField = fields.find((f) => f.field_code === 'EMAIL')
+  const phoneField = fields.find((f) => f.field_code === 'PHONE')
 
   configCache = {
     pipelineId,
@@ -95,7 +95,10 @@ export function buildLeadPayload(input: KommoLeadInput, config: KommoConfig): ob
 export async function createKommoLead(input: KommoLeadInput): Promise<void> {
   const baseUrl = process.env.KOMMO_BASE_URL
   const token = process.env.KOMMO_LONG_TOKEN
-  if (!baseUrl || !token) return
+  if (!baseUrl || !token) {
+    console.warn('[Kommo] KOMMO_BASE_URL or KOMMO_LONG_TOKEN not set — skipping lead creation')
+    return
+  }
 
   const config = await getKommoConfig(baseUrl, token)
   const payload = buildLeadPayload(input, config)
