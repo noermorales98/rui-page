@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { hashIpForSubmit, submitForm } from '@/lib/services/forms'
 import { checkRateLimit } from '@/lib/ratelimit/memory'
+import { createKommoLead } from '@/lib/services/kommo'
 
 // 10 submissions per minute per IP+slug, per skills/rate-limit.md MVP.
 const SUBMIT_WINDOW_MS = 60_000
@@ -85,6 +86,17 @@ export async function POST(req: Request, ctx: Ctx): Promise<NextResponse> {
   const userAgent = headerStore.get('user-agent')
 
   const result = await submitForm(slug, values, { ipHash, userAgent })
+
+  if (result.ok) {
+    void createKommoLead({
+      contactName: result.data.contactData.name,
+      email: result.data.contactData.email,
+      phone: result.data.contactData.phone,
+      formSlug: result.data.formSlug,
+      formName: result.data.formName,
+    }).catch((err: unknown) => console.error('[Kommo] createKommoLead failed:', err))
+  }
+
   if (!result.ok) {
     const status =
       result.error.code === 'NOT_FOUND' ? 404 :
