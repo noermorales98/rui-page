@@ -474,6 +474,9 @@ export type SubmitFormReport = {
   contactId: number | null
   contactCreated: boolean
   successMessage: string
+  contactData: { name?: string; email?: string; phone?: string }
+  formSlug: string
+  formName: string
 }
 
 export type SubmitFormMeta = {
@@ -666,6 +669,9 @@ export async function submitForm(
       data: {
         ...result,
         successMessage: form.successMessage,
+        contactData,
+        formSlug: slug,
+        formName: form.name,
       },
     }
   } catch (e) {
