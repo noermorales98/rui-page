@@ -69,6 +69,7 @@ export async function addNoteToContact(
   const session = await auth()
   if (!session?.user) return { error: 'No autorizado' }
 
+  if (!contactId || contactId < 1) return { error: 'Contacto inválido' }
   if (!body.trim()) return { error: 'La nota no puede estar vacía' }
 
   try {
@@ -78,6 +79,7 @@ export async function addNoteToContact(
       data: { contactId, type: 'NOTE', body: body.trim(), createdById },
     })
     revalidatePath(seguimientoPath(webinarId))
+    revalidatePath(`/crm/contactos/${contactId}`)
   } catch {
     return { error: 'Error al guardar la nota' }
   }

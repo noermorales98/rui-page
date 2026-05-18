@@ -12,6 +12,7 @@ import {
   type LeadScore,
 } from '../_lib/seguimiento'
 import { updateCommercialStatus as updateCommercialStatusAction } from '../actions'
+import { updateRegistrationStatus } from '../../../actions'
 import { RowActionsMenu } from './RowActionsMenu'
 import { CreateDealModal } from './CreateDealModal'
 import { AddNoteModal } from './AddNoteModal'
@@ -75,6 +76,9 @@ interface Props {
 
 export function SeguimientoTable({ registrations, webinarId }: Props) {
   const [filter, setFilter] = useState<FilterKey>('todos')
+  const [regStatuses, setRegStatuses] = useState<Record<number, RegistrationStatus>>(
+    Object.fromEntries(registrations.map((r) => [r.id, r.status])),
+  )
   const [commercialStatuses, setCommercialStatuses] = useState<Record<number, CommercialStatus>>(
     Object.fromEntries(registrations.map((r) => [r.id, r.commercialStatus])),
   )
@@ -95,6 +99,18 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [openMenuId])
 
+  function handleRegStatusChange(registrationId: number, status: RegistrationStatus) {
+    const prev = regStatuses[registrationId]
+    setRegStatuses((s) => ({ ...s, [registrationId]: status }))
+    startTransition(async () => {
+      const result = await updateRegistrationStatus(registrationId, status)
+      if (result?.error) {
+        setRegStatuses((s) => ({ ...s, [registrationId]: prev }))
+        toastError(result.error)
+      }
+    })
+  }
+
   function handleCommercialStatusChange(registrationId: number, status: CommercialStatus) {
     const prev = commercialStatuses[registrationId]
     setCommercialStatuses((s) => ({ ...s, [registrationId]: status }))
@@ -110,7 +126,7 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
   // Merge optimistic state into rows
   const rows = registrations.map((r) => ({
     ...r,
-    status: r.status,
+    status: regStatuses[r.id] ?? r.status,
     commercialStatus: commercialStatuses[r.id] ?? r.commercialStatus,
   }))
 
@@ -119,14 +135,14 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
   return (
     <>
       {/* Filter chips */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-1">
         {FILTERS.map((f) => {
           if (f.disabled) {
             return (
               <span
                 key={f.key}
                 title="Próximamente — requiere módulo de Tareas"
-                className="cursor-not-allowed rounded-full px-3 py-1.5 text-xs font-medium opacity-40 bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)]"
+                className="flex-shrink-0 cursor-not-allowed rounded-full px-3 py-1.5 text-xs font-medium opacity-40 bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)]"
               >
                 {f.label}
               </span>
@@ -138,7 +154,7 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
               key={f.key}
               type="button"
               onClick={() => setFilter(f.key as FilterKey)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+              className={`flex-shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition ${
                 isActive
                   ? 'bg-[var(--color-on-surface)] text-[var(--color-surface-container-lowest)]'
                   : 'bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)]'
@@ -207,9 +223,16 @@ export function SeguimientoTable({ registrations, webinarId }: Props) {
 
                   {/* Estado registro */}
                   <div>
-                    <span className={`inline-block rounded-[var(--radius-sm)] px-2 py-1 text-xs font-medium ${regStatusConfig?.colorClass ?? ''}`}>
-                      {regStatusConfig?.label ?? row.status}
-                    </span>
+                    <select
+                      value={row.status}
+                      onChange={(e) => handleRegStatusChange(row.id, e.target.value as RegistrationStatus)}
+                      aria-label={`Estado de registro de ${row.contact.name}`}
+                      className={`rounded-[var(--radius-sm)] border-0 py-1 pl-2 pr-6 text-xs font-medium outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] ${regStatusConfig?.colorClass ?? ''}`}
+                    >
+                      {REGISTRATION_STATUS_OPTIONS.map((s) => (
+                        <option key={s.value} value={s.value}>{s.label}</option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* Lead score */}

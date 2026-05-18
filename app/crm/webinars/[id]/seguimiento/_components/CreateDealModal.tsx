@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, startTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { ModalWrapper } from '@/app/crm/_components/ui/ModalWrapper'
 import { useToast } from '@/app/crm/_components/ui'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
@@ -17,6 +18,7 @@ export function CreateDealModal({ contactId, contactName, webinarId, onClose }: 
   const [courseName, setCourseName] = useState('')
   const [loading, setLoading] = useState(false)
   const { error: toastError, success: toastSuccess } = useToast()
+  const router = useRouter()
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -28,6 +30,7 @@ export function CreateDealModal({ contactId, contactName, webinarId, onClose }: 
         toastError(result.error)
       } else {
         toastSuccess('Oportunidad creada')
+        router.refresh()
         onClose()
       }
     })
