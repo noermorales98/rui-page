@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import {
   moveDeal as moveDealService,
+  createDeal as createDealService,
 } from '@/lib/services/deals'
 
 function seguimientoPath(webinarId: number) {
@@ -39,17 +40,12 @@ export async function createDealForContact(
 ): Promise<{ error?: string; dealId?: number }> {
   const session = await auth()
   if (!session?.user) return { error: 'No autorizado' }
+  if (!contactId || contactId < 1) return { error: 'Contacto inválido' }
 
-  try {
-    const deal = await prisma.deal.create({
-      data: { contactId, courseName: courseName.trim() || null, stage: 'LEAD' },
-      select: { id: true },
-    })
-    revalidatePath(seguimientoPath(webinarId))
-    return { dealId: deal.id }
-  } catch {
-    return { error: 'Error al crear la oportunidad' }
-  }
+  const r = await createDealService({ contactId, courseName: courseName.trim() || undefined, stage: 'LEAD' })
+  if (!r.ok) return { error: r.error.message }
+  revalidatePath(seguimientoPath(webinarId))
+  return { dealId: r.data.id }
 }
 
 export async function moveDealStage(
@@ -57,6 +53,8 @@ export async function moveDealStage(
   stage: DealStage,
   webinarId: number,
 ): Promise<{ error?: string }> {
+  const session = await auth()
+  if (!session?.user) return { error: 'No autorizado' }
   const r = await moveDealService(dealId, { toStage: stage })
   if (!r.ok) return { error: r.error.message }
   revalidatePath(seguimientoPath(webinarId))
@@ -74,8 +72,10 @@ export async function addNoteToContact(
   if (!body.trim()) return { error: 'La nota no puede estar vacía' }
 
   try {
+    const uid = Number(session.user.id)
+    const createdById = Number.isInteger(uid) && uid > 0 ? uid : null
     await prisma.contactActivity.create({
-      data: { contactId, type: 'NOTE', body: body.trim(), createdById: Number(session.user.id) },
+      data: { contactId, type: 'NOTE', body: body.trim(), createdById },
     })
     revalidatePath(seguimientoPath(webinarId))
   } catch {
