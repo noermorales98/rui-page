@@ -55,7 +55,7 @@ test('omits phone when phone is undefined', () => {
     formName: 'F',
   }
   const [lead] = buildLeadPayload(input, BASE_CONFIG) as Array<{
-    _embedded: { contacts: Array<{ custom_fields_values: Array<{ field_id: number }> }> }
+    _embedded: { contacts: Array<{ custom_fields_values: Array<{ field_id: number; values: Array<{ value: string; enum_code: string }> }> }> }
   }>
   const fields = lead._embedded.contacts[0].custom_fields_values
   assert.equal(fields.length, 1)
