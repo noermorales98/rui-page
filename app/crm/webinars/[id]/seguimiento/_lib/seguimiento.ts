@@ -51,6 +51,7 @@ export function applyFilter(rows: RegistrationRow[], filter: FilterKey): Registr
     case 'todos': return rows
     case 'registrados': return rows.filter((r) => r.status === 'REGISTERED')
     case 'asistieron': return rows.filter((r) => r.status === 'ATTENDED' || r.status === 'PURCHASED')
+    // no_asistieron = only REGISTERED (not yet ATTENDED or PURCHASED)
     case 'no_asistieron': return rows.filter((r) => r.status === 'REGISTERED')
     case 'compraron': return rows.filter((r) => r.status === 'PURCHASED')
     case 'no_compraron': return rows.filter((r) => r.status !== 'PURCHASED')

@@ -113,4 +113,5 @@ test('calcMetrics cuenta correctamente', () => {
   assert.equal(m.purchased, 1)
   assert.equal(m.revenueCents, 50000)
   assert.equal(m.hotLeads, 1)
+  assert.equal(m.conversionPct, 50)
 })
