@@ -1,10 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/jobs/campaigns",
-      "schedule": "*/5 * * * *"
-    }
-  ],
   "functions": {
     "app/api/jobs/campaigns/route.ts": {
       "maxDuration": 55

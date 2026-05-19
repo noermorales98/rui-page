@@ -16,7 +16,7 @@
 - **Forms cliente:** react-hook-form + @hookform/resolvers/zod.
 - **Tests:** Vitest (unit), Playwright (e2e).
 - **Deploy:** Vercel.
-- **Cron:** Vercel Cron Jobs (sync Zoom, retries WA).
+- **Cron:** [cron-job.org](https://cron-job.org/en/) → `/api/jobs/campaigns`, `/api/cron/flows/tick`.
 
 ## 2. Capas
 ```
@@ -55,7 +55,7 @@ docs/sdd/             → fuente de verdad SDD
 - **Lectura:** RSC → service (lib/services/*) → Prisma → DB.
 - **Mutación:** server action → validador Zod → service → Prisma → AuditLog → ContactActivity.
 - **Webhooks externos:** route handler `/api/*/webhook` → verifica firma → service → Prisma.
-- **Outbound (campañas):** server action encola → job worker (Vercel cron / edge function) → SMTP o WA Cloud.
+- **Outbound (campañas):** server action encola → job worker (cron externo) → SMTP o WA Cloud.
 
 ## 4. Integraciones
 | Servicio | Tipo | Dirección | Auth |

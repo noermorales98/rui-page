@@ -25,6 +25,7 @@ Set these in Vercel → Project → Settings → Environment Variables:
 | `STRIPE_SUCCESS_URL` | `https://tudominio.com/crm/ventas?stripe=success` | |
 | `STRIPE_CANCEL_URL` | `https://tudominio.com/crm/ventas?stripe=cancel` | |
 | `JOBS_SECRET` | `openssl rand -hex 32` | |
+| `CRON_SECRET` | `openssl rand -hex 32` | Mismo valor en [cron-job.org](https://cron-job.org/en/) |
 
 ## Stripe Webhook Setup
 
@@ -40,12 +41,16 @@ Set these in Vercel → Project → Settings → Environment Variables:
 3. Feature → Event Subscriptions → Webhook URL: `https://tudominio.com/api/zoom/webhook`
 4. Subscribe to: `webinar.registration_created`, `webinar.participant_joined`
 
-## Campaign Cron (Vercel)
+## Cron jobs ([cron-job.org](https://cron-job.org/en/))
 
-The cron job at `/api/jobs/campaigns` runs every 5 minutes on Vercel Pro.  
-On Hobby plan, change `schedule` in `vercel.json` to `"0 * * * *"` (hourly).
+Crea dos tareas en cron-job.org con header `Authorization: Bearer <CRON_SECRET>` (o `JOBS_SECRET` para campañas):
 
-Vercel automatically sets `CRON_SECRET` — the cron runner accepts it as auth.
+| URL | Método | Frecuencia sugerida |
+|---|---|---|
+| `https://tudominio.com/api/jobs/campaigns` | GET o POST | Cada 5 minutos |
+| `https://tudominio.com/api/cron/flows/tick` | POST | Cada 1 minuto |
+
+Ambas rutas responden `401` sin el header correcto.
 
 ## Post-Deploy Smoke Tests
 
@@ -58,7 +63,7 @@ Vercel automatically sets `CRON_SECRET` — the cron runner accepts it as auth.
 - [ ] `/api/stripe/webhook` returns 400 (not 500) for malformed payload
 - [ ] Send a test campaign to 1 contact → recipient shows SENT
 - [ ] Cron route GET `/api/jobs/campaigns` returns 401 without auth header
-- [ ] Cron route GET returns 200 with `Authorization: Bearer $JOBS_SECRET`
+- [ ] Cron route GET returns 200 with `Authorization: Bearer $CRON_SECRET` o `$JOBS_SECRET`
 - [ ] Public form at `/formularios/[slug]` submits and creates contact
 - [ ] Embed at `/embed/formularios/[slug]` loads in an iframe (no X-Frame-Options: DENY)
 - [ ] CRM pages have `X-Frame-Options: DENY` in response headers (check DevTools → Network)
