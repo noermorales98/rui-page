@@ -10,8 +10,6 @@ import GitBranchIcon from '@hugeicons/core-free-icons/GitBranchIcon'
 import Video01Icon from '@hugeicons/core-free-icons/Video01Icon'
 import File01Icon from '@hugeicons/core-free-icons/File01Icon'
 import Mail01Icon from '@hugeicons/core-free-icons/Mail01Icon'
-import BookOpen01Icon from '@hugeicons/core-free-icons/BookOpen01Icon'
-import ShoppingCart01Icon from '@hugeicons/core-free-icons/ShoppingCart01Icon'
 import UserAccountIcon from '@hugeicons/core-free-icons/UserAccountIcon'
 import TagsIcon from '@hugeicons/core-free-icons/TagsIcon'
 
@@ -24,16 +22,12 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard',   href: '/crm/dashboard',              icon: DashboardSquare01Icon },
+  { label: 'Webinar',     href: '/crm/webinar',                icon: Video01Icon           },
   { label: 'Contactos',   href: '/crm/contactos',              icon: UserMultipleIcon      },
   { label: 'Pipeline',    href: '/crm/pipeline',               icon: GitBranchIcon         },
-  { label: 'Webinars',    href: '/crm/webinars',               icon: Video01Icon           },
-  { label: 'Formularios', href: '/crm/formularios',            icon: File01Icon            },
-  { label: 'Landings',    href: '/crm/landings',               icon: File01Icon            },
   { label: 'Campañas',    href: '/crm/campanas',               icon: Mail01Icon            },
   { label: 'Plantillas',  href: '/crm/campanas/templates',     icon: File01Icon            },
   { label: 'Segmentos',   href: '/crm/campanas/segmentos',     icon: TagsIcon              },
-  { label: 'Cursos',      href: '/crm/cursos',                 icon: BookOpen01Icon        },
-  { label: 'Ventas',      href: '/crm/ventas',                 icon: ShoppingCart01Icon    },
 ]
 
 const CONFIG_ITEMS: NavItem[] = [
@@ -55,6 +49,7 @@ export function SidebarNav({ role }: SidebarNavProps) {
 
   function isActive(href: string) {
     if (href === '/crm/contactos') return pathname === href || pathname.startsWith('/crm/contactos/')
+    if (href === '/crm/webinar') return pathname === '/crm/webinar'
     if (href === '/crm/webinars') return pathname === href || pathname.startsWith('/crm/webinars/')
     if (href === '/crm/formularios') return pathname === href || pathname.startsWith('/crm/formularios/')
     if (href === '/crm/landings') return pathname === href || pathname.startsWith('/crm/landings/')

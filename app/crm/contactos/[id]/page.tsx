@@ -7,8 +7,10 @@ import { ContactInfo } from './_components/ContactInfo'
 import { ActivityTimeline } from './_components/ActivityTimeline'
 import { AddNoteForm } from './_components/AddNoteForm'
 import { ContactDeals } from './_components/ContactDeals'
+import { ZoomMeetings } from './_components/ZoomMeetings'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 import { Accordion } from '@/app/crm/_components/ui'
+import { isZoomConfigured } from '@/lib/integrations/zoom'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -26,6 +28,7 @@ export default async function ContactDetailPage({ params }: Props) {
 
   const contact = result.data
   const canDelete = session?.user?.role !== 'ASISTENTE'
+  const zoomEnabled = isZoomConfigured()
 
   return (
     <div className="flex flex-col gap-6">
@@ -54,6 +57,11 @@ export default async function ContactDetailPage({ params }: Props) {
               <Accordion title="Oportunidades" defaultOpen>
                 <ContactDeals contactId={contact.id} contactName={contact.name} />
               </Accordion>
+              {zoomEnabled && (
+                <Accordion title="Reuniones Zoom" className="mt-3">
+                  <ZoomMeetings contactId={contact.id} contactName={contact.name} />
+                </Accordion>
+              )}
               <Accordion title="Actividad" className="mt-3">
                 <AddNoteForm contactId={contact.id} />
                 <ActivityTimeline activities={contact.activities} />

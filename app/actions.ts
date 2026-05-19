@@ -8,7 +8,7 @@ import path from 'path';
 import { prisma } from '@/lib/prisma';
 
 /** Webinar público «El método de los 4 ángeles» — registros desde /webinar */
-const WEBINAR_PUBLIC_ID = 1;
+const WEBINAR_PUBLIC_ID = parseInt(process.env.WEBINAR_PUBLIC_ID ?? '1');
 
 // SMTP Transporter configuration
 const transporter = nodemailer.createTransport({

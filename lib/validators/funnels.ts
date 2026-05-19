@@ -46,6 +46,12 @@ export const createWebinarFunnelSchema = z.object({
   theme: funnelThemeSchema.optional(),
 })
 
+export const createFunnelLinkedToWebinarSchema = z.object({
+  name: z.string().trim().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  slug: z.string().trim().min(2, 'El slug debe tener al menos 2 caracteres'),
+  webinarId: z.coerce.number().int().positive('Selecciona un webinar'),
+})
+
 export const saveThemeSchema = funnelThemeSchema
 
 export const saveBlocksSchema = z.object({

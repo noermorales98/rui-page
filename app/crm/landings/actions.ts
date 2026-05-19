@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import type { FunnelStatus, FunnelPageKind, FlowStepAction } from '@prisma/client'
 import {
   createWebinarFunnel,
+  createFunnelLinkedToWebinar,
   saveFunnelPageBlocks,
   saveFunnelPageHtml,
   saveFunnelAutomation,
@@ -12,6 +13,7 @@ import {
   addFunnelPage,
   deleteFunnelPage,
 } from '@/lib/services/funnels'
+import { prisma } from '@/lib/prisma'
 import { defaultTheme } from '@/lib/funnels/defaults'
 import { listForms, getForm } from '@/lib/services/forms'
 import type { FormCacheEntry } from '@/lib/funnels/types'
@@ -40,6 +42,35 @@ export async function createWebinarFunnelAction(
 
   if (!result.ok) return { error: result.error.message }
   redirect(`/crm/landings/${result.data.id}`)
+}
+
+export async function createFunnelLinkedToWebinarAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const result = await createFunnelLinkedToWebinar({
+    name: text(formData, 'name'),
+    slug: text(formData, 'slug'),
+    webinarId: text(formData, 'webinarId'),
+  })
+  if (!result.ok) return { error: result.error.message }
+  redirect(`/crm/landings/${result.data.id}`)
+}
+
+export async function listWebinarsAction(): Promise<
+  { id: number; title: string; date: string; link: string | null }[]
+> {
+  const webinars = await prisma.webinar.findMany({
+    where: { deletedAt: null },
+    orderBy: { date: 'desc' },
+    select: { id: true, title: true, date: true, link: true },
+  })
+  return webinars.map((w) => ({
+    id: w.id,
+    title: w.title,
+    date: w.date.toISOString(),
+    link: w.link,
+  }))
 }
 
 export async function updateThemeAction(

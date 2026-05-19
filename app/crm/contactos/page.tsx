@@ -93,7 +93,7 @@ export default async function ContactosPage({ searchParams }: Props) {
 
       {/* Table card */}
       <Card>
-        <ContactsTable contacts={contacts} view={view} />
+        <ContactsTable contacts={contacts} tags={allTags} view={view} />
       </Card>
 
       {/* Pagination */}

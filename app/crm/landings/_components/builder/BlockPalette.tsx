@@ -5,15 +5,16 @@ import type { FunnelBlockType } from '@/lib/funnels/types'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 const ITEMS: Array<{ type: FunnelBlockType; label: string; icon: string }> = [
-  { type: 'HERO',         label: 'Hero',        icon: '⬛' },
-  { type: 'TEXT',         label: 'Texto',        icon: '📝' },
-  { type: 'VIDEO',        label: 'Video',        icon: '🎥' },
-  { type: 'FORM',         label: 'Formulario',   icon: '📋' },
-  { type: 'CTA',          label: 'CTA',          icon: '🔘' },
-  { type: 'FAQ',          label: 'FAQ',          icon: '❓' },
-  { type: 'TESTIMONIALS', label: 'Testimonios',  icon: '⭐' },
-  { type: 'FOOTER',       label: 'Footer',       icon: '🔗' },
-  { type: 'CUSTOM_HTML',  label: 'HTML',         icon: '⌨️' },
+  { type: 'HERO',         label: 'Hero',         icon: '⬛' },
+  { type: 'TEXT',         label: 'Texto',         icon: '📝' },
+  { type: 'VIDEO',        label: 'Video',         icon: '🎥' },
+  { type: 'FORM',         label: 'Formulario',    icon: '📋' },
+  { type: 'WEBINAR_ROOM', label: 'Sala webinar',  icon: '📡' },
+  { type: 'CTA',          label: 'CTA',           icon: '🔘' },
+  { type: 'FAQ',          label: 'FAQ',           icon: '❓' },
+  { type: 'TESTIMONIALS', label: 'Testimonios',   icon: '⭐' },
+  { type: 'FOOTER',       label: 'Footer',        icon: '🔗' },
+  { type: 'CUSTOM_HTML',  label: 'HTML',          icon: '⌨️' },
 ]
 
 function PaletteItem({ type, label, icon }: { type: FunnelBlockType; label: string; icon: string }) {

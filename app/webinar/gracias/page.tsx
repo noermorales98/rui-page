@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import WebinarThanksClient from "./WebinarThanksClient";
-
-const whatsappGroupUrl =
-  "https://chat.whatsapp.com/BrFbYoHj90OLjCRNXD3EFo?mode=gi_t";
+import { WebinarWarmupVideo } from "./WebinarWarmupVideo";
+import { WhatsAppButton } from "./WhatsAppButton";
 
 export const metadata: Metadata = {
   title: "Tu lugar está reservado | Webinar — Rui Machalele",
@@ -38,6 +37,8 @@ export default function WebinarGraciasPage() {
             Tu lugar está reservado… pero esto es importante
           </h1>
         </section>
+
+        <WebinarWarmupVideo />
 
         <section className="mx-auto max-w-xl px-5 py-8 sm:px-8">
           <p className="text-center text-lg leading-relaxed text-[#3d3229] sm:text-xl">
@@ -75,14 +76,7 @@ export default function WebinarGraciasPage() {
                     Ahí recibirás recordatorios, el enlace de acceso y avisos
                     importantes antes de empezar.
                   </p>
-                  <a
-                    href={whatsappGroupUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex bg-[#25D366] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-[#128C7E]"
-                  >
-                    Entrar al grupo
-                  </a>
+                  <WhatsAppButton />
                 </div>
               </li>
               <li className="flex gap-5">

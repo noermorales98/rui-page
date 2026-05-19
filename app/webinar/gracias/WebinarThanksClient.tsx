@@ -10,6 +10,14 @@ const PAINS: { id: PainOption; label: string }[] = [
   { id: "motivacion", label: "Falta de motivación" },
 ];
 
+function trackEvent(type: string, meta?: Record<string, unknown>) {
+  fetch("/api/webinar/event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type, meta }),
+  }).catch(() => {});
+}
+
 function formatGoogleCalendarDates(start: Date, end: Date) {
   const fmt = (d: Date) =>
     d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
@@ -44,10 +52,10 @@ export default function WebinarThanksClient() {
 
   const googleCalendarUrl = useMemo(() => {
     const text = encodeURIComponent(
-      "Webinar · Método de los 4 Ángeles — Rui Machalele",
+      "Webinar · Método de los 4 Ángeles — Rui Machalele"
     );
     const details = encodeURIComponent(
-      "Entra 5 minutos antes, sin distracciones. El enlace de acceso está en tu correo.",
+      "Entra 5 minutos antes, sin distracciones. El enlace de acceso está en tu correo."
     );
     const dates = formatGoogleCalendarDates(start, end);
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}`;
@@ -89,11 +97,10 @@ export default function WebinarThanksClient() {
 
   const handleConfirm = () => {
     if (!pain) return;
+    trackEvent("PAIN_SELECTED", { pain });
     window.open(googleCalendarUrl, "_blank", "noopener,noreferrer");
     setConfirmed(true);
   };
-
-  const videoId = process.env.NEXT_PUBLIC_WEBINAR_WARMUP_VIDEO_ID;
 
   return (
     <>
@@ -135,60 +142,14 @@ export default function WebinarThanksClient() {
           </button>
           {confirmed && (
             <p className="text-center text-sm text-[#5c4f42]">
-              Calendario abierto. Si no se abrió, usa “Agregar al calendario”
+              Calendario abierto. Si no se abrió, usa &quot;Agregar al calendario&quot;
               abajo.
             </p>
           )}
         </div>
       </section>
 
-      <section className="border-t border-[#dcd0c4]/80 bg-[#ebe2d6]/40 px-5 py-12 sm:px-8">
-        <div className="mx-auto max-w-2xl">
-          <p className="text-center text-[11px] font-medium uppercase tracking-[0.3em] text-[#8a7560]">
-            Mira esto antes del webinar
-          </p>
-          <h3 className="mt-3 text-center font-serif text-xl font-semibold text-[#2a231c] sm:text-2xl">
-            Por qué las personas exitosas se sienten vacías
-          </h3>
-          <div className="mt-8 overflow-hidden rounded-sm border border-[#dcd0c4] bg-[#2a231c]/5 shadow-inner">
-            <div className="aspect-video w-full">
-              {videoId ? (
-                <iframe
-                  title="Video previo al webinar"
-                  className="h-full w-full"
-                  src={`https://www.youtube.com/embed/${videoId}?rel=0`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
-                  <span
-                    className="flex h-16 w-16 items-center justify-center rounded-full border border-[#c4a574]/50 text-[#9a7b45]"
-                    aria-hidden
-                  >
-                    <svg
-                      className="ml-1 h-7 w-7"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </span>
-                  <p className="max-w-sm text-sm leading-relaxed text-[#5c4f42]">
-                    Coloca el ID de YouTube en{" "}
-                    <code className="rounded bg-[#ebe2d6] px-1.5 py-0.5 text-xs">
-                      NEXT_PUBLIC_WEBINAR_WARMUP_VIDEO_ID
-                    </code>{" "}
-                    para mostrar el video aquí.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-xl px-5 pb-20 pt-4 sm:px-8">
+      <section className="mx-auto max-w-xl border-t border-[#dcd0c4]/80 px-5 pb-20 pt-10 sm:px-8">
         <p className="text-center text-xs uppercase tracking-[0.2em] text-[#8a7560]">
           Agregar al calendario
         </p>

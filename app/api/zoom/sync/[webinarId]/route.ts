@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
-import { fetchZoomRegistrants } from '@/lib/integrations/zoom'
+import { getValidAccessToken } from '@/lib/integrations/zoom'
 
 export async function POST(
   req: NextRequest,
@@ -26,9 +26,22 @@ export async function POST(
     return NextResponse.json({ error: 'Webinar no vinculado a Zoom' }, { status: 404 })
   }
 
-  let registrants
+  let registrants: Array<{ id: string; email: string; first_name: string; last_name: string; status: string }>
   try {
-    registrants = await fetchZoomRegistrants(webinarIntegration.externalId)
+    const token = await getValidAccessToken()
+    const results: typeof registrants = []
+    let nextPageToken = ''
+    do {
+      const url = new URL(`https://api.zoom.us/v2/webinars/${webinarIntegration.externalId}/registrants`)
+      url.searchParams.set('page_size', '300')
+      if (nextPageToken) url.searchParams.set('next_page_token', nextPageToken)
+      const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}` } })
+      if (!res.ok) { if (res.status === 404) break; throw new Error(`Zoom ${res.status}`) }
+      const data = (await res.json()) as { registrants: typeof registrants; next_page_token?: string }
+      results.push(...data.registrants)
+      nextPageToken = data.next_page_token ?? ''
+    } while (nextPageToken)
+    registrants = results
   } catch (err) {
     console.error('[zoom/sync]', err)
     return NextResponse.json({ error: 'Error al obtener registrantes de Zoom' }, { status: 502 })

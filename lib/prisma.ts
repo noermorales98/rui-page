@@ -31,7 +31,10 @@ function getPrismaClient(): PrismaClient {
   const staleDelegate =
     process.env.NODE_ENV !== 'production' &&
     cached != null &&
-    typeof cached.crmForm?.findMany !== 'function'
+    (typeof cached.crmForm?.findMany !== 'function' ||
+     typeof cached.webinarEvent?.count !== 'function' ||
+     typeof cached.webinarLiveSession?.upsert !== 'function' ||
+     typeof cached.zoomMeeting?.create !== 'function')
 
   if (staleDelegate) {
     void cached.$disconnect().catch(() => {})

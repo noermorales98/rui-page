@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
 import WebinarChat from "./WebinarChat";
-
-const videoId = process.env.NEXT_PUBLIC_WEBINAR_VIDEO_ID;
-const videoEmbedUrl = process.env.NEXT_PUBLIC_WEBINAR_EMBED_URL;
+import { WebinarRoomTracker } from "./WebinarRoomTracker";
 
 export const metadata: Metadata = {
   title: "Webinar en vivo | Rui Machalele",
@@ -11,9 +10,26 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-function WebinarVideo() {
-  const src = videoEmbedUrl || (videoId ? `https://www.youtube.com/embed/${videoId}?rel=0` : "");
+function iframeSrc(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const match = value.match(/src=["']([^"']+)["']/i);
+  return match?.[1] ?? value;
+}
 
+async function getWebinarLink(): Promise<string | null> {
+  const WEBINAR_PUBLIC_ID = parseInt(process.env.WEBINAR_PUBLIC_ID ?? "1");
+  try {
+    const webinar = await prisma.webinar.findUnique({
+      where: { id: WEBINAR_PUBLIC_ID },
+      select: { link: true },
+    });
+    return webinar?.link ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function WebinarVideo({ src }: { src: string | null }) {
   if (!src) {
     return (
       <div className="flex aspect-video w-full flex-col items-center justify-center border border-[#2d3748] bg-[#0b1120] px-6 text-center shadow-[0_28px_80px_rgba(0,0,0,0.35)]">
@@ -23,15 +39,14 @@ function WebinarVideo() {
           </svg>
         </div>
         <p className="mt-6 max-w-md text-sm leading-relaxed text-[#8a94a8]">
-          Configura{" "}
-          <code className="rounded bg-[#111827] px-1.5 py-0.5 text-xs text-[#dcc9a8]">
-            NEXT_PUBLIC_WEBINAR_VIDEO_ID
-          </code>{" "}
-          o{" "}
-          <code className="rounded bg-[#111827] px-1.5 py-0.5 text-xs text-[#dcc9a8]">
-            NEXT_PUBLIC_WEBINAR_EMBED_URL
-          </code>{" "}
-          para mostrar el video del webinar.
+          El link del webinar aún no está configurado.{" "}
+          <a
+            href="/crm/webinars"
+            className="underline text-[#c4a574]"
+          >
+            Configúralo en la sección de Webinars
+          </a>
+          .
         </p>
       </div>
     );
@@ -50,9 +65,13 @@ function WebinarVideo() {
   );
 }
 
-export default function WebinarRoomPage() {
+export default async function WebinarRoomPage() {
+  const rawLink = await getWebinarLink();
+  const embedSrc = iframeSrc(rawLink);
+
   return (
     <main className="min-h-screen bg-[#0b1120] text-[#f8f1e7]">
+      <WebinarRoomTracker />
       <div
         className="pointer-events-none fixed inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_50%_0%,rgba(196,165,116,0.18),transparent_58%)]"
         aria-hidden
@@ -88,7 +107,7 @@ export default function WebinarRoomPage() {
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
           <div className="space-y-5">
-            <WebinarVideo />
+            <WebinarVideo src={embedSrc} />
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="border border-[#2d3748] bg-[#111827]/75 p-5">

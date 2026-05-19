@@ -7,14 +7,17 @@ import { ParticipantsTable } from './_components/ParticipantsTable'
 import { AddParticipantButton } from './_components/AddParticipantButton'
 import { ImportCsvButton } from './_components/ImportCsvButton'
 import { ZoomLinkPanel } from './_components/ZoomLinkPanel'
+import { WebinarPagesPanel } from './_components/WebinarPagesPanel'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
+
+const WEBINAR_PUBLIC_ID = parseInt(process.env.WEBINAR_PUBLIC_ID ?? '1')
 
 interface Props {
   params: Promise<{ id: string }>
   searchParams: Promise<{ tab?: string }>
 }
 
-type WebinarTab = 'info' | 'participantes' | 'zoom'
+type WebinarTab = 'info' | 'participantes' | 'paginas' | 'zoom'
 
 function tabHref(tab: WebinarTab) {
   return tab === 'info' ? '?' : `?tab=${tab}`
@@ -23,7 +26,9 @@ function tabHref(tab: WebinarTab) {
 export default async function WebinarDetailPage({ params, searchParams }: Props) {
   const [{ id }, query] = await Promise.all([params, searchParams])
   const activeTab: WebinarTab =
-    query.tab === 'participantes' || query.tab === 'zoom' ? query.tab : 'info'
+    query.tab === 'participantes' || query.tab === 'paginas' || query.tab === 'zoom'
+      ? query.tab
+      : 'info'
   const webinarId = Number(id)
   if (isNaN(webinarId)) notFound()
 
@@ -37,6 +42,15 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
         orderBy: { createdAt: 'asc' },
       },
       integration: true,
+      funnels: {
+        where: { deletedAt: null },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          pages: { select: { key: true, slug: true, title: true }, orderBy: { position: 'asc' } },
+        },
+      },
     },
   })
 
@@ -50,6 +64,9 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
   const zoomWebinarId = webinar.integration?.externalId ?? null
 
   const registeredContactIds = webinar.registrations.map((r) => r.contactId)
+
+  // Build pages list
+  const pageLinks = buildPageLinks(webinarId, webinar.funnels)
 
   return (
     <div className="flex flex-col gap-6">
@@ -67,6 +84,7 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
         {([
           ['info', 'Info'],
           ['participantes', 'Participantes'],
+          ['paginas', 'Páginas'],
           ['zoom', 'Zoom'],
         ] as Array<[WebinarTab, string]>).map(([tab, label]) => (
           <Link
@@ -83,7 +101,7 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
         ))}
         <Link
           href={`/crm/webinars/${webinarId}/seguimiento`}
-          className={`rounded-[calc(var(--radius-md)-4px)] px-4 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary-fixed)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)]`}
+          className="rounded-[calc(var(--radius-md)-4px)] px-4 py-2.5 text-sm font-semibold transition text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-low)] hover:text-[var(--color-on-surface)]"
         >
           Seguimiento
         </Link>
@@ -116,6 +134,10 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
         </div>
       )}
 
+      {activeTab === 'paginas' && (
+        <WebinarPagesPanel pages={pageLinks} />
+      )}
+
       {activeTab === 'zoom' && (
         <ZoomLinkPanel
           webinarId={webinar.id}
@@ -126,4 +148,46 @@ export default async function WebinarDetailPage({ params, searchParams }: Props)
       )}
     </div>
   )
+}
+
+type FunnelInfo = {
+  id: number
+  name: string
+  slug: string
+  pages: Array<{ key: string; slug: string | null; title: string | null }>
+}
+
+function buildPageLinks(
+  webinarId: number,
+  funnels: FunnelInfo[],
+): Array<{ label: string; description: string; href: string }> {
+  const links: Array<{ label: string; description: string; href: string }> = []
+
+  // Static pages for the main public webinar
+  const WEBINAR_PUBLIC_ID = parseInt(process.env.WEBINAR_PUBLIC_ID ?? '1')
+  if (webinarId === WEBINAR_PUBLIC_ID) {
+    links.push(
+      { label: 'Registro', description: 'Página principal de captación', href: '/webinar' },
+      { label: 'Gracias', description: 'Confirmación tras el registro', href: '/webinar/gracias' },
+      { label: 'Acceso', description: 'Antesala — se envía por WhatsApp', href: '/webinar/acceso' },
+      { label: 'Sala', description: 'Webinar en vivo', href: '/webinar/sala' },
+    )
+  }
+
+  // Funnel pages for webinars linked to the landing system
+  for (const funnel of funnels) {
+    for (const page of funnel.pages) {
+      const pageSlug = page.slug ?? page.key
+      const href = pageSlug === 'registration' || pageSlug === 'registro'
+        ? `/f/${funnel.slug}`
+        : `/f/${funnel.slug}/${pageSlug}`
+      links.push({
+        label: `${page.title ?? page.key} (${funnel.name})`,
+        description: `Funnel: ${funnel.name}`,
+        href,
+      })
+    }
+  }
+
+  return links
 }

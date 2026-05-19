@@ -130,6 +130,8 @@ model Contact {
   formSubmissions    CrmFormSubmission[]
   campaignRecipients CrmCampaignRecipient[]
   flowRuns           FlowRun[]
+  webinarEvents      WebinarEvent[]
+  zoomMeetings       ZoomMeeting[]
 
   @@index([status, source, createdAt])
   @@index([source, createdAt])
@@ -287,6 +289,8 @@ model Webinar {
   registrations WebinarRegistration[]
   integration   WebinarIntegration?
   funnels       Funnel[]
+  events        WebinarEvent[]
+  sessions      WebinarLiveSession[]
 
   @@index([deletedAt])
   @@index([date])
@@ -325,6 +329,55 @@ model WebinarIntegration {
 
   @@index([integrationId])
   @@index([externalId])
+}
+
+// Tracks discrete events in the public webinar funnel
+model WebinarEvent {
+  id        Int      @id @default(autoincrement())
+  webinarId Int
+  // Event types: WHATSAPP_CLICK | VIDEO_PLAY | PAIN_SELECTED | ACCESO_ENTRY | SALA_ENTRY
+  type      String   @db.VarChar(40)
+  contactId Int?
+  sessionId String?  @db.VarChar(64)
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  webinar   Webinar  @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  @@index([webinarId, type, createdAt])
+  @@index([contactId])
+}
+
+// Tracks live viewers in /webinar/sala via 30-second heartbeats
+model WebinarLiveSession {
+  id        String   @id @db.VarChar(36)
+  webinarId Int
+  lastSeen  DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  webinar   Webinar  @relation(fields: [webinarId], references: [id], onDelete: Cascade)
+
+  @@index([webinarId, lastSeen])
+}
+
+// ============================================================
+// ZOOM MEETINGS
+// ============================================================
+
+model ZoomMeeting {
+  id        Int       @id @default(autoincrement())
+  zoomId    String    @unique @db.VarChar(32)
+  contactId Int?
+  topic     String    @db.VarChar(200)
+  startUrl  String    @db.Text
+  joinUrl   String    @db.Text
+  password  String?   @db.VarChar(32)
+  createdAt DateTime  @default(now())
+
+  contact   Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  @@index([contactId, createdAt])
 }
 
 // ============================================================

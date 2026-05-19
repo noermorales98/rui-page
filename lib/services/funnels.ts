@@ -12,6 +12,7 @@ import { publicFunnelUrl, slugifyFunnel } from '@/lib/funnels/slug'
 import { sanitizeCss, sanitizeHtml } from '@/lib/funnels/sanitize'
 import {
   createWebinarFunnelSchema,
+  createFunnelLinkedToWebinarSchema,
   registerForFunnelSchema,
   saveBlocksSchema,
   saveHtmlSchema,
@@ -139,6 +140,62 @@ export async function createWebinarFunnel(input: unknown): Promise<Result<{ id: 
       entityId: funnel.id,
       action: 'CREATE',
       metadata: { type: 'WEBINAR' },
+    })
+
+    revalidateFunnel(funnel.slug)
+    return { ok: true, data: { id: funnel.id, slug: funnel.slug } }
+  } catch (error) {
+    return mapError(error)
+  }
+}
+
+export async function createFunnelLinkedToWebinar(input: unknown): Promise<Result<{ id: number; slug: string }>> {
+  try {
+    const session = await requireRole([...LANDING_ROLES])
+    const parsed = createFunnelLinkedToWebinarSchema.safeParse(input)
+    if (!parsed.success) {
+      const message = parsed.error.issues[0]?.message ?? 'Datos inválidos'
+      return validationError(message)
+    }
+
+    const webinar = await prisma.webinar.findFirst({
+      where: { id: parsed.data.webinarId, deletedAt: null },
+      select: { id: true },
+    })
+    if (!webinar) return { ok: false, error: { code: 'NOT_FOUND', message: 'Webinar no encontrado.' } }
+
+    const slug = slugifyFunnel(parsed.data.slug || parsed.data.name)
+    const pages = defaultWebinarPages(slug)
+
+    const funnel = await prisma.funnel.create({
+      data: {
+        name: parsed.data.name,
+        slug,
+        type: 'WEBINAR',
+        status: 'DRAFT',
+        theme: defaultTheme as unknown as Prisma.InputJsonValue,
+        webinarId: parsed.data.webinarId,
+        createdById: Number(session.user.id),
+        pages: {
+          create: pages.map((page) => ({
+            key: page.key,
+            kind: page.kind,
+            slug: page.slug,
+            title: page.title,
+            description: page.description,
+            position: page.position,
+            blocks: page.blocks as unknown as Prisma.InputJsonValue,
+          })),
+        },
+      },
+    })
+
+    await logAudit({
+      actorId: Number(session.user.id),
+      entityType: 'Funnel',
+      entityId: funnel.id,
+      action: 'CREATE',
+      metadata: { type: 'WEBINAR', webinarId: parsed.data.webinarId },
     })
 
     revalidateFunnel(funnel.slug)
