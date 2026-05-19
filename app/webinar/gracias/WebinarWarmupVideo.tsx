@@ -12,14 +12,32 @@ function trackEvent(type: string, meta?: Record<string, unknown>) {
   }).catch(() => {});
 }
 
+function embedUrl(videoId: string, autoplay: boolean) {
+  const params = new URLSearchParams({
+    autoplay: autoplay ? "1" : "0",
+    controls: "0",
+    modestbranding: "1",
+    rel: "0",
+    iv_load_policy: "3",
+    fs: "0",
+    disablekb: "1",
+    playsinline: "1",
+    // Al terminar, reinicia el mismo video en lugar de mostrar sugerencias
+    playlist: videoId,
+    loop: "1",
+  });
+  return `https://www.youtube-nocookie.com/embed/${videoId}?${params}`;
+}
+
 export function WebinarWarmupVideo() {
-  const [videoPlayed, setVideoPlayed] = useState(false);
+  const [started, setStarted] = useState(false);
   const videoId =
     process.env.NEXT_PUBLIC_WEBINAR_WARMUP_VIDEO_ID ?? DEFAULT_VIDEO_ID;
+  const thumbnail = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
-  function handleVideoClick() {
-    if (videoPlayed) return;
-    setVideoPlayed(true);
+  function handlePlayClick() {
+    if (started) return;
+    setStarted(true);
     trackEvent("VIDEO_PLAY", { trigger: "click" });
   }
 
@@ -32,26 +50,43 @@ export function WebinarWarmupVideo() {
         <h2 className="mt-3 text-center font-serif text-xl font-semibold text-[#2a231c] sm:text-2xl">
           Por qué las personas exitosas se sienten vacías
         </h2>
-        <div className="relative mt-8 overflow-hidden rounded-sm border border-[#dcd0c4] bg-[#2a231c]/5 shadow-inner">
+        <div className="relative mt-8 overflow-hidden rounded-sm border border-[#dcd0c4] bg-[#2a231c] shadow-inner">
           <div className="aspect-video w-full">
-            <div
-              className="relative h-full w-full"
-              onClick={handleVideoClick}
-            >
-              {!videoPlayed && (
-                <div
-                  className="absolute inset-0 z-10 cursor-pointer"
-                  aria-hidden
-                />
-              )}
+            {started ? (
               <iframe
                 title="Video previo al webinar"
                 className="h-full w-full"
-                src={`https://www.youtube.com/embed/${videoId}?rel=0`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+                src={embedUrl(videoId, true)}
+                allow="accelerometer; autoplay; encrypted-media; gyroscope"
               />
-            </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handlePlayClick}
+                className="group relative h-full w-full cursor-pointer border-0 bg-[#2a231c] p-0"
+                aria-label="Reproducir video"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={thumbnail}
+                  alt=""
+                  className="h-full w-full object-cover opacity-90"
+                />
+                <span className="absolute inset-0 bg-[#2a231c]/30 transition group-hover:bg-[#2a231c]/20" />
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#f4ede4]/80 bg-[#2a231c]/60 text-[#f4ede4] backdrop-blur-sm transition group-hover:scale-105 group-hover:bg-[#9a7b45]/90">
+                    <svg
+                      className="ml-1 h-7 w-7"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>
