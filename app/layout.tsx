@@ -60,10 +60,7 @@ export default function RootLayout({
     >
       <head>
         {/*
-          Material Symbols Outlined uses a variable-axis URL (wght,FILL) that
-          next/font/google doesn't expose cleanly. Keep the <link> here and
-          silence the page-custom-font rule; this is the documented escape
-          hatch for icon fonts loaded once at the root layout.
+          Google Fonts
         */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
