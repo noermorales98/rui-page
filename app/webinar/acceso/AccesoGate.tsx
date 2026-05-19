@@ -1,70 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-
 const SALA_URL = '/webinar/sala'
 
-function trackAcceso(name: string) {
-  fetch('/api/webinar/event', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type: 'ACCESO_ENTRY', meta: { name } }),
-  }).catch(() => {})
-}
-
 export function AccesoGate() {
-  const [phase, setPhase] = useState<'gate' | 'content'>('gate')
-  const [name, setName] = useState('')
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const trimmed = name.trim()
-    if (!trimmed) return
-    trackAcceso(trimmed)
-    setPhase('content')
-  }
-
-  if (phase === 'gate') {
-    return (
-      <main className="relative min-h-screen overflow-hidden bg-[#15110d] text-[#f4ede4] flex items-center justify-center">
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-[#9a7b45]/20 blur-[120px]"
-          aria-hidden
-        />
-        <div className="relative z-10 mx-auto w-full max-w-sm px-5 text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.4em] text-[#c4a574]">
-            Antesala del webinar
-          </p>
-          <h1 className="mt-6 font-serif text-2xl font-semibold leading-tight text-[#f4ede4] sm:text-3xl">
-            Antes de entrar, ¿cómo te llamas?
-          </h1>
-          <p className="mt-4 text-sm leading-relaxed text-[#c9bdb0]">
-            Para saber quién asistió al evento.
-          </p>
-          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Tu nombre"
-              required
-              autoFocus
-              className="w-full border border-[#c4a574]/30 bg-[#211a14] px-4 py-3 text-base text-[#f4ede4] placeholder:text-[#8a7560] focus:border-[#c4a574] focus:outline-none"
-            />
-            <button
-              type="submit"
-              disabled={!name.trim()}
-              className="w-full border border-[#c4a574] bg-[#c4a574] px-8 py-4 text-[12px] font-semibold uppercase tracking-[0.24em] text-[#15110d] transition hover:bg-[#d4b896] disabled:opacity-40"
-            >
-              Continuar
-            </button>
-          </form>
-        </div>
-      </main>
-    )
-  }
-
-  // Content phase — show the original acceso page content
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#15110d] text-[#f4ede4]">
       <div

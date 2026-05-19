@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { Video, Copy, Loader2 } from 'lucide-react'
+import { Video, Copy, Loader2, Trash2 } from 'lucide-react'
 import { TOK } from '@/app/crm/_lib/ui-tokens'
 
 type Meeting = {
@@ -22,6 +22,8 @@ export function ZoomMeetings({ contactId, contactName }: { contactId: number; co
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null)
+  const [deleting, setDeleting] = useState<number | null>(null)
 
   const loadMeetings = useCallback(async () => {
     try {
@@ -57,6 +59,19 @@ export function ZoomMeetings({ contactId, contactName }: { contactId: number; co
       setError('Error de conexión')
     } finally {
       setCreating(false)
+    }
+  }
+
+  async function handleDelete(id: number) {
+    setDeleting(id)
+    try {
+      await fetch(`/api/zoom/meetings?id=${id}`, { method: 'DELETE' })
+      setMeetings((prev) => prev.filter((m) => m.id !== id))
+    } catch {
+      // ignore
+    } finally {
+      setDeleting(null)
+      setConfirmDelete(null)
     }
   }
 
@@ -103,7 +118,6 @@ export function ZoomMeetings({ contactId, contactName }: { contactId: number; co
                 )}
               </p>
               <div className="mt-2 flex gap-2">
-                {/* Open embedded room inside CRM */}
                 <button
                   type="button"
                   onClick={() => router.push(`/crm/zoom/sala/${m.id}`)}
@@ -112,7 +126,6 @@ export function ZoomMeetings({ contactId, contactName }: { contactId: number; co
                   <Video size={13} strokeWidth={2} />
                   Iniciar
                 </button>
-                {/* Copy invite link for the guest */}
                 <button
                   type="button"
                   onClick={() => copyLink(m.joinUrl, `join-${m.id}`)}
@@ -121,6 +134,36 @@ export function ZoomMeetings({ contactId, contactName }: { contactId: number; co
                   <Copy size={13} strokeWidth={2} />
                   {copied === `join-${m.id}` ? '¡Copiado!' : 'Copiar invitación'}
                 </button>
+
+                {confirmDelete === m.id ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => void handleDelete(m.id)}
+                      disabled={deleting === m.id}
+                      className="flex items-center gap-1 rounded-md bg-red-100 px-2.5 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-200 disabled:opacity-50"
+                    >
+                      {deleting === m.id ? <Loader2 size={12} className="animate-spin" /> : null}
+                      Confirmar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(null)}
+                      className="rounded-md px-2.5 py-1.5 text-xs text-[var(--color-on-surface-variant)] ring-1 ring-[var(--color-outline-variant)] transition hover:bg-[var(--color-surface-container-high)]"
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(m.id)}
+                    title="Eliminar reunión"
+                    className="flex items-center justify-center rounded-md p-1.5 text-[var(--color-on-surface-variant)] ring-1 ring-[var(--color-outline-variant)] transition hover:bg-red-50 hover:text-red-600 hover:ring-red-200"
+                  >
+                    <Trash2 size={13} strokeWidth={2} />
+                  </button>
+                )}
               </div>
             </div>
           ))}

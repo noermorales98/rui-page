@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const filePath = path.join(
       process.cwd(),
-      'node_modules/@zoom/meetingsdk/dist/zoomus-websdk-embedded.umd.min.js',
+      'node_modules/@zoom/meetingsdk/dist/zoom-meeting-embedded-ES5.min.js',
     )
     const content = fs.readFileSync(filePath)
     return new Response(content, {

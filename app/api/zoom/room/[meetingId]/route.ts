@@ -1,8 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { getValidAccessToken } from '@/lib/integrations/zoom'
 import crypto from 'crypto'
+
+const CDN = 'https://source.zoom.us/6.0.2'
 
 function generateSignature(meetingNumber: string, role: 0 | 1): string {
   const sdkKey = process.env.ZOOM_SDK_KEY!
@@ -31,7 +33,7 @@ async function getZak(): Promise<string | null> {
   }
 }
 
-function safeJson(value: string): string {
+function j(value: string): string {
   return JSON.stringify(value)
 }
 
@@ -55,7 +57,7 @@ export async function GET(
 
   if (!process.env.ZOOM_SDK_KEY || !process.env.ZOOM_SDK_SECRET) {
     return new Response(
-      errorHtml('Faltan credenciales SDK. Agrega ZOOM_SDK_KEY y ZOOM_SDK_SECRET al .env'),
+      errorHtml('Faltan credenciales SDK (ZOOM_SDK_KEY / ZOOM_SDK_SECRET)'),
       { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } },
     )
   }
@@ -83,7 +85,6 @@ export async function GET(
   ])
 
   const userName = session.user.name ?? 'Host'
-  const zakLine = zak ? `zak: ${safeJson(zak)},` : ''
 
   const html = `<!DOCTYPE html>
 <html lang="es">
@@ -91,49 +92,52 @@ export async function GET(
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${meeting.topic}</title>
+  <link rel="stylesheet" href="${CDN}/css/bootstrap.css" />
+  <link rel="stylesheet" href="${CDN}/css/react-select.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { width: 100%; height: 100%; background: #1a1a1a; overflow: hidden; }
-    #meeting-root { width: 100%; height: 100%; }
-    #status {
-      position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      color: #9ca3af; font-family: system-ui, sans-serif; font-size: 14px;
-      background: #1a1a1a; z-index: 1;
-    }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    /* Zoom injects into #zmmtg-root — make it fill the viewport */
+    #zmmtg-root { display: block !important; width: 100% !important; }
+    .meeting-app { width: 100vw !important; height: 100vh !important; }
   </style>
 </head>
 <body>
-  <div id="status">Conectando con Zoom...</div>
-  <div id="meeting-root"></div>
+  <div id="zmmtg-root"></div>
 
-  <script src="/api/zoom/sdk"></script>
+  <script src="${CDN}/lib/vendor/react.min.js"></script>
+  <script src="${CDN}/lib/vendor/react-dom.min.js"></script>
+  <script src="${CDN}/lib/vendor/redux.min.js"></script>
+  <script src="${CDN}/lib/vendor/redux-thunk.min.js"></script>
+  <script src="${CDN}/lib/vendor/lodash.min.js"></script>
+  <script src="${CDN}/zoom-meeting-6.0.2.min.js"></script>
   <script>
-    (async function () {
-      var statusEl = document.getElementById('status');
-      try {
-        var client = ZoomMtgEmbedded.createClient();
+    ZoomMtg.setZoomJSLib(${j(`${CDN}/lib`)}, '/av');
+    ZoomMtg.preLoadWasm();
+    ZoomMtg.prepareWebSDK();
 
-        await client.init({
-          zoomAppRoot: document.getElementById('meeting-root'),
-          language: 'es-ES',
+    ZoomMtg.init({
+      leaveUrl: 'about:blank',
+      isSupportAV: true,
+      isSupportChat: true,
+      isSupportQA: false,
+      isSupportPolling: false,
+      isSupportBreakout: true,
+      enableHD: true,
+      success: function () {
+        ZoomMtg.join({
+          meetingNumber: ${j(meeting.zoomId)},
+          userName: ${j(userName)},
+          signature: ${j(signature)},
+          sdkKey: ${j(process.env.ZOOM_SDK_KEY)},
+          passWord: ${j(meeting.password ?? '')},
+          ${zak ? `zak: ${j(zak)},` : ''}
+          success: function () {},
+          error: function (e) { console.error('[ZoomRoom] join error', e); },
         });
-
-        await client.join({
-          meetingNumber: ${safeJson(meeting.zoomId)},
-          userName: ${safeJson(userName)},
-          signature: ${safeJson(signature)},
-          sdkKey: ${safeJson(process.env.ZOOM_SDK_KEY)},
-          password: ${safeJson(meeting.password ?? '')},
-          ${zakLine}
-        });
-
-        statusEl.style.display = 'none';
-      } catch (err) {
-        statusEl.textContent = 'Error al conectar: ' + (err && err.message ? err.message : String(err));
-        console.error('[ZoomRoom]', err);
-      }
-    })();
+      },
+      error: function (e) { console.error('[ZoomRoom] init error', e); },
+    });
   </script>
 </body>
 </html>`
@@ -141,7 +145,6 @@ export async function GET(
   return new Response(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
-      // No-cache: signature and ZAK expire
       'Cache-Control': 'no-store',
     },
   })

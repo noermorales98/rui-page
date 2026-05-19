@@ -41,6 +41,19 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function DELETE(req: NextRequest) {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const id = Number(req.nextUrl.searchParams.get('id'))
+  if (isNaN(id)) return NextResponse.json({ error: 'ID inválido' }, { status: 400 })
+
+  await prisma.zoomMeeting.delete({ where: { id } })
+  return NextResponse.json({ ok: true })
+}
+
 export async function GET(req: NextRequest) {
   const session = await auth()
   if (!session?.user) {
